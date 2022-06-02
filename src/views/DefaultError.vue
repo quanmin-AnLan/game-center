@@ -2,7 +2,9 @@
   <section class="error">
     <div class="top">404 Not Found</div>
     <div class="fixed">
-      <div><img src="http://img.anlan.xyz/404.jpg?imagelim" alt="error"></div>
+      <div class="error-img-box">
+        <el-image style="width: 100%" src="http://img.anlan.xyz/404.jpg?imagelim" alt="error" fit="fill" lazy></el-image>
+      </div>
       <div>您输入的网址已被安澜吃掉，请更换正确的网址</div>
     </div>
   </section>
@@ -33,7 +35,7 @@ export default {
     margin-top: -200px;
     font-size: 18px;
     color: red;
-    img {
+    .error-img-box {
       width: 373px;
       height: 320px;
     }
