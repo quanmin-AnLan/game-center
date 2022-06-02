@@ -19,7 +19,7 @@ module.exports = defineConfig({
       const plugins = []
       plugins.push(
         new CompressionPlugin({
-          filename: '[path].gz[query]',
+          filename: '[path][base].gz',
           algorithm: 'gzip',
           test: /\.(html|js|json|ttf|css|jpeg|jpg|png)$/,
           threshold: 0,
