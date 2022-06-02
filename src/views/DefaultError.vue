@@ -10,14 +10,6 @@
   </section>
 </template>
 
-<script>
-export default {
-  mounted() {
-    document.querySelector('.nav-main').style.display = 'none';
-  },
-};
-</script>
-
 <style lang="less" scoped>
 .error {
   font-weight: bold;
