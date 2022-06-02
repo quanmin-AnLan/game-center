@@ -1,5 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 const CompressionPlugin = require("compression-webpack-plugin");
+const path = require('path')
 module.exports = defineConfig({
   transpileDependencies: true,
   publicPath: '/',
@@ -33,4 +34,12 @@ module.exports = defineConfig({
       ]
     }
   },
+  pluginOptions: {
+    'style-resources-loader': {
+      preProcessor: 'less',
+      patterns: [
+        path.resolve(__dirname, './src/less/main.less')
+      ]
+    }
+  }
 })
