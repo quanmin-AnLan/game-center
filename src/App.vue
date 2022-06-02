@@ -4,9 +4,21 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </nav>
+    <el-button>abc</el-button>
     <router-view/>
   </div>
 </template>
+
+<script>
+export default {
+  mounted() {
+    this.$message({
+      message: 'element初始化成功',
+      type: 'success',
+    })
+  }
+}
+</script>
 
 <style lang="less">
 #app {

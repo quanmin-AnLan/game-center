@@ -27,3 +27,8 @@ const router = new VueRouter({
 })
 
 export default router
+
+router.beforeEach((to, from, next) => {
+  window.document.title = to.meta.title || '游戏中心';
+  next();
+});
