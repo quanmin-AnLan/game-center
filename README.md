@@ -28,13 +28,21 @@ npm run lint
 
 ```txt
 src为主目录
+api为接口配置
 components文件夹为全局通用组件
 less文件夹为全局通用css及配置
 router为路由配置
+service为封装请求
 store为vuex配置
 views为具体页面
 views下各页面文件夹代表各页面
 各页面文件夹中components文件夹为该类页面专用组件
+```
+
+### 规范
+
+```txt
+1. 用el-image代替img标签
 ```
 
 ### Customize configuration
