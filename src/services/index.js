@@ -1,39 +1,49 @@
 import axios from 'axios';
-import QS from 'qs';
-axios.defaults.timeout = 5000;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+import qs from 'qs';
+import { Message } from 'element-ui';
 
-axios.interceptors.response.use((res) => {
+const request = axios.create({
+  timeout: 5000,
+  baseURL: 'http://api.anlan.xyz/game',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+});
+
+request.interceptors.response.use((res) => {
     if (res.status === 200) {
       return Promise.resolve(res);
     } else {
+      Message({
+        message: res.message,
+        type: 'warning'
+      })
       return Promise.reject(res);
     }
-  },
+  }, (err) => {
+    Message({
+      message: err.message,
+      type: 'error'
+    })
+    return Promise.reject(err)
+  }
 );
 
-const base = axios.create({
-  baseURL: '/api',
-});
 
-export const get = (url, params) => {
-  return new Promise((resolve, reject) => {
-    base.get(url, {
-      params,
-    }).then((res) => {
-      resolve(res.data);
-    }).catch((err) => {
-      reject(err.data);
-    });
-  });
-};
+class Http {
+  static get (url, params) {
+    return request.get(url, { params })
+  }
 
-export const post = (url, params = {}) => {
-  return new Promise((resolve, reject) => {
-    base.post(url, QS.stringify(params)).then((res) => {
-      resolve(res.data);
-    }).catch((err) => {
-      reject(err.data);
-    });
-  });
-};
+  static post (url, params, contentType = 'json') {
+    if (contentType === 'urlencoded') {
+      return request.post(url, qs.stringify(params))
+    } else {
+      return request.post(url, params, {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+  }
+}
+
+export default Http
