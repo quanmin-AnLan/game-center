@@ -58,7 +58,7 @@ export default {
         },
         {
           'name': '全民大乐斗',
-          'logo': 'http://img.anlan.xyz/anlan.jpg?imagelim',
+          'logo': 'http://img.anlan.xyz/game/qmdld.png',
           'route': 'PenguinFight'
         },
       ]
@@ -92,22 +92,14 @@ export default {
 
 <style lang="less" scoped>
 .shadow {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
+  .pos-f-auto;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 1000;
 }
 .module-list {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform:translate(-50%,-50%);
+  .pos-f-center;
   z-index: 1001;
   display: flex;
   flex-wrap: wrap;
