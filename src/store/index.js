@@ -5,13 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    asyncRouteReady: '',
   },
-  getters: {
-  },
+  getters: {},
   mutations: {
+    SetAsyncRouteReady: (state, module) => {
+      state.asyncRouteReady = module;
+    },
   },
-  actions: {
-  },
-  modules: {
-  }
+  actions: {},
+  modules: {}
 })
