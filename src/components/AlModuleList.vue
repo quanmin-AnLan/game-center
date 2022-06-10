@@ -1,6 +1,6 @@
 <template>
   <section class="al-module-list">
-    <div class="shadow" @click="close"></div>
+    <div class="shadow" @click="close" v-if="$route.path !== '/'"></div>
     <ul class="module-list">
       <li v-for="(item, index) in moduleListArr" :key="item.route" @mouseover="selectStyle(index)"
         @mouseout="outStyle(index)" :class="[
@@ -72,7 +72,7 @@ export default {
     // 点击关闭遮罩，取消选择
     close() {
       // 如果在主页，则无关闭事件直接return
-      if (this.$route.path === "/IndexHome") {
+      if (this.$route.path === "/") {
         return
       }
       // 通知父组件关闭遮罩事件
