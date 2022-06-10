@@ -5,10 +5,9 @@ Vue.use(VueRouter)
 
 import store from '../store/index'
 
-store.commit('SetAsyncRouteReady', '')   //  初始化动态路由挂载状态
+store.commit('SetAsyncRouteReady', '') //  初始化动态路由挂载状态
 
-const routes = [
-  {
+const routes = [{
     path: '/',
     name: 'IndexHome',
     component: () => import('../views/IndexHome.vue')

@@ -2,36 +2,28 @@
   <section class="al-module-list">
     <div class="shadow" @click="close"></div>
     <ul class="module-list">
-      <li
-        v-for="(item, index) in moduleListArr"
-        :key="item.route"
-        @mouseover="selectStyle(index) "
-        @mouseout="outStyle(index)"
-        :class="[
+      <li v-for="(item, index) in moduleListArr" :key="item.route" @mouseover="selectStyle(index)"
+        @mouseout="outStyle(index)" :class="[
           'module-list-item',
           {
             'active-module-list-item': index === activeIndex
           }
-        ]"
-        @click="goTo(item.route)"
-      >
+        ]" @click="goTo(item.route)">
         <template>
           <div class="img-wrap">
             <div class="img-box">
-              <el-image :src="item.logo" :alt="item.name" fit="fill"/>
+              <el-image :src="item.logo" :alt="item.name" fit="fill" />
             </div>
           </div>
-          <p
-            :class="[
+          <p :class="[
             'module-list-item-txt',
-              {
-                'active-module-list-item-txt': index === activeIndex
-              },
-              {
-                'disable-module-list-item-txt': item.route === asyncRouteReady
-              },
-          ]"
-          >{{ item.name }}</p>
+            {
+              'active-module-list-item-txt': index === activeIndex
+            },
+            {
+              'disable-module-list-item-txt': item.route === asyncRouteReady
+            },
+          ]">{{ item.name }}</p>
         </template>
       </li>
     </ul>
@@ -102,6 +94,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 1000;
 }
+
 .module-list {
   .pos-f-center;
   z-index: 1001;
@@ -110,6 +103,7 @@ export default {
   width: 720px;
   background-color: #fff;
   border-radius: 4px;
+
   &-item {
     position: relative;
     z-index: 5;
@@ -118,16 +112,19 @@ export default {
     padding-top: 37px;
     border-right: 2px solid #f3f3f3;
     border-bottom: 2px solid #f3f3f3;
-    cursor:pointer;
+    cursor: pointer;
     box-sizing: border-box;
+
     .img-wrap {
       display: flex;
       justify-content: center;
+
       .img-box {
         width: 68px;
         height: 68px;
       }
     }
+
     &-txt {
       width: 100px;
       height: 25px;
@@ -139,19 +136,22 @@ export default {
       font-size: 16px;
       font-family: Microsoft YaHei;
       font-weight: 400;
-      position:absolute;
-      bottom:24px;
-      left:50%;
-      margin-left:-50px;
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      margin-left: -50px;
     }
+
     .active-module-list-item-txt {
       background: #363f40;
     }
+
     .disable-module-list-item-txt {
       background: transparent;
       color: #999;
     }
   }
+
   .active-module-list-item {
     box-shadow: 0px 11px 13px 0px rgba(0, 0, 0, 0.11);
     border-radius: 4px;
@@ -160,17 +160,21 @@ export default {
     z-index: 6
   }
 }
+
 @media screen and (max-width: 1000px) {
   .module-list {
     width: 450px;
+
     &-item {
       width: 150px;
     }
   }
 }
+
 @media screen and (max-width: 600px) {
   .module-list {
     width: 240px;
+
     &-item {
       width: 120px;
     }
