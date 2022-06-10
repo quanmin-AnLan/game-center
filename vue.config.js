@@ -11,11 +11,13 @@ module.exports = defineConfig({
     config
 			.plugin('html')
 			.tap(args => {
-				args[0].title = '安澜网'
+        // 设默认title为游戏中心
+				args[0].title = '游戏中心'
 				return args
 			})
   },
   configureWebpack: config =>{
+    // 如正式环境则开启gzip static
     if (process.env.NODE_ENV === 'production') {
       const plugins = []
       plugins.push(
@@ -35,6 +37,7 @@ module.exports = defineConfig({
     }
   },
   pluginOptions: {
+    // 注册全局less
     'style-resources-loader': {
       preProcessor: 'less',
       patterns: [

@@ -18,7 +18,7 @@
         <template>
           <div class="img-wrap">
             <div class="img-box">
-              <el-image :src="item.logo" :alt="item.name" fit="fill" lazy/>
+              <el-image :src="item.logo" :alt="item.name" fit="fill"/>
             </div>
           </div>
           <p
@@ -77,14 +77,18 @@ export default {
         this.$router.push(route)
       }
     },
+    // 点击关闭遮罩，取消选择
     close() {
+      // 如果在主页，则无关闭事件直接return
       if (this.$route.path === "/IndexHome") {
         return
       }
+      // 通知父组件关闭遮罩事件
       this.$emit("close");
     }
   },
   computed: {
+    // 获取vuex全局变量asyncRouteReady
     ...mapState(['asyncRouteReady'])
   }
 }

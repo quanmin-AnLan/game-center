@@ -3,6 +3,10 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
+import store from '../store/index'
+
+store.commit('SetAsyncRouteReady', '')   //  初始化动态路由挂载状态
+
 const routes = [
   {
     path: '/',
@@ -44,6 +48,11 @@ const router = new VueRouter({
 export default router
 
 router.beforeEach((to, from, next) => {
+  // 若无特殊title则默认展示title为游戏中心
   window.document.title = to.meta.title || '游戏中心';
+  // 获取即将进入的路由信息存入vuex
+  let moduleType = to.fullPath.split('/')[1]
+  store.commit('SetAsyncRouteReady', moduleType)
+  // 进入目标路由
   next();
 });

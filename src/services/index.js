@@ -10,7 +10,9 @@ const request = axios.create({
   }
 });
 
-request.interceptors.response.use((res) => {
+request.interceptors.response.use(
+  (res) => {
+  // 正确请求则返回，异常状态码抛出异常
     if (res.status === 200) {
       return Promise.resolve(res);
     } else {
@@ -20,7 +22,8 @@ request.interceptors.response.use((res) => {
       })
       return Promise.reject(res);
     }
-  }, (err) => {
+  },(err) => {
+  // 若请求失败则抛出异常
     Message({
       message: err.message,
       type: 'error'
