@@ -16,7 +16,12 @@ request.interceptors.response.use(
   (res) => {
     // 正确请求则返回，异常状态码抛出异常
     if (res.status === 200) {
-      return Promise.resolve(res);
+      const { data } = res
+      if (data) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.resolve(res);
+      }
     } else {
       Message({
         message: res.message,
