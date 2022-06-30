@@ -1,5 +1,5 @@
 <template>
-  <el-upload action="http://82.157.95.66:3000/upload" :data="data" :show-file-list="false"
+  <el-upload action="http://data.anlan.xyz/upload" :data="data" :show-file-list="false"
     :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
     <el-image class="avatar" v-if="resource == 'img' && resourceSrc" :src="resourceSrc" fit="fill"></el-image>
     <el-button v-else>上传{{resourceMap[resource]}}</el-button>
