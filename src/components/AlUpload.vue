@@ -1,27 +1,25 @@
 <template>
   <el-upload action="http://data.anlan.xyz/upload" :data="data" :show-file-list="false"
-    :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-    <el-image class="avatar" v-if="resource == 'img' && resourceSrc" :src="resourceSrc" fit="fill"></el-image>
-    <el-button v-else>上传{{resourceMap[resource]}}</el-button>
+    :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" class="avatar-uploader">
+    <el-image class="avatar" v-if="resourceSrc" :src="resourceSrc"
+      :preview-src-list="[resourceSrc]" fit="fill" @click.stop></el-image>
+    <div v-else class="upload">
+      <i class="el-icon-plus avatar-uploader-icon"></i>
+      <span class="tip-info">点击上传图片</span>
+    </div>
+    <div v-if="resourceSrc" class="cover-edit">
+      <div class="edit-text">替换</div>
+    </div>
   </el-upload>
 </template>
 
 <script>
 export default {
   name: 'AlUpload',
-  props: {
-    resource: {
-      type: String,
-      default: 'img'
-    }
-  },
   data () {
     return {
       data: {
         key: ''
-      },
-      resourceMap: {
-        img: '图片'
       },
       resourceSrc: ''
     }
@@ -50,7 +48,53 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.avatar-uploader {
+  border: 1.5px dashed #628EFC;
+  height: 163px;
+  width: 163px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f3fa;
+  position: relative;
+  box-sizing: border-box;
+  &:hover .cover-edit {
+    display: flex;
+  }
+}
 .avatar {
-  width: 200px;
+  width: 160px;
+  height: 160px;
+  cursor: pointer;
+}
+/deep/ .el-upload {
+  max-height: 160px;
+}
+.cover-edit {
+  display: none;
+  width: 160px;
+  line-height: 32px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.edit-text {
+  width: 100%;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+  border-right: 1px solid rgba(255, 255, 255, 0.4);
+}
+.upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.avatar-uploader-icon {
+  font-size: 25px;
+  color: #628EFC;
+}
+.tip-info {
+  margin-top: 10px;
+  color: #b3b9d1;
 }
 </style>
