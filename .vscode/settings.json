@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["echarts", "scripthost", "vuex", "simsun", "Avenir"]
+  "cSpell.words": [
+    "Avenir",
+    "echarts",
+    "Qiniu",
+    "scripthost",
+    "simsun",
+    "vuex"
+  ]
 }
