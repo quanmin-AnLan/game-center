@@ -1,8 +1,8 @@
 <template>
   <el-upload action="http://data.anlan.xyz/upload" :data="data" :show-file-list="false"
     :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" class="avatar-uploader">
-    <el-image class="avatar" v-if="resourceSrc" :src="resourceSrc"
-      :preview-src-list="[resourceSrc]" fit="fill" @click.stop></el-image>
+    <el-image class="avatar" v-if="resourceSrc" :src="resourceSrc" :preview-src-list="[resourceSrc]" fit="fill"
+      @click.stop></el-image>
     <div v-else class="upload">
       <i class="el-icon-plus avatar-uploader-icon"></i>
       <span class="tip-info">点击上传图片</span>
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { cutPicUrl } from '../utils/format'
 export default {
   name: 'AlUpload',
   data () {
@@ -41,7 +42,7 @@ export default {
       return (isJPG || isGIF || isPNG) && isLt2M
     },
     handleAvatarSuccess(res) {
-      this.resourceSrc = 'http://img.anlan.xyz/' + res.data
+      this.resourceSrc = cutPicUrl('http://img.anlan.xyz/' + res.data, 160, 160)
       this.$emit('imgSrc', this.resourceSrc)
     }
   },
