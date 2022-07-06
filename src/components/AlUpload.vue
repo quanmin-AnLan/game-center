@@ -42,6 +42,7 @@ export default {
     },
     handleAvatarSuccess(res) {
       this.resourceSrc = 'http://img.anlan.xyz/' + res.data
+      this.$emit('imgSrc', this.resourceSrc)
     }
   },
 }
