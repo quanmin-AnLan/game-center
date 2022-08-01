@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible="loginVisible">
+  <el-dialog :visible="loginVisible" @close="handleCancel">
     <el-input v-model="username" placeholder="请输入用户名"></el-input>
     <el-input v-model="password" placeholder="请输入密码"></el-input>
     <el-input v-model="repeatPwd" placeholder="请再次输入密码" v-if="type === 'register'"></el-input>
@@ -73,6 +73,7 @@ export default {
       this.imgSrc = src || ''
     },
     handleCancel() {
+      Object.assign(this.$data, this.$options.data.call(this));
       this.$emit('update:loginVisible', false)
     }
   }
