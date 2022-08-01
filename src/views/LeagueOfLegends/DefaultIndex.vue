@@ -4,7 +4,8 @@
     <al-module-list v-if="isShowModuleList" @close="closeModuleList"></al-module-list>
     <el-button @click="showModuleList">切换</el-button>
     <div>英雄联盟主页</div>
-    <al-upload></al-upload>
+    <el-button @click="loginVisible = true">登录</el-button>
+    <al-login :loginVisible.sync="loginVisible"></al-login>
   </section>
 </template>
 
@@ -13,7 +14,8 @@ export default {
   name: 'LOLHome',
   data() {
     return {
-      isShowModuleList: false // 控制切换菜单是否展示，默认不展示
+      isShowModuleList: false, // 控制切换菜单是否展示，默认不展示
+      loginVisible: false
     }
   },
   methods: {
