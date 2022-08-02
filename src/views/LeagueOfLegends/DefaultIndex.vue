@@ -6,8 +6,7 @@
     <div>英雄联盟主页</div>
     <el-button @click="loginVisible = true">登录</el-button>
     <al-login :loginVisible.sync="loginVisible"></al-login>
-    <el-input v-model="number" disabled></el-input>
-    <el-row v-for="(item, index) in config" :key="index">
+    <el-row v-for="(item, index) in arr" :key="index">
       这是第{{item.value}}条数据
       <el-dropdown>
         <span class="el-dropdown-link">
@@ -30,18 +29,15 @@ export default {
     return {
       isShowModuleList: false, // 控制切换菜单是否展示，默认不展示
       loginVisible: false,
-      number: 100
+      number: 100,
+      arr: []
     }
   },
-  computed: {
-    config() {
-      const arr = []
-      for (let i = 0; i < this.number; i++) {
-        arr.push({
-          value: i
-        })
-      }
-      return arr
+  mounted() {
+    for (let i = 0; i < this.number; i++) {
+      this.arr.push({
+        value: i
+      })
     }
   },
   methods: {
