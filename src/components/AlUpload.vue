@@ -37,7 +37,7 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传图片大小不能超过 2MB!')
       }
-      let key = `game-center/img/${new Date().getFullYear()}/${new Date().getMonth() + 1}${new Date().getDate()}/${+new Date()}-${file.name}`
+      let key = `game-center/img/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}/${+new Date()}-${file.name}`
       this.data.key = key
       return (isJPG || isGIF || isPNG) && isLt2M
     },
