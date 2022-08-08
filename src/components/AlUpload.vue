@@ -50,10 +50,9 @@ export default {
 
 <style lang="less" scoped>
 .avatar-uploader {
-  border: 1.5px dashed #628EFC;
-  height: 163px;
-  width: 163px;
-  background-color: #f0f3fa;
+  border: 1.5px dashed @blue;
+  .square(163px);
+  background-color: @lightWhite;
   position: relative;
   box-sizing: border-box;
   .flex-center;
@@ -62,8 +61,7 @@ export default {
   }
 }
 .avatar {
-  width: 160px;
-  height: 160px;
+  .square(160px);
   cursor: pointer;
 }
 /deep/ .el-upload {
@@ -79,9 +77,9 @@ export default {
 }
 .edit-text {
   width: 100%;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.6);
-  border-right: 1px solid rgba(255, 255, 255, 0.4);
+  color: @white;
+  background: @avatar;
+  border-right: 1px solid @lightWhite;
 }
 .upload {
   display: flex;
@@ -90,10 +88,10 @@ export default {
 }
 .avatar-uploader-icon {
   font-size: 25px;
-  color: #628EFC;
+  color: @blue;
 }
 .tip-info {
   margin-top: 10px;
-  color: #b3b9d1;
+  color: @lightBlue;
 }
 </style>
