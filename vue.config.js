@@ -3,6 +3,7 @@ const {
 } = require('@vue/cli-service')
 const CompressionPlugin = require("compression-webpack-plugin");
 const path = require('path')
+const webpack = require('webpack')
 module.exports = defineConfig({
   transpileDependencies: true,
   publicPath: '/',
@@ -18,25 +19,58 @@ module.exports = defineConfig({
         return args
       })
   },
-  configureWebpack: config => {
-    // 如正式环境则开启gzip static
-    if (process.env.NODE_ENV === 'production') {
-      const plugins = []
-      plugins.push(
-        new CompressionPlugin({
-          filename: '[path][base].gz',
-          algorithm: 'gzip',
-          test: /\.(html|js|json|ttf|css|jpeg|jpg|png)$/,
-          threshold: 0,
-          minRatio: 1,
-          deleteOriginalAssets: false,
-        }),
-      )
-      config.plugins = [
-        ...config.plugins,
-        ...plugins
-      ]
-    }
+  configureWebpack: {
+    optimization: {
+      splitChunks: {
+        chunks: "all",
+        minSize: 0,
+        maxInitialRequests: Infinity,
+        cacheGroups: {
+          libs: { // 第三方库
+            name: "chunk-libs",
+            test: /[\\/]node_modules[\\/]/,
+            priority: 10,
+            chunks: "initial"
+          },
+          elementUI: { // element 单独拆包
+            name: "chunk-el",
+            test: /[\\/]node_modules[\\/]element-ui[\\/]/,
+            priority: 20 // 权重要大于 libs
+          },
+          echarts: { // echarts 单独拆包
+            name: "chunk-echarts",
+            test: /[\\/]node_modules[\\/]echarts[\\/]/,
+            priority: 20 // 权重要大于 libs
+          },
+          commons: { // 公共模块包
+            name: `chunk-commons`,
+            minChunks: 2,
+            priority: 0,
+            reuseExistingChunk: true
+          }
+        },
+      }
+    },
+    plugins: [
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^\.\/locale$/,
+        contextRegExp: /moment$/
+      }),
+      new CompressionPlugin({
+        filename: '[path][base].gz',
+        algorithm: 'gzip',
+        test: /\.(html|js|json|ttf|woff|css|jpeg|jpg|png)$/,
+        threshold: 0,
+        minRatio: 1,
+        deleteOriginalAssets: false,
+      }),
+      new webpack.optimize.LimitChunkCountPlugin({
+        maxChunks: 15
+      }),
+      new webpack.optimize.MinChunkSizePlugin({
+        minChunkSize: 1000
+      })
+    ]
   },
   pluginOptions: {
     // 注册全局less

@@ -91,7 +91,7 @@ export default {
   .pos-f-auto;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: @avatar;
   z-index: 1000;
 }
 
@@ -101,17 +101,16 @@ export default {
   display: flex;
   flex-wrap: wrap;
   width: 720px;
-  background-color: #fff;
+  background-color: @white;
   border-radius: 4px;
 
   &-item {
     position: relative;
     z-index: 5;
-    width: 180px;
-    height: 180px;
+    .square(180px);
     padding-top: 37px;
-    border-right: 2px solid #f3f3f3;
-    border-bottom: 2px solid #f3f3f3;
+    border-right: 2px solid @lightWhite;
+    border-bottom: 2px solid @lightWhite;
     cursor: pointer;
     box-sizing: border-box;
 
@@ -120,8 +119,7 @@ export default {
       justify-content: center;
 
       .img-box {
-        width: 68px;
-        height: 68px;
+        .square(68px);
       }
     }
 
@@ -129,10 +127,10 @@ export default {
       width: 100px;
       height: 25px;
       line-height: 24px;
-      background: rgba(32, 160, 255, 1);
+      background: @blue;
       border-radius: 13px;
       text-align: center;
-      color: #fff;
+      color: @white;
       font-size: 16px;
       font-family: Microsoft YaHei;
       font-weight: 400;
@@ -143,19 +141,19 @@ export default {
     }
 
     .active-module-list-item-txt {
-      background: #363f40;
+      background: @black;
     }
 
     .disable-module-list-item-txt {
       background: transparent;
-      color: #999;
+      color: @disabled;
     }
   }
 
   .active-module-list-item {
-    box-shadow: 0px 11px 13px 0px rgba(0, 0, 0, 0.11);
+    box-shadow: 0px 11px 13px 0px @shadow;
     border-radius: 4px;
-    background: #fff;
+    background: @white;
     transform: scale(1.1);
     z-index: 6
   }
