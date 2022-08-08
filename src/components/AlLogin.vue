@@ -52,15 +52,10 @@
 </template>
 
 <script>
-import apis from "@/api";
+import apis from '@/api'
+import { mapState } from 'vuex'
 export default {
-  name: "AlLogin",
-  props: {
-    loginVisible: {
-      type: Boolean,
-      default: false,
-    },
-  },
+  name: 'AlLogin',
   data() {
     return {
       titleMap: {
@@ -107,8 +102,11 @@ export default {
           submit: false,
         },
       ],
-      imgSrc: "",
-    };
+      imgSrc: ''
+    }
+  },
+  computed: {
+    ...mapState(['loginVisible'])
   },
   methods: {
     // 注册
@@ -159,7 +157,7 @@ export default {
     // 取消事件
     handleCancel() {
       Object.assign(this.$data, this.$options.data.call(this));
-      this.$emit("update:loginVisible", false);
+      this.$store.commit('SetLoginVisible', false)
     },
     // 动态去除红色高亮样式
     removeWrongCls(prop, value) {

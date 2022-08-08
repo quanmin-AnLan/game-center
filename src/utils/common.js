@@ -1,4 +1,6 @@
-const cutPicUrl = (url, width, height) => {
+import store from '../store/index'
+
+const cut = (url, width, height) => {
   if (!url) {
     return ''
   }
@@ -9,6 +11,11 @@ const cutPicUrl = (url, width, height) => {
   return url.replace(/(imageView2\/)(.*)(\/format\/)/g, `$1${cutKey}$3`)
 }
 
-export {
-  cutPicUrl
+const login = () => {
+  store.commit('SetLoginVisible', true)
+}
+
+export const fn = {
+  cut,
+  login,
 }

@@ -2,14 +2,17 @@
 html,
 body {
   scroll-behavior: smooth;
-  font-family: "PingFang SC", "\5FAE\8F6F\96C5\9ED1", "\5B8B\4F53", simsun,
-    Avenir, Helvetica, Arial, sans-serif;
-  color: @base;
-  .tc;
+  font: 400 1em/1.8 'Microsoft Yahei', 'PingFang SC', 'Avenir', 'Segoe UI', 'Hiragino Sans GB', STHeiti, 'Microsoft Sans Serif', 'WenQuanYi Micro Hei', sans-serif;
+  text-align: center;
+  background-color: @white;
 }
 
 a {
+  color: @base;
   text-decoration: none;
+  &:hover {
+    color: @blue;
+  }
 }
 
 li {
@@ -18,7 +21,6 @@ li {
 
 a,
 body,
-div,
 footer,
 h1,
 h2,

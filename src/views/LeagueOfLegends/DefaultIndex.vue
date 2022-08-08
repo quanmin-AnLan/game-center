@@ -4,8 +4,7 @@
     <al-module-list v-if="isShowModuleList" @close="closeModuleList"></al-module-list>
     <el-button @click="showModuleList">切换</el-button>
     <div>英雄联盟主页</div>
-    <el-button @click="loginVisible = true">登录</el-button>
-    <al-login :loginVisible.sync="loginVisible"></al-login>
+    <el-button @click="$fn.login">登录</el-button>
     <el-row v-for="(item, index) in arr" :key="index">
       这是第{{item.value}}条数据
       <el-dropdown>
@@ -28,7 +27,6 @@ export default {
   data() {
     return {
       isShowModuleList: false, // 控制切换菜单是否展示，默认不展示
-      loginVisible: false,
       number: 100,
       arr: []
     }
