@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import { cutPicUrl } from '../utils/format'
 export default {
   name: 'AlUpload',
   data () {
@@ -42,7 +41,7 @@ export default {
       return (isJPG || isGIF || isPNG) && isLt2M
     },
     handleAvatarSuccess(res) {
-      this.resourceSrc = cutPicUrl('http://img.anlan.xyz/' + res.data, 160, 160)
+      this.resourceSrc = this.$fn.cut('http://img.anlan.xyz/' + res.data, 160, 160)
       this.$emit('imgSrc', this.resourceSrc)
     }
   },
@@ -54,12 +53,10 @@ export default {
   border: 1.5px dashed #628EFC;
   height: 163px;
   width: 163px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background-color: #f0f3fa;
   position: relative;
   box-sizing: border-box;
+  .flex-center;
   &:hover .cover-edit {
     display: flex;
   }

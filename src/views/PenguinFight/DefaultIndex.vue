@@ -4,6 +4,7 @@
     <al-module-list v-if="isShowModuleList" @close="closeModuleList"></al-module-list>
     <el-button @click="showModuleList">切换</el-button>
     <div>全民大乐斗主页</div>
+    <el-button @click="$fn.login">登录</el-button>
   </section>
 </template>
 
