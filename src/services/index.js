@@ -16,7 +16,11 @@ request.interceptors.response.use(
   (res) => {
     // 正确请求则返回，异常状态码抛出异常
     if (res.status === 200) {
-      const { data } = res
+      const { data, msg } = res
+      Message({
+        message: msg,
+        type: 'success'
+      })
       if (data) {
         return Promise.resolve(data);
       } else {
@@ -24,7 +28,7 @@ request.interceptors.response.use(
       }
     } else {
       Message({
-        message: res.message,
+        message: res.msg,
         type: 'warning'
       })
       return Promise.reject(res);
@@ -32,7 +36,7 @@ request.interceptors.response.use(
   }, (err) => {
     // 若请求失败则抛出异常
     Message({
-      message: err.message,
+      message: err.msg,
       type: 'error'
     })
     return Promise.reject(err)
