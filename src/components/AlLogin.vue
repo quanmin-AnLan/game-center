@@ -92,7 +92,7 @@ export default {
         }
       }
       params.imgSrc = this.imgSrc
-      apis.register(params).then(res => {
+      apis.register(params).then(() => {
         this.handleCancel()
       })
     },
