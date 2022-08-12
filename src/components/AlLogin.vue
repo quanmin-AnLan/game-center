@@ -114,6 +114,7 @@ export default {
       }
       apis.login(params).then(res => {
         if (res.success === true) {
+          this.$store.commit('SetUserInfo', res.data)
           this.$message.success('登录成功')
           this.handleCancel()
         } else {

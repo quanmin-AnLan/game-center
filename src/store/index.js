@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     asyncRouteReady: '',
     loginVisible: false,
+    userInfo: {},
   },
   getters: {},
   mutations: {
@@ -15,6 +16,9 @@ export default new Vuex.Store({
     },
     SetLoginVisible: (state, module) => {
       state.loginVisible = module
+    },
+    SetUserInfo: (state, module) => {
+      state.userInfo = module
     }
   },
   actions: {},
