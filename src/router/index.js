@@ -29,6 +29,11 @@ const routes = [{
     component: () => import('../views/PenguinFight/DefaultIndex.vue')
   },
   {
+    path: '/Auth',
+    name: 'Auth',
+    component: () => import('../views/Auth/DefaultIndex.vue')
+  },
+  {
     path: '/DefaultError',
     name: 'DefaultError',
     component: () => import('../views/DefaultError.vue'),

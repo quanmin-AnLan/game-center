@@ -2,7 +2,7 @@
   <section class="al-module-list">
     <div class="shadow" @click="close" v-if="$route.path !== '/'"></div>
     <ul class="module-list">
-      <li v-for="(item, index) in moduleListArr" :key="item.route" @mouseover="selectStyle(index)"
+      <li v-for="(item, index) in washModuleList" :key="item.route" @mouseover="selectStyle(index)"
         @mouseout="outStyle(index)" :class="[
           'module-list-item',
           {
@@ -53,6 +53,12 @@ export default {
           'logo': 'http://img.anlan.xyz/game/qmdld.png',
           'route': 'PenguinFight'
         },
+        {
+          'name': '权限',
+          'logo': 'http://img.anlan.xyz/game/mc.webp',
+          'route': 'Auth',
+          'auth': 10
+        }
       ]
     }
   },
@@ -80,8 +86,21 @@ export default {
     }
   },
   computed: {
-    // 获取vuex全局变量asyncRouteReady
-    ...mapState(['asyncRouteReady'])
+    // 获取vuex全局变量
+    ...mapState(['asyncRouteReady', 'userInfo']),
+    washModuleList() {
+      const result = []
+      for (const item of this.moduleListArr) {
+        if (!item.auth) {
+          result.push(item)
+        } else {
+          if (Number(this.userInfo.level) >= item.auth) {
+            result.push(item)
+          }
+        }
+      }
+      return result
+    }
   }
 }
 </script>
