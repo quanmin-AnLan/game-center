@@ -68,7 +68,6 @@ export default {
       switch (type) {
         case 'edit':
           this.row = data
-          console.log(this.row)
           this.dialogVisible = true
           break;
       }
