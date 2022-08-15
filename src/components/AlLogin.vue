@@ -110,8 +110,10 @@ export default {
         }
       }
       apis.login(params).then(res => {
-        this.$store.commit('SetUserInfo', res.data)
-        sessionStorage.setItem('user_info', JSON.stringify(res.data))
+        const baseData = res.data
+        baseData.level = Number(baseData.level)
+        this.$store.commit('SetUserInfo', baseData)
+        sessionStorage.setItem('user_info', JSON.stringify(baseData))
         this.handleCancel()
       })
     },

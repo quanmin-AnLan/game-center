@@ -2,7 +2,9 @@
   <section class="auth-main">
     <al-table :tableData="tableData" :headerSet="headerSet">
       <template v-slot:special-content-operate="{ scope }">
-        <i class="el-icon-edit-outline common-icon" @click="operate('edit', scope.row)"></i>
+        <el-button @click="operate('edit', scope.row)" :disabled="scope.row.level >= userInfo.level">
+          <i class="el-icon-edit-outline common-icon"></i>
+        </el-button>
       </template>
     </al-table>
     <auth-dialog :dialogVisible.sync="dialogVisible" :dialogType="type" :row="row"></auth-dialog>
@@ -13,6 +15,7 @@
 import apis from '@/api'
 import { authConfig } from './config'
 import AuthDialog from './components/AuthDialog.vue'
+import { mapState } from 'vuex'
 export default {
   name: 'AuthModule',
   data() {
@@ -39,6 +42,9 @@ export default {
       row: {},
     }
   },
+  computed: {
+    ...mapState(['userInfo'])
+  },
   mounted() {
     this.getUserList()
   },
@@ -48,7 +54,13 @@ export default {
   methods: {
     getUserList() {
       apis.getUserList().then(res => {
-        this.tableData = res.data
+        this.tableData = res.data.map(item => {
+          return {
+            id: item.id,
+            user: item.user,
+            level: Number(item.level),
+          }
+        })
       })
     },
     operate(type, data) {
@@ -56,6 +68,7 @@ export default {
       switch (type) {
         case 'edit':
           this.row = data
+          console.log(this.row)
           this.dialogVisible = true
           break;
       }
