@@ -111,6 +111,7 @@ export default {
       }
       apis.login(params).then(res => {
         this.$store.commit('SetUserInfo', res.data)
+        sessionStorage.setItem('user_info', JSON.stringify(res.data))
         this.handleCancel()
       })
     },
