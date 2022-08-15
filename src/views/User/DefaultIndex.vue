@@ -1,7 +1,7 @@
 <template>
-  <div>
-
-  </div>
+  <section class="user-main">
+    用户中心
+  </section>
 </template>
 
 <script>

@@ -50,3 +50,74 @@ video {
   padding: 0;
   font-size: 100%;
 }
+
+// el-table
+.el-table {
+  &::before {
+    display: none;  //去除一条原生的诡异的线
+  }
+  .el-table__header-wrapper {
+    .el-table__header {
+      border-bottom: 1px solid @lightWhite;
+      .is-leaf {
+        background-color: @gray;  //表头颜色
+        color: @white;
+      }
+      th {
+        border: none;       //表头边框
+      }
+    }
+  }
+  .el-table__body-wrapper {
+    .el-table__body {
+      tr {
+        td {
+          border: none;     //表体边框
+        }
+      }
+      .hover-row {
+        span.underline {
+          color: @blue;
+        }
+      }
+    }
+  }
+  // 排序按钮
+  .ascending {
+    border-bottom-color: @white;
+    .sort-caret.ascending{
+      border-bottom-color: @white;
+    }
+  }
+  .descending {
+    border-top-color: @white;
+    .sort-caret.descending{
+      border-top-color: @white;
+    }
+  }
+}
+.el-table__fixed, .el-table__fixed-right {
+  &::before {
+    display: none;  //去除一条原生的诡异的线
+  }
+  .el-table__fixed-header-wrapper {
+    .el-table__header {
+      .is-leaf {
+        background-color: @gray;  //表头颜色
+        color: @white;
+      }
+      th {
+        border: none;       //表头边框
+      }
+    }
+  }
+  .el-table__fixed-body-wrapper {
+    .el-table__body {
+      tr {
+        td {
+          border: none;     //表体边框
+        }
+      }
+    }
+  }
+}
