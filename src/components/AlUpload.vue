@@ -1,5 +1,5 @@
 <template>
-  <el-upload action="http://data.anlan.xyz/upload" :data="data" :show-file-list="false"
+  <el-upload action="http://api.anlan.xyz/upload/img" :data="data" :show-file-list="false"
     :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" class="avatar-uploader">
     <el-image class="avatar" v-if="resourceSrc" :src="resourceSrc" :preview-src-list="[resourceSrc]" fit="fill"
       @click.stop></el-image>
