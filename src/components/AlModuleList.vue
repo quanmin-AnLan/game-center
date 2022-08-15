@@ -57,7 +57,7 @@ export default {
           'name': '权限',
           'logo': 'http://img.anlan.xyz/game/mc.webp',
           'route': 'Auth',
-          'auth': 10
+          'auth': 6
         }
       ]
     }
@@ -94,7 +94,7 @@ export default {
         if (!item.auth) {
           result.push(item)
         } else {
-          if (Number(this.userInfo.level) >= item.auth) {
+          if (this.userInfo.level >= item.auth) {
             result.push(item)
           }
         }

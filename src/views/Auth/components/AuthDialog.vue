@@ -14,6 +14,7 @@
 <script>
 import apis from '@/api'
 import { authConfig } from '../config'
+import { mapState } from 'vuex'
 export default {
   name: 'AuthDialog',
   props: {
@@ -46,20 +47,21 @@ export default {
       for (const item in base) {
         arr.push({
           label: base[item],
-          value: item
+          value: Number(item)
         })
       }
-      return arr
+      return arr.slice(0, this.userInfo.level)
     },
     washRow() {
       return this.row
-    }
+    },
+    ...mapState(['userInfo'])
   },
   methods: {
     submit() {
       const params = {
         id: this.washRow?.id,
-        level: this.washRow?.level
+        level: String(this.washRow?.level)
       }
       switch (this.dialogType) {
         case 'edit':

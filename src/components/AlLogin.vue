@@ -8,7 +8,7 @@
         </span>
         <span class="content">
           <el-input clearable :placeholder="item.placeholder" v-model.trim="item.value" :class="item.prop"
-            v-if="item.type === 'input'"
+            v-if="item.type === 'input'" :show-password="item.password"
             @input="(value) => { removeWrongCls(item.prop, value) }"></el-input>
           <al-upload @imgSrc="getImgSrc" v-if="item.type === 'upload'"></al-upload>
         </span>
@@ -53,6 +53,7 @@ export default {
           placeholder: '请输入密码',
           value: '',
           scene: ['login', 'register'],
+          password: true,
           submit: true
         },
         {
@@ -63,6 +64,7 @@ export default {
           placeholder: '请再次输入密码',
           value: '',
           scene: ['register'],
+          password: true,
           submit: false
         },
         {
@@ -108,7 +110,10 @@ export default {
         }
       }
       apis.login(params).then(res => {
-        this.$store.commit('SetUserInfo', res.data)
+        const baseData = res.data
+        baseData.level = Number(baseData.level)
+        this.$store.commit('SetUserInfo', baseData)
+        sessionStorage.setItem('user_info', JSON.stringify(baseData))
         this.handleCancel()
       })
     },
