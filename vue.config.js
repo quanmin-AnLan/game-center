@@ -15,7 +15,7 @@ module.exports = defineConfig({
       .plugin('html')
       .tap(args => {
         // 设默认title为游戏中心
-        args[0].title = '游戏中心'
+        args[0].title = '安澜网 - 游戏中心'
         return args
       })
   },
