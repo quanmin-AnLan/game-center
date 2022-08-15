@@ -23,6 +23,11 @@
             <el-image style="width: 100%;" :src="scope.row.img" :preview-src-list="[scope.row.img]" fit="fill">
             </el-image>
           </div>
+          <div v-else-if="item.map"
+            :style="('color:' + scope.row['color' + item.prop] || '') + (';background-color:' + scope.row['background' + item.prop] || '')"
+            :scope="scope">
+            <span>{{item.map[scope.row[item.prop]]}}</span>
+          </div>
           <div v-else
             :style="('color:' + scope.row['color' + item.prop] || '') + (';background-color:' + scope.row['background' + item.prop] || '')">
             <span>{{scope.row[item.prop]}}</span>

@@ -6,7 +6,7 @@ import {
 
 const request = axios.create({
   timeout: 5000,
-  baseURL: 'http://api.anlan.xyz/game',
+  baseURL: 'http://82.157.95.66:3000',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
@@ -17,6 +17,10 @@ request.interceptors.response.use(
     // 正确请求则返回，异常状态码抛出异常
     if (res.status === 200) {
       const { data } = res
+      data?.msg && Message({
+        message: data?.msg,
+        type: 'success'
+      })
       if (data) {
         return Promise.resolve(data);
       } else {
@@ -24,7 +28,7 @@ request.interceptors.response.use(
       }
     } else {
       Message({
-        message: res.message,
+        message: res?.data?.msg || '未知异常',
         type: 'warning'
       })
       return Promise.reject(res);
@@ -32,7 +36,7 @@ request.interceptors.response.use(
   }, (err) => {
     // 若请求失败则抛出异常
     Message({
-      message: err.message,
+      message: err.msg || '未知错误',
       type: 'error'
     })
     return Promise.reject(err)

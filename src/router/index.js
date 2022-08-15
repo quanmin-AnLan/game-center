@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import apis from '@/api'
+import { routeMap } from './config'
+import { utils } from '@/utils/utils'
 
 Vue.use(VueRouter)
 
@@ -10,27 +11,30 @@ store.commit('SetAsyncRouteReady', '') //  初始化动态路由挂载状态
 
 const routes = [{
     path: '/',
-    name: 'IndexHome',
     component: () => import('../views/IndexHome.vue')
   },
   {
     path: '/LeagueOfLegends',
-    name: 'LeagueOfLegends',
     component: () => import('../views/LeagueOfLegends/DefaultIndex.vue')
   },
   {
     path: '/MineCraft',
-    name: 'MineCraft',
     component: () => import('../views/MineCraft/DefaultIndex.vue')
   },
   {
     path: '/PenguinFight',
-    name: 'PenguinFight',
     component: () => import('../views/PenguinFight/DefaultIndex.vue')
   },
   {
+    path: '/Auth',
+    component: () => import('../views/Auth/DefaultIndex.vue')
+  },
+  {
+    path: '/UserCenter',
+    component: () => import('../views/User/DefaultIndex.vue')
+  },
+  {
     path: '/DefaultError',
-    name: 'DefaultError',
     component: () => import('../views/DefaultError.vue'),
   },
   {
@@ -48,38 +52,12 @@ const router = new VueRouter({
 export default router
 
 router.beforeEach((to, from, next) => {
-  // 若无特殊title则默认展示title为游戏中心
-  window.document.title = to.meta.title || '游戏中心';
-  let spmC = ''
-  if (to.path === '/') {
-    spmC = 'home'
-  } else {
-    const baseSpmC = to.path.split('/')
-    if (baseSpmC[0] === '') {
-      baseSpmC.shift()
-    }
-    const end = baseSpmC[baseSpmC.length - 1]
-    var n = Number(end);
-    if (!isNaN(n) && n !== 404) {
-      baseSpmC.pop()
-    }
-    spmC = baseSpmC.join('-')
-  }
-  const year = new Date().getFullYear();
-  let month = new Date().getMonth() + 1;
-  let day = new Date().getDate();
-
-  if (month < 10) {
-    month = "0" + month;
-  }
-  if (day < 10) {
-    day = "0" + day;
-  }
-  const params = {
-    setDate: `${year}/${month}/${day}`,
-    spm: `smpc.anlan-game.${spmC}`
-  }
-  apis.reportPV(params)
+  // 设置默认title
+  const mainPath = to.path.split('/')[1]
+  const mapTitle = routeMap[mainPath]
+  window.document.title = mapTitle && `游戏中心 - ${mapTitle}` || '安澜网 - 游戏中心';
+  // 设置打码逻辑
+  utils.routerReport(to)
   // 获取即将进入的路由信息存入vuex
   let moduleType = to.fullPath.split('/')[1]
   store.commit('SetAsyncRouteReady', moduleType)

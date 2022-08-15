@@ -92,13 +92,8 @@ export default {
         }
       }
       params.imgSrc = this.imgSrc
-      apis.register(params).then(res => {
-        if (res.success === true) {
-          this.$message.success('注册成功')
-          this.handleCancel()
-        } else {
-          this.$message.error(res.message)
-        }
+      apis.register(params).then(() => {
+        this.handleCancel()
       })
     },
     // 登录
@@ -113,12 +108,8 @@ export default {
         }
       }
       apis.login(params).then(res => {
-        if (res.success === true) {
-          this.$message.success('登录成功')
-          this.handleCancel()
-        } else {
-          this.$message.error(res.message)
-        }
+        this.$store.commit('SetUserInfo', res.data)
+        this.handleCancel()
       })
     },
     // 获取子组件传过来的上传图片地址
