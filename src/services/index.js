@@ -1,5 +1,6 @@
 import axios from 'axios';
 import qs from 'qs';
+import store from '../store'
 import {
   Message
 } from 'element-ui';
@@ -12,19 +13,46 @@ const request = axios.create({
   }
 });
 
+// 请求拦截器
+request.interceptors.request.use(
+  config => {
+    if (store?.state?.userInfo?.uuid) {
+      config.headers.uuid = store.state.userInfo.uuid
+    }
+    return config
+  },
+  error => {
+    Message({
+      message: error,
+      type: 'warning'
+    })
+    Promise.reject(error)
+  }
+)
+
 request.interceptors.response.use(
   (res) => {
     // 正确请求则返回，异常状态码抛出异常
     if (res.status === 200) {
       const { data } = res
-      data?.msg && Message({
-        message: data?.msg,
-        type: 'success'
-      })
-      if (data) {
-        return Promise.resolve(data);
+      const { msg, code } = data
+      if (msg) {
+        if (code === 200) {
+          Message({
+            message: msg,
+            type: 'success'
+          })
+        } else {
+          Message({
+            message: msg,
+            type: 'warning'
+          })
+        }
+      }
+      if (data.data) {
+        return Promise.resolve(data.data);
       } else {
-        return Promise.resolve(res);
+        return Promise.resolve(data);
       }
     } else {
       Message({

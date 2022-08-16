@@ -10,7 +10,6 @@
           <el-input clearable :placeholder="item.placeholder" v-model.trim="item.value" :class="item.prop"
             v-if="item.type === 'input'" :show-password="item.password"
             @input="(value) => { removeWrongCls(item.prop, value) }"></el-input>
-          <al-upload @imgSrc="getImgSrc" v-if="item.type === 'upload'"></al-upload>
         </span>
       </template>
     </li>
@@ -66,16 +65,8 @@ export default {
           scene: ['register'],
           password: true,
           submit: false
-        },
-        {
-          name: '上传头像',
-          type: 'upload',
-          required: false,
-          scene: ['register'],
-          submit: false
-        },
+        }
       ],
-      imgSrc: ''
     }
   },
   computed: {
@@ -93,7 +84,6 @@ export default {
           params[item.prop] = item.value
         }
       }
-      params.imgSrc = this.imgSrc
       apis.register(params).then(() => {
         this.handleCancel()
       })
@@ -110,16 +100,12 @@ export default {
         }
       }
       apis.login(params).then(res => {
-        const baseData = res.data
+        const baseData = res
         baseData.level = Number(baseData.level)
         this.$store.commit('SetUserInfo', baseData)
         sessionStorage.setItem('user_info', JSON.stringify(baseData))
         this.handleCancel()
       })
-    },
-    // 获取子组件传过来的上传图片地址
-    getImgSrc(src) {
-      this.imgSrc = src || ''
     },
     // 取消事件
     handleCancel() {
