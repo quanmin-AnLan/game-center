@@ -7,7 +7,7 @@
         </el-button>
       </template>
     </al-table>
-    <auth-dialog :dialogVisible.sync="dialogVisible" :dialogType="type" :row="row"></auth-dialog>
+    <auth-dialog :dialogVisible.sync="dialogVisible" :dialogType="type" :row="row" @refresh="getUserList"></auth-dialog>
   </section>
 </template>
 
@@ -67,7 +67,7 @@ export default {
       this.type = type
       switch (type) {
         case 'edit':
-          this.row = data
+          this.row = JSON.parse(JSON.stringify(data))
           this.dialogVisible = true
           break;
       }

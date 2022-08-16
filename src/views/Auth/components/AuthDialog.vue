@@ -65,10 +65,12 @@ export default {
       }
       switch (this.dialogType) {
         case 'edit':
-          apis.changeUserAuth(params)
+          apis.changeUserAuth(params).then(() => {
+            this.$emit('refresh')
+            this.handleCancel()
+          })
           break;
       }
-      this.handleCancel()
     },
     handleCancel() {
       this.$emit('update:dialogVisible', false)
