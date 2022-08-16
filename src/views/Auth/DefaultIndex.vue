@@ -54,7 +54,7 @@ export default {
   methods: {
     getUserList() {
       apis.getUserList().then(res => {
-        this.tableData = res.data.map(item => {
+        this.tableData = res.map(item => {
           return {
             id: item.id,
             user: item.user,
