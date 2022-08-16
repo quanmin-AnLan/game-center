@@ -31,7 +31,18 @@ const routes = [{
   },
   {
     path: '/UserCenter',
-    component: () => import('../views/User/DefaultIndex.vue')
+    component: () => import('../views/User/DefaultIndex.vue'),
+    redirect: '/UserCenter/info',
+    children: [
+      {
+        path: '/UserCenter/info',
+        component: () => import('../views/User/children/UserInfo.vue')
+      },
+      {
+        path: '/UserCenter/edit',
+        component: () => import('../views/User/children/UserEdit.vue')
+      }
+    ]
   },
   {
     path: '/DefaultError',
