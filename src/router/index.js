@@ -41,6 +41,10 @@ const routes = [{
       {
         path: '/UserCenter/edit',
         component: () => import('../views/User/children/UserEdit.vue')
+      },
+      {
+        path: '/UserCenter/show/:id',
+        component: () => import('../views/User/children/UserShow.vue')
       }
     ]
   },

@@ -1,6 +1,6 @@
 <template>
   <section class="user-edit-main">
-    编辑
+    个人信息编辑
   </section>
 </template>
 

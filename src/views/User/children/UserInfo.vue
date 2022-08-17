@@ -1,6 +1,6 @@
 <template>
   <section class="user-info-main">
-    展示
+    本人信息展示
     <el-button @click="$router.push({path: '/UserCenter/edit'})">编辑</el-button>
   </section>
 </template>
