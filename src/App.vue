@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <al-nav></al-nav>
+    <al-module-list></al-module-list>
     <section class="app-container">
       <router-view />
     </section>
