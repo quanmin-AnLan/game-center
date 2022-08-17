@@ -71,8 +71,9 @@ export default {
     goTo(route) {
       // 如果不在当前模块，才允许跳转
       if (!this.$store.state.asyncRouteReady || this.$store.state.asyncRouteReady !== route) {
+        this.outStyle()
         this.$store.commit('SetRouteTabVisible', false)
-        this.$router.push(route)
+        this.$router.push({path: `/${route}`})
       }
     },
     // 点击关闭遮罩，取消选择
