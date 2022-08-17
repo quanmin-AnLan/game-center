@@ -16,6 +16,12 @@
 <script>
 export default {
   name: 'AlUpload',
+  props: {
+    baseSrc: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       data: {
@@ -23,6 +29,9 @@ export default {
       },
       resourceSrc: ''
     }
+  },
+  created() {
+    this.resourceSrc = this.baseSrc
   },
   methods: {
     async beforeAvatarUpload(file) {
