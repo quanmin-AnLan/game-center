@@ -17,7 +17,7 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <span v-else @click="$fn.login" class="common-icon">未登录</span>
+        <span v-else @click="$fn.login" class="common-icon login-button">未登录</span>
       </section>
     </nav>
     <el-button v-if="$route.path !== '/'" type="text" @click="$fn.changeRoute" class="change-route">切换站点</el-button>
@@ -56,11 +56,13 @@ export default {
       if (router.indexOf(/show/) > -1) {
         router += this.$store.state.userInfo.id
       }
+      this.$store.commit('SetRouteTabVisible', false)
       this.$router.push({path: router})
     },
     logout() {
       localStorage.removeItem('user_info')
       this.$store.commit('SetUserInfo', {})
+      this.$message.success('登出成功')
       this.routerPush('/')
     }
   }
@@ -97,5 +99,10 @@ export default {
 }
 .change-route {
   .pos-a-center
+}
+.login-button {
+  &:hover {
+    color: @warn;
+  }
 }
 </style>

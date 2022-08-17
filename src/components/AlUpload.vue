@@ -1,5 +1,5 @@
 <template>
-  <el-upload action="http://api.anlan.xyz/upload/img" :data="data" :show-file-list="false"
+  <el-upload action="http://api.anlan.xyz/upload/img" :headers="headers" :data="data" :show-file-list="false"
     :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" class="avatar-uploader">
     <el-image class="avatar" v-if="resourceSrc" :src="resourceSrc" :preview-src-list="[resourceSrc]" fit="fill"
       @click.stop></el-image>
@@ -27,10 +27,14 @@ export default {
       data: {
         key: ''
       },
-      resourceSrc: ''
+      resourceSrc: '',
+      headers: {}
     }
   },
   created() {
+    this.headers = {
+      uuid: this.$store.state.userInfo.uuid
+    }
     this.resourceSrc = this.baseSrc
   },
   methods: {
@@ -50,7 +54,7 @@ export default {
       return (isJPG || isGIF || isPNG) && isLt2M
     },
     handleAvatarSuccess(res) {
-      this.resourceSrc = this.$fn.cut('http://img.anlan.xyz/' + res, 160, 160)
+      this.resourceSrc = this.$fn.cut('http://img.anlan.xyz/' + res.data, 160, 160)
       this.$emit('imgSrc', this.resourceSrc)
     }
   },
