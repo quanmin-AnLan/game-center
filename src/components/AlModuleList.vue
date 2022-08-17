@@ -106,7 +106,7 @@ export default {
 .shadow {
   .pos-f-auto;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 48px);
   background-color: @avatar;
   z-index: 1000;
 }
