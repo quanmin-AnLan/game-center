@@ -14,7 +14,6 @@
 <script>
 import apis from '@/api'
 import { authConfig } from '../config'
-import { mapState } from 'vuex'
 export default {
   name: 'AuthDialog',
   props: {
@@ -50,12 +49,11 @@ export default {
           value: Number(item)
         })
       }
-      return arr.slice(0, this.userInfo.level)
+      return arr.slice(0, this.$store.state.userInfo.level)
     },
     washRow() {
       return this.row
     },
-    ...mapState(['userInfo'])
   },
   methods: {
     submit() {
@@ -65,10 +63,12 @@ export default {
       }
       switch (this.dialogType) {
         case 'edit':
-          apis.changeUserAuth(params)
+          apis.changeUserAuth(params).then(() => {
+            this.$emit('refresh')
+            this.handleCancel()
+          })
           break;
       }
-      this.handleCancel()
     },
     handleCancel() {
       this.$emit('update:dialogVisible', false)

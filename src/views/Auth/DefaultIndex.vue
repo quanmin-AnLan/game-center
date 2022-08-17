@@ -2,12 +2,12 @@
   <section class="auth-main">
     <al-table :tableData="tableData" :headerSet="headerSet">
       <template v-slot:special-content-operate="{ scope }">
-        <el-button @click="operate('edit', scope.row)" :disabled="scope.row.level >= userInfo.level">
+        <el-button @click="operate('edit', scope.row)" :disabled="scope.row.level >= $store.state.userInfo.level">
           <i class="el-icon-edit-outline common-icon"></i>
         </el-button>
       </template>
     </al-table>
-    <auth-dialog :dialogVisible.sync="dialogVisible" :dialogType="type" :row="row"></auth-dialog>
+    <auth-dialog :dialogVisible.sync="dialogVisible" :dialogType="type" :row="row" @refresh="getUserList"></auth-dialog>
   </section>
 </template>
 
@@ -15,7 +15,6 @@
 import apis from '@/api'
 import { authConfig } from './config'
 import AuthDialog from './components/AuthDialog.vue'
-import { mapState } from 'vuex'
 export default {
   name: 'AuthModule',
   data() {
@@ -42,9 +41,6 @@ export default {
       row: {},
     }
   },
-  computed: {
-    ...mapState(['userInfo'])
-  },
   mounted() {
     this.getUserList()
   },
@@ -67,7 +63,7 @@ export default {
       this.type = type
       switch (type) {
         case 'edit':
-          this.row = data
+          this.row = JSON.parse(JSON.stringify(data))
           this.dialogVisible = true
           break;
       }

@@ -9,6 +9,8 @@ const apis = {
     register: (params) => Http.post(`${baseApi}/register`, params),
     // 用户列表
     getUserList: () => Http.get(`${baseApi}/getList`),
+    // 查询用户信息
+    getUserInfo: (params) => Http.get(`${baseApi}/getUserInfo`, params),
     // 用户编辑
     editUser: (params) => Http.post(`${baseApi}/edit`, params),
     // 更改权限
