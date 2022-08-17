@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     asyncRouteReady: '',
     loginVisible: false,
+    routeTabVisible: false,
     userInfo: {},
   },
   getters: {},
@@ -16,6 +17,9 @@ export default new Vuex.Store({
     },
     SetLoginVisible: (state, module) => {
       state.loginVisible = module
+    },
+    SetRouteTabVisible: (state, module) => {
+      state.routeTabVisible = module
     },
     SetUserInfo: (state, module) => {
       state.userInfo = module

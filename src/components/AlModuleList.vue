@@ -1,5 +1,5 @@
 <template>
-  <section class="al-module-list">
+  <section class="al-module-list" v-if="$store.state.routeTabVisible">
     <div class="shadow" @click="close" v-if="$route.path !== '/'"></div>
     <ul class="module-list">
       <li v-for="(item, index) in washModuleList" :key="item.route" @mouseover="selectStyle(index)"
@@ -12,7 +12,7 @@
         <template>
           <div class="img-wrap">
             <div class="img-box">
-              <el-image :src="item.logo" :alt="item.name" fit="fill" />
+              <el-image :src="$fn.toWebp(item.logo)" :alt="item.name" fit="fill" />
             </div>
           </div>
           <p :class="[
@@ -54,7 +54,7 @@ export default {
         },
         {
           'name': '权限',
-          'logo': 'http://img.anlan.xyz/game/mc.webp',
+          'logo': 'http://img.anlan.xyz/game/auth.jpg',
           'route': 'Auth',
           'auth': 6
         }
@@ -71,6 +71,7 @@ export default {
     goTo(route) {
       // 如果不在当前模块，才允许跳转
       if (!this.$store.state.asyncRouteReady || this.$store.state.asyncRouteReady !== route) {
+        this.$store.commit('SetRouteTabVisible', false)
         this.$router.push(route)
       }
     },
@@ -81,7 +82,7 @@ export default {
         return
       }
       // 通知父组件关闭遮罩事件
-      this.$emit("close");
+      this.$store.commit('SetRouteTabVisible', false)
     }
   },
   computed: {
@@ -105,6 +106,7 @@ export default {
 <style lang="less" scoped>
 .shadow {
   .pos-f-auto;
+  top: 48px;
   width: 100vw;
   height: calc(100vh - 48px);
   background-color: @avatar;

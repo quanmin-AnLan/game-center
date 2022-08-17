@@ -20,6 +20,7 @@
         <span v-else @click="$fn.login" class="common-icon">未登录</span>
       </section>
     </nav>
+    <el-button v-if="$route.path !== '/'" type="text" @click="$fn.changeRoute" class="change-route">切换站点</el-button>
   </section>
 </template>
 
@@ -73,7 +74,7 @@ export default {
   left: 0;
   height: 48px;
   width: 100%;
-  background-color: @avatar;
+  background-color: @nav;
   color: @lightWhite;
   z-index: 99999;
 }
@@ -93,5 +94,8 @@ export default {
 }
 .dropdown-text {
   color: @lightWhite;
+}
+.change-route {
+  .pos-a-center
 }
 </style>
