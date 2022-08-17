@@ -11,6 +11,14 @@ const cut = (url, width, height) => {
   return url.replace(/(imageView2\/)(.*)(\/format\/)/g, `$1${cutKey}$3`)
 }
 
+const removeCut = (url) => {
+  if (!url) {
+    return ''
+  }
+  const cutKey = '0'
+  return url.replace(/(imageView2\/)(.*)(\/format\/)/g, `$1${cutKey}$3`)
+}
+
 const toWebp = (url) => {
   if (!url) {
     return ''
@@ -30,6 +38,7 @@ const changeRoute = () => {
 
 export const fn = {
   cut,
+  removeCut,
   login,
   changeRoute,
   toWebp
