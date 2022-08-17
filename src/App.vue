@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <router-view />
+    <al-nav></al-nav>
+    <section class="app-container">
+      <router-view />
+    </section>
     <al-login></al-login>
   </div>
 </template>
@@ -25,3 +28,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.app-container {
+  box-sizing: border-box;
+  padding-top: 48px;
+}
+</style>

@@ -32,7 +32,6 @@ const routes = [{
   {
     path: '/UserCenter',
     component: () => import('../views/User/DefaultIndex.vue'),
-    redirect: '/UserCenter/info',
     children: [
       {
         path: '/UserCenter/edit',
