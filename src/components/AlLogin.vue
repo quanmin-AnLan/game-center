@@ -1,16 +1,15 @@
 <template>
-  <el-dialog :visible="$store.state.loginVisible" @close="handleCancel">
+  <el-dialog :visible="$store.state.loginVisible" @close="handleCancel" :title="typeMap[type]">
     <li v-for="(item, index) in config" :key="index">
       <template v-if="item.scene.indexOf(type) > -1">
-        <span>
-          <span v-if="item.required">*</span>
-          {{item.name}}
-        </span>
-        <span class="content">
-          <el-input clearable :placeholder="item.placeholder" v-model.trim="item.value" :class="item.prop"
-            v-if="item.type === 'input'" :show-password="item.password"
-            @input="(value) => { removeWrongCls(item.prop, value) }"></el-input>
-        </span>
+        <div class="common-input-box">
+          <div class="common-input-line">
+            <div class="common-input-label"><span v-if="item.required">*</span>{{item.name}}</div>
+            <el-input clearable :placeholder="item.placeholder" v-model.trim="item.value" :class="item.prop"
+              v-if="item.type === 'input'" :show-password="item.password" class="common-input-value"
+              @input="(value) => { removeWrongCls(item.prop, value) }"></el-input>
+          </div>
+        </div>
       </template>
     </li>
     <span slot="footer" v-if="type === 'login'">
@@ -34,7 +33,7 @@ export default {
       type: 'login',
       config: [
         {
-          name: '用户名', // name字段用于展示在前面，通知用户要填什么
+          name: '用户名：', // name字段用于展示在前面，通知用户要填什么
           type: 'input', // type字段为该项类型
           required: true, // 是否必填
           prop: 'user', // 动态附加class使校验必填时精准定位该项，及提交时字段名取此字段
@@ -44,7 +43,7 @@ export default {
           submit: true // 提交时是否需要此字段
         },
         {
-          name: '密码',
+          name: '密码：',
           type: 'input',
           required: true,
           prop: 'password',
@@ -55,7 +54,7 @@ export default {
           submit: true
         },
         {
-          name: '二次确认',
+          name: '二次确认：',
           type: 'input',
           required: true,
           prop: 'repeatPwd',
@@ -66,6 +65,10 @@ export default {
           submit: false
         }
       ],
+      typeMap: {
+        login: '登录',
+        register: '注册'
+      }
     }
   },
   methods: {
@@ -80,8 +83,10 @@ export default {
           params[item.prop] = item.value
         }
       }
-      apis.register(params).then(() => {
-        this.handleCancel()
+      apis.register(params).then(res => {
+        if (res.success) {
+          this.handleCancel()
+        }
       })
     },
     // 登录
@@ -96,11 +101,13 @@ export default {
         }
       }
       apis.login(params).then(res => {
-        const baseData = res
-        baseData.level = Number(baseData.level)
-        this.$store.commit('SetUserInfo', baseData)
-        localStorage.setItem('user_info', JSON.stringify(baseData))
-        this.handleCancel()
+        if (res.uuid) {
+          const baseData = res
+          baseData.level = Number(baseData.level)
+          this.$store.commit('SetUserInfo', baseData)
+          localStorage.setItem('user_info', JSON.stringify(baseData))
+          this.handleCancel()
+        }
       })
     },
     // 取消事件
@@ -146,5 +153,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.common-input-line {
+  width: 100%;
+  margin-bottom: 16px;
+}
+.common-input-label {
+  line-height: 40px;
+  margin-right: 24px;
+}
 </style>

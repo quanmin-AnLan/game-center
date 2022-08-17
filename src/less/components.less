@@ -22,6 +22,12 @@
   transform: translate(-50%, -50%);
 }
 
+.text-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .wrongful {
   border:1px solid @warn !important;
 }
@@ -34,4 +40,24 @@
 
 .common-icon {
   cursor: pointer;
+}
+
+.common-input-box {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.common-input-line {
+  display: flex;
+}
+
+.common-input-label {
+  width: 150px;
+  text-align: right;
+}
+
+.common-input-value {
+  flex: 1;
+  text-align: left;
+  .text-overflow;
 }
