@@ -35,10 +35,6 @@ const routes = [{
     redirect: '/UserCenter/info',
     children: [
       {
-        path: '/UserCenter/info',
-        component: () => import('../views/User/children/UserInfo.vue')
-      },
-      {
         path: '/UserCenter/edit',
         component: () => import('../views/User/children/UserEdit.vue')
       },

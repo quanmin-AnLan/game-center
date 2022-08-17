@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible="loginVisible" @close="handleCancel">
+  <el-dialog :visible="$store.state.loginVisible" @close="handleCancel">
     <li v-for="(item, index) in config" :key="index">
       <template v-if="item.scene.indexOf(type) > -1">
         <span>
@@ -27,7 +27,6 @@
 
 <script>
 import apis from '@/api'
-import { mapState } from 'vuex'
 export default {
   name: 'AlLogin',
   data() {
@@ -69,9 +68,6 @@ export default {
       ],
     }
   },
-  computed: {
-    ...mapState(['loginVisible'])
-  },
   methods: {
     // 注册
     register() {
@@ -103,7 +99,7 @@ export default {
         const baseData = res
         baseData.level = Number(baseData.level)
         this.$store.commit('SetUserInfo', baseData)
-        sessionStorage.setItem('user_info', JSON.stringify(baseData))
+        localStorage.setItem('user_info', JSON.stringify(baseData))
         this.handleCancel()
       })
     },

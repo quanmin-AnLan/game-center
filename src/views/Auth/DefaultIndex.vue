@@ -2,7 +2,7 @@
   <section class="auth-main">
     <al-table :tableData="tableData" :headerSet="headerSet">
       <template v-slot:special-content-operate="{ scope }">
-        <el-button @click="operate('edit', scope.row)" :disabled="scope.row.level >= userInfo.level">
+        <el-button @click="operate('edit', scope.row)" :disabled="scope.row.level >= $store.state.userInfo.level">
           <i class="el-icon-edit-outline common-icon"></i>
         </el-button>
       </template>
@@ -15,7 +15,6 @@
 import apis from '@/api'
 import { authConfig } from './config'
 import AuthDialog from './components/AuthDialog.vue'
-import { mapState } from 'vuex'
 export default {
   name: 'AuthModule',
   data() {
@@ -41,9 +40,6 @@ export default {
       type: '',
       row: {},
     }
-  },
-  computed: {
-    ...mapState(['userInfo'])
   },
   mounted() {
     this.getUserList()

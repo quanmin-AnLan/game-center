@@ -21,7 +21,7 @@
               'active-module-list-item-txt': index === activeIndex
             },
             {
-              'disable-module-list-item-txt': item.route === asyncRouteReady
+              'disable-module-list-item-txt': item.route === $store.state.asyncRouteReady
             },
           ]">{{ item.name }}</p>
         </template>
@@ -31,7 +31,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 export default {
   name: 'AlModuleList',
   data() {
@@ -71,7 +70,7 @@ export default {
     },
     goTo(route) {
       // 如果不在当前模块，才允许跳转
-      if (!this.asyncRouteReady || this.asyncRouteReady !== route) {
+      if (!this.$store.state.asyncRouteReady || this.$store.state.asyncRouteReady !== route) {
         this.$router.push(route)
       }
     },
@@ -86,15 +85,13 @@ export default {
     }
   },
   computed: {
-    // 获取vuex全局变量
-    ...mapState(['asyncRouteReady', 'userInfo']),
     washModuleList() {
       const result = []
       for (const item of this.moduleListArr) {
         if (!item.auth) {
           result.push(item)
         } else {
-          if (this.userInfo.level >= item.auth) {
+          if (this.$store.state.userInfo.level >= item.auth) {
             result.push(item)
           }
         }
