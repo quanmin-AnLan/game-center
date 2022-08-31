@@ -1,7 +1,9 @@
 <template>
   <section class="penguin-fight-main">
-    <al-menu :menuData="config.menuData"></al-menu>
-    <section class="penguin-fight-container">全民大乐斗主页</section>
+    <al-menu :menuData="config.menuData" menuKey="/PenguinFight"></al-menu>
+    <section class="penguin-fight-container">
+      <router-view></router-view>
+    </section>
   </section>
 </template>
 
