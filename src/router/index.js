@@ -23,7 +23,53 @@ const routes = [{
   },
   {
     path: '/PenguinFight',
-    component: () => import('../views/PenguinFight/DefaultIndex.vue')
+    component: () => import('../views/PenguinFight/DefaultIndex.vue'),
+    redirect: '/PenguinFight/home',
+    children: [
+      {
+        path: '/PenguinFight/home',
+        component: () => import('../views/PenguinFight/children/IndexHome.vue')
+      },
+      {
+        path: '/PenguinFight/martial/upgrade',
+        component: () => import('../views/PenguinFight/children/martial/MartialUpgrade.vue'),
+      },
+      {
+        path: '/PenguinFight/martial/refine',
+        component: () => import('../views/PenguinFight/children/martial/MartialRefine.vue'),
+      },
+      {
+        path: '/PenguinFight/pet/introduction',
+        component: () => import('../views/PenguinFight/children/pet/PetIntroduction.vue'),
+      },
+      {
+        path: '/PenguinFight/pet/stunt',
+        component: () => import('../views/PenguinFight/children/pet/PetStunt.vue'),
+      },
+      {
+        path: '/PenguinFight/pet/fourImages',
+        component: () => import('../views/PenguinFight/children/pet/PetFourImages.vue'),
+      },
+      {
+        path: '/PenguinFight/border/front',
+        component: () => import('../views/PenguinFight/children/border/BorderFront.vue'),
+      },
+      {
+        path: '/PenguinFight/border/introduction',
+        component: () => import('../views/PenguinFight/children/border/introduction/IndexHome.vue'),
+        redirect: '/PenguinFight/border/introduction/stunt',
+        children: [
+          {
+            path: '/PenguinFight/border/introduction/stunt',
+            component: () => import('../views/PenguinFight/children/border/introduction/BorderIntroductionStunt.vue'),
+          },
+          {
+            path: '/PenguinFight/border/introduction/rune',
+            component: () => import('../views/PenguinFight/children/border/introduction/BorderIntroductionRune.vue'),
+          },
+        ]
+      }
+    ]
   },
   {
     path: '/Auth',

@@ -5,8 +5,8 @@
         <span class="nav-title">{{ title }}</span>
       </section>
       <section class="user-info">
-        <img :src="$fn.cut($store.state.userInfo.imgSrc, 30, 30)" alt="头像" class="nav-img" v-if="$store.state.userInfo.imgSrc">
-        <el-dropdown v-if="$store.state.userInfo.uuid" placement="bottom" @command="dropDownClick" class="dropdown-box">
+        <el-avatar :src="$fn.cut($store.state.userInfo.imgSrc, 80, 80)" v-if="$store.state.userInfo.imgSrc" class="nav-img"></el-avatar>
+        <el-dropdown v-if="$store.state.userInfo.uuid" placement="bottom" @command="dropDownClick" class="common-icon dropdown-box">
           <span class="dropdown-text">
             {{ $store.state.userInfo.user }}
             <i class="el-icon-arrow-down el-icon--right"></i>
@@ -63,7 +63,9 @@ export default {
       localStorage.removeItem('user_info')
       this.$store.commit('SetUserInfo', {})
       this.$message.success('登出成功')
-      this.routerPush('/')
+      if (window.location.pathname !== '/') {
+        this.routerPush('/')
+      }
     }
   }
 }
@@ -82,14 +84,14 @@ export default {
 }
 .nav-container {
   width: 1200px;
-  height: 30px;
-  line-height: 30px;
-  margin: 9px auto;
+  height: 48px;
+  line-height: 48px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
 }
 .nav-img {
-  margin-right: 16px;
+  margin: 4px 12px 0 0;
 }
 .dropdown-box {
   vertical-align: top;

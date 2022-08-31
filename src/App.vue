@@ -6,6 +6,7 @@
       <router-view />
     </section>
     <al-login></al-login>
+    <el-backtop></el-backtop>
   </div>
 </template>
 
