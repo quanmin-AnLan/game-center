@@ -5,6 +5,7 @@
       <div slot="header" class="clearfix">
         <span>数据展示</span>
       </div>
+      <el-image :src="$fn.toWebp(imgSrc)"></el-image>
     </el-card>
 
     <el-card class="box-card">
@@ -15,7 +16,7 @@
         <el-tab-pane v-for="(item, index) in tabConfig" :key="index" :label="item.label" :name="item.value">
           <section class="upgrade-box">
             <div class="upgrade-item" v-for="(one, i) in toolData[activeName]" :key="i" @click="openUpgrade(one)">
-              <el-image :src="one.cover"></el-image>
+              <el-image :src="$fn.toWebp(one.cover)"></el-image>
             </div>
           </section>
         </el-tab-pane>
@@ -50,7 +51,8 @@ export default {
       toolData: {},
       infoData: {},
       row: {},
-      dialogVisible: false
+      dialogVisible: false,
+      imgSrc: 'http://img.anlan.xyz/ledou/linli/qianghua.png?imageslim'
     }
   },
   created() {

@@ -25,5 +25,7 @@ export default {
 }
 .penguin-fight-container {
   flex: 1;
+  height: calc(100vh - 48px);
+  overflow: auto;
 }
 </style>
