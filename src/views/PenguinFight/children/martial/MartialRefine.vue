@@ -9,7 +9,7 @@ export default {
   name: 'PenguinFightMartialRefine',
   data() {
     return {
-      imgSrc: 'http://img.anlan.xyz/ledou/linli/jinglian.png?imageslim'
+      imgSrc: 'http://img.anlan.xyz/ledou/linli/jinglian.png'
     }
   }
 }

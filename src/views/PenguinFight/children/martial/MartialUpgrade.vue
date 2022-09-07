@@ -1,13 +1,13 @@
 <template>
   <section class="inner-content">
-
+    <!-- 静态图片 -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>数据展示</span>
       </div>
-      <el-image :src="$fn.toWebp(imgSrc)"></el-image>
+      <el-image :src="$fn.toWebp(imgSrc)" :preview-src-list="[$fn.toWebp(imgSrc)]" lazy fit="fill"></el-image>
     </el-card>
-
+    <!-- 功能区 -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>模拟强化</span>
@@ -22,7 +22,7 @@
         </el-tab-pane>
       </el-tabs>
     </el-card>
-
+    <!-- 弹窗 -->
     <upgrade-dialog :visible.sync="dialogVisible" :row="row"></upgrade-dialog>
   </section>
 </template>
@@ -52,7 +52,7 @@ export default {
       infoData: {},
       row: {},
       dialogVisible: false,
-      imgSrc: 'http://img.anlan.xyz/ledou/linli/qianghua.png?imageslim'
+      imgSrc: 'http://img.anlan.xyz/ledou/linli/qianghua.png'
     }
   },
   created() {
@@ -86,6 +86,7 @@ export default {
 <style lang="less" scoped>
 .box-card {
   text-align: left;
+  margin-bottom: 24px;
 }
 .upgrade-box {
   display: flex;
