@@ -14,8 +14,8 @@
       <el-tabs v-model="activeName">
         <el-tab-pane v-for="(item, index) in tabConfig" :key="index" :label="item.label" :name="item.value">
           <section class="upgrade-box">
-            <div class="upgrade-item" v-for="(one, i) in infoData[activeName]" :key="i" @click="openUpgrade(one)">
-              <el-image :src="one.src"></el-image>
+            <div class="upgrade-item" v-for="(one, i) in toolData[activeName]" :key="i" @click="openUpgrade(one)">
+              <el-image :src="one.cover"></el-image>
             </div>
           </section>
         </el-tab-pane>
@@ -47,6 +47,7 @@ export default {
         }
       ],
       activeName: 'weapon',
+      toolData: {},
       infoData: {},
       row: {},
       dialogVisible: false
@@ -57,15 +58,23 @@ export default {
   },
   methods: {
     init() {
+      this.getToolData()
       this.getInfoData()
+    },
+    getToolData() {
+      apis.getToolInfo().then(res => {
+        this.toolData = res
+      })
     },
     getInfoData() {
       apis.getUpgradeInfo().then(res => {
-        this.infoData = res?.data
+        this.infoData = res
       })
     },
     openUpgrade(row) {
-      this.row = row
+      let result = row
+      result.info = this.infoData[this.activeName][row.type - 1]
+      this.row = result
       this.dialogVisible = true
     }
   }
@@ -75,5 +84,15 @@ export default {
 <style lang="less" scoped>
 .box-card {
   text-align: left;
+}
+.upgrade-box {
+  display: flex;
+  flex-wrap: wrap;
+}
+.upgrade-item {
+  width: 120px;
+  height: 120px;
+  margin: 0 8px 8px 0;
+  cursor: pointer;
 }
 </style>
