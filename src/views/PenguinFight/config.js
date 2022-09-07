@@ -7,7 +7,7 @@ export const config = {
       children: []
     },
     {
-      title: '武技',
+      title: '装备',
       icon: 'scissors',
       index: '/martial',
       children: [
