@@ -57,6 +57,11 @@ export default {
           'logo': 'http://img.anlan.xyz/game/auth.jpg',
           'route': 'Auth',
           'auth': 6
+        },
+        {
+          'name': '鸡',
+          'logo': 'https://pic4.zhimg.com/80/v2-bfe10bb04c52c0622c198c9aaa6004bf_1440w.jpg',
+          'route': 'CxkGame',
         }
       ]
     }

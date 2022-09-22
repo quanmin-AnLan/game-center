@@ -7,7 +7,7 @@ import {
 
 const request = axios.create({
   timeout: 5000,
-  baseURL: 'http://api.anlan.xyz',
+  baseURL: 'http://api.wnw.icu',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
