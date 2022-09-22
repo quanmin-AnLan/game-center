@@ -90,6 +90,10 @@ const routes = [{
     ]
   },
   {
+    path: '/CxkGame',
+    component: () => import('../views/CxkGame.vue'),
+  },
+  {
     path: '/DefaultError',
     component: () => import('../views/DefaultError.vue'),
   },
