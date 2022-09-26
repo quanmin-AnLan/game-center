@@ -1,7 +1,6 @@
 <template>
   <section>
-    <!-- 切换菜单组件 -->
-    <div>英雄联盟主页</div>
+    <iframe src="https://lol.qq.com/" frameborder="0" class="iframe-box"></iframe>
   </section>
 </template>
 
@@ -10,3 +9,10 @@ export default {
   name: 'LOLHome',
 }
 </script>
+
+<style lang="less" scoped>
+.iframe-box {
+  width: 100%;
+  height: calc(100vh - 48px);
+}
+</style>
