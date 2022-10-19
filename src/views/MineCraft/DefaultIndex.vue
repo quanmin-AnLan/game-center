@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div>我的世界主页</div>
+    <iframe src="https://minecraft.fandom.com/zh/wiki/Minecraft_Wiki" frameborder="0" class="iframe-box"></iframe>
   </section>
 </template>
 
@@ -9,3 +9,10 @@ export default {
   name: 'MCHome',
 }
 </script>
+
+<style lang="less" scoped>
+.iframe-box {
+  width: 100%;
+  height: calc(100vh - 48px);
+}
+</style>
