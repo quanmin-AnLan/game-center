@@ -54,7 +54,7 @@ export default {
   },
   computed: {
     success() {
-      const base = this.isStrong ? 4 : 2
+      const base = 2
       const result = base * 100 / (this.row.info?.[this.level] + base)
       return Math.round(result)
     }
