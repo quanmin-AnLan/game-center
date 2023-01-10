@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { routeMap } from './config'
-import { utils } from '@/utils/utils'
+import RouteIns from './routeInit'
 
 Vue.use(VueRouter)
 
@@ -116,8 +116,8 @@ router.beforeEach((to, from, next) => {
   const mainPath = to.path.split('/')[1]
   const mapTitle = routeMap[mainPath]
   window.document.title = mapTitle && `游戏中心 - ${mapTitle}` || '安澜网 - 游戏中心';
-  // 设置打码逻辑
-  utils.routerReport(to)
+  // 路由初始化
+  RouteIns.run(to)
   // 获取即将进入的路由信息存入vuex
   let moduleType = to.fullPath.split('/')[1]
   store.commit('SetAsyncRouteReady', moduleType)
