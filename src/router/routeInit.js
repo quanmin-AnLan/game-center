@@ -1,20 +1,29 @@
 import apis from '@/api'
+import { routeMap } from './config'
+import store from '../store/index'
 
 class RouteInit {
   constructor() {
     this.path = '/'
+    this.fullPath = '/'
   }
 
   run(to) {
-    const { path } = to
+    const { path, fullPath } = to
     this.path = path
+    this.fullPath = fullPath
     this.handler()
   }
 
   handler() {
     this.spmReport()
+
+    this.initTitle()
+
+    this.updateRouteStore()
   }
 
+  // pv上报
   spmReport() {
     let spmC = ''
     if (this.path === '/') {
@@ -46,6 +55,19 @@ class RouteInit {
       spm: `smpc.anlan-game.${spmC}`
     }
     apis.reportPV(params)
+  }
+
+  // title初始化
+  initTitle() {
+    const mainPath = this.path.split('/')[1]
+    const mapTitle = routeMap[mainPath]
+    window.document.title = mapTitle && `游戏中心 - ${mapTitle}` || '安澜网 - 游戏中心';
+  }
+
+  // 获取即将进入的路由信息存入vuex
+  updateRouteStore() {
+    let moduleType = this.fullPath.split('/')[1]
+    store.commit('SetAsyncRouteReady', moduleType)
   }
 }
 
