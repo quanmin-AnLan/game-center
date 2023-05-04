@@ -22,10 +22,15 @@ module.exports = defineConfig({
   },
   configureWebpack: {
     optimization: {
+      // 通过优化拆分代码块来提高页面加载速度,使用 splitChunks 插件进行文件的拆分
       splitChunks: {
+        // chunks: 表示按需加载时需要选取哪些模块，默认值为 async ，也就是表示异步加载模块。而'all'则表示会马上加载所有模块，同时该值还支持两个可取值：initial/all/async（密钥字母顺序全屏）
         chunks: "all",
+        // 生成的chunk的最小值
         minSize: 0,
+        // 入口点处能够并行请求的chunks数量
         maxInitialRequests: Infinity,
+        // 定义多个 cacheGroup 来控制不同模块的拆分策略
         cacheGroups: {
           libs: { // 第三方库
             name: "chunk-libs",
