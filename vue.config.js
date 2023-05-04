@@ -1,17 +1,18 @@
 const {
   defineConfig
 } = require('@vue/cli-service')
-const CompressionPlugin = require("compression-webpack-plugin");
-const path = require('path')
+const CompressionPlugin = require("compression-webpack-plugin"); // 引入压缩插件
+const path = require('path') // 引入 path模块(路径)
 const webpack = require('webpack')
 module.exports = defineConfig({
-  transpileDependencies: true,
-  publicPath: '/',
-  outputDir: 'dist',
-  assetsDir: 'assets',
-  productionSourceMap: false,
+  transpileDependencies: true,// 对依赖进行 babel 转译
+  publicPath: '/', // 部署应用时的根路径
+  outputDir: 'dist',// 打包输出目录
+  assetsDir: 'assets',// 静态资源目录
+  productionSourceMap: false,// 生产环境不生成 sourceMap 文件，（但是具体作用还需了解）
   chainWebpack: config => {
     config
+      // 向HTML添加了title属性
       .plugin('html')
       .tap(args => {
         // 设默认title为游戏中心
@@ -52,10 +53,12 @@ module.exports = defineConfig({
       }
     },
     plugins: [
+      // 排除moment库的国际化语言文件，减小打包后文件的大小。
       new webpack.IgnorePlugin({
         resourceRegExp: /^\.\/locale$/,
         contextRegExp: /moment$/
       }),
+      // 压缩打包后的文件，加快用户访问速度
       new CompressionPlugin({
         filename: '[path][base].gz',
         algorithm: 'gzip',
@@ -64,6 +67,7 @@ module.exports = defineConfig({
         minRatio: 1,
         deleteOriginalAssets: false,
       }),
+      // 设置最大入口数量，最小尺寸----避免打包过大
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 15
       }),

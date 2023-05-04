@@ -4,6 +4,7 @@ export const routeMap = {
   PenguinFight: '全民大乐斗',
   Auth: '权限管理',
   UserCenter: '个人中心',
+  MethodUsed: '前端方法封装和使用',
   DefaultError: '404'
 }
 
@@ -68,6 +69,7 @@ export const routes = [
           },
         ]
       }
+
     ]
   },
   {
@@ -91,6 +93,10 @@ export const routes = [
   {
     path: '/CxkGame',
     component: () => import('../views/CxkGame.vue'),
+  },
+  {
+    path: '/MethodUsed',
+    component: () => import('../views/MethodUsed/index.vue'),
   },
   {
     path: '/DefaultError',
