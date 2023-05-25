@@ -2,28 +2,43 @@
   <section class="al-module-list" v-if="$store.state.routeTabVisible">
     <div class="shadow" @click="close" v-if="$route.path !== '/'"></div>
     <ul class="module-list">
-      <li v-for="(item, index) in washModuleList" :key="item.route" @mouseover="selectStyle(index)"
-        @mouseout="outStyle(index)" :class="[
+      <li
+        v-for="(item, index) in washModuleList"
+        :key="item.route"
+        @mouseover="selectStyle(index)"
+        @mouseout="outStyle(index)"
+        :class="[
           'module-list-item',
           {
-            'active-module-list-item': index === activeIndex
-          }
-        ]" @click="goTo(item.route)">
+            'active-module-list-item': index === activeIndex,
+          },
+        ]"
+        @click="goTo(item.route)"
+      >
         <template>
           <div class="img-wrap">
             <div class="img-box">
-              <el-image :src="$fn.toWebp(item.logo)" :alt="item.name" fit="fill" />
+              <el-image
+                :src="$fn.toWebp(item.logo)"
+                :alt="item.name"
+                fit="fill"
+              />
             </div>
           </div>
-          <p :class="[
-            'module-list-item-txt',
-            {
-              'active-module-list-item-txt': index === activeIndex
-            },
-            {
-              'disable-module-list-item-txt': item.route === $store.state.asyncRouteReady
-            },
-          ]">{{ item.name }}</p>
+          <p
+            :class="[
+              'module-list-item-txt',
+              {
+                'active-module-list-item-txt': index === activeIndex,
+              },
+              {
+                'disable-module-list-item-txt':
+                  item.route === $store.state.asyncRouteReady,
+              },
+            ]"
+          >
+            {{ item.name }}
+          </p>
         </template>
       </li>
     </ul>
@@ -32,39 +47,44 @@
 
 <script>
 export default {
-  name: 'AlModuleList',
+  name: "AlModuleList",
   data() {
     return {
       activeIndex: -1, // 判断hover的模块
       moduleListArr: [
         {
-          'name': '英雄联盟',
-          'logo': 'http://img.anlan.xyz/game/lol.webp',
-          'route': 'LeagueOfLegends'
+          name: "英雄联盟",
+          logo: "http://img.anlan.xyz/game/lol.webp",
+          route: "LeagueOfLegends",
         },
         {
-          'name': '我的世界',
-          'logo': 'http://img.anlan.xyz/game/mc.webp',
-          'route': 'MineCraft'
+          name: "我的世界",
+          logo: "http://img.anlan.xyz/game/mc.webp",
+          route: "MineCraft",
         },
         {
-          'name': '全民大乐斗',
-          'logo': 'http://img.anlan.xyz/game/qmdld.png',
-          'route': 'PenguinFight'
+          name: "全民大乐斗",
+          logo: "http://img.anlan.xyz/game/qmdld.png",
+          route: "PenguinFight",
         },
         {
-          'name': '权限',
-          'logo': 'http://img.anlan.xyz/game/auth.jpg',
-          'route': 'Auth',
-          'auth': 6
+          name: "权限",
+          logo: "http://img.anlan.xyz/game/auth.jpg",
+          route: "Auth",
+          auth: 6,
         },
         {
-          'name': '鸡',
-          'logo': 'https://pic4.zhimg.com/80/v2-bfe10bb04c52c0622c198c9aaa6004bf_1440w.jpg',
-          'route': 'CxkGame',
-        }
-      ]
-    }
+          name: "鸡",
+          logo: "https://pic4.zhimg.com/80/v2-bfe10bb04c52c0622c198c9aaa6004bf_1440w.jpg",
+          route: "CxkGame",
+        },
+        {
+          name: "VUE方法",
+          logo: "https://upload.wikimedia.org/wikipedia/commons/9/95/Vue.js_Logo_2.svg",
+          route: "MethodUsed",
+        },
+      ],
+    };
   },
   methods: {
     selectStyle(index) {
@@ -75,38 +95,41 @@ export default {
     },
     goTo(route) {
       // 如果不在当前模块，才允许跳转
-      if (!this.$store.state.asyncRouteReady || this.$store.state.asyncRouteReady !== route) {
-        this.outStyle()
-        this.$store.commit('SetRouteTabVisible', false)
-        this.$router.push({path: `/${route}`})
+      if (
+        !this.$store.state.asyncRouteReady ||
+        this.$store.state.asyncRouteReady !== route
+      ) {
+        this.outStyle();
+        this.$store.commit("SetRouteTabVisible", false);
+        this.$router.push({ path: `/${route}` });
       }
     },
     // 点击关闭遮罩，取消选择
     close() {
       // 如果在主页，则无关闭事件直接return
       if (this.$route.path === "/") {
-        return
+        return;
       }
       // 通知父组件关闭遮罩事件
-      this.$store.commit('SetRouteTabVisible', false)
-    }
+      this.$store.commit("SetRouteTabVisible", false);
+    },
   },
   computed: {
     washModuleList() {
-      const result = []
+      const result = [];
       for (const item of this.moduleListArr) {
         if (!item.auth) {
-          result.push(item)
+          result.push(item);
         } else {
           if (this.$store.state.userInfo.level >= item.auth) {
-            result.push(item)
+            result.push(item);
           }
         }
       }
-      return result
-    }
-  }
-}
+      return result;
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -179,7 +202,7 @@ export default {
     border-radius: 4px;
     background: @white;
     transform: scale(1.1);
-    z-index: 6
+    z-index: 6;
   }
 }
 

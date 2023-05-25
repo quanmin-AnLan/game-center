@@ -9,7 +9,6 @@ export default new Vuex.Store({
     loginVisible: false,
     routeTabVisible: false,
     userInfo: {},
-    WebSocketinfo: null,
   },
   getters: {},
   mutations: {
@@ -25,9 +24,7 @@ export default new Vuex.Store({
     SetUserInfo: (state, module) => {
       state.userInfo = module
     },
-    scoketInfo: (state, module) => {
-      state.WebSocketinfo = module
-    }
+
   },
   actions: {},
   modules: {}

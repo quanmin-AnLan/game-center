@@ -9,8 +9,8 @@ import './less/main.less'
 import logonComponents from './components/config'
 import * as echarts from 'echarts'
 import { fn } from '@/utils/common'
-import webSocket from "@/utils/scoket"
-let webSocketUrl = new webSocket('ip/url', 10)
+// 引入scoket.js
+import { socket } from "@/utils/scoket"
 
 Vue.config.productionTip = false
 
@@ -21,7 +21,7 @@ Vue.use(ElementUI)
 Vue.use(echarts)
 
 Vue.prototype.$fn = fn;
-Vue.prototype.$scoket = webSocketUrl;
+Vue.prototype.$socket = socket;
 
 new Vue({
   router,
