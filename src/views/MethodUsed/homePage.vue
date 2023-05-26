@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import socket from "./components/webSocket.vue";
+import socket from "./components/SocketTest.vue";
 console.log(this.$socket, "--------------");
 alert(1);
 export default {
