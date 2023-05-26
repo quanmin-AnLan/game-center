@@ -96,7 +96,7 @@ export const routes = [
   },
   {
     path: '/MethodUsed',
-    component: () => import('../views/MethodUsed/HomePage.vue'),
+    component: () => import('../views/MethodUsed/DefaultIndex.vue'),
   },
   {
     path: '/DefaultError',
