@@ -8,10 +8,12 @@
 export default {
   name: "webSocket",
   mounted() {
-    this.$WebSocket.send("Hello, WebSocket!"); // 发送消息
-    this.$WebSocket.onmessage = (event) => {
-      console.log("收到消息：", event.data);
-    };
+    if (this.$WebSocket) {
+      this.$WebSocket.send("Hello, WebSocket!"); // 发送消息
+      this.$WebSocket.onmessage = (event) => {
+        console.log("收到消息：", event.data);
+      };
+    }
   },
 };
 </script>
