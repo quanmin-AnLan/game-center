@@ -73,6 +73,8 @@ module.exports = defineConfig({
         deleteOriginalAssets: false,
       }),
       // 设置最大入口数量，最小尺寸----避免打包过大
+      // 大小在1000以上的js才会被拆，最多拆15个，不然拆了百八十个，浏览器发的请求太多了
+      // 三年跳槽要懂这些，建一个新项目要懂这些，旧项目优化改造要懂这些
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 15
       }),
@@ -89,5 +91,9 @@ module.exports = defineConfig({
         path.resolve(__dirname, './src/less/main.less')
       ]
     }
+  },
+  devServer: {
+    // true 则热更新，false 则手动刷新，默认值为 true
+    // inline: false,
   }
 })
