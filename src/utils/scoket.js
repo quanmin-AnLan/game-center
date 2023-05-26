@@ -5,58 +5,79 @@
  * explain:创建一个单例的webscoket,导入全局使用
  */// 在Vue中使用，不需要可以去除以下引用
 // 定义WebSocketService类
-class WebSocketService {
-  // 构造函数接收WebSocket服务器的URL
+// 单例WebSocket类
+class SingletonWebSocket {
   constructor(url) {
     this.url = url;
-    this.socket = null;
+    this.ws = null;
+    this.timer = null;
+    this.timeout = 60000; // 心跳超时时间（单位：毫秒）
   }
 
-  // 连接到WebSocket服务器的方法
-  connect() {
-    return new Promise((resolve, reject) => {
-      this.socket = new WebSocket(this.url);
-
-      // 当连接成功时，解析Promise
-      this.socket.onopen = () => {
-        resolve();
-      };
-
-      // 当连接出错时，拒绝Promise
-      this.socket.onerror = (error) => {
-        reject(error);
-      };
-    });
+  // 获取WebSocket实例
+  getInstance() {
+    if (!this.ws) {
+      this.createWebSocket();
+    }
+    return this.ws;
   }
 
-  // 设置接收消息时的回调函数
-  onMessage(callback) {
-    this.socket.onmessage = (event) => {
-      callback(event.data);
+  // 创建WebSocket实例
+  createWebSocket() {
+    this.ws = new WebSocket(this.url);
+
+    // 监听WebSocket事件
+    this.ws.onopen = () => {
+      console.log('WebSocket已连接');
+      this.startHeartbeat(); // 开始心跳
+    };
+    this.ws.onmessage = (event) => {
+      console.log('收到消息：', event.data);
+    };
+    this.ws.onclose = () => {
+      console.log('WebSocket已关闭');
+      this.stopHeartbeat(); // 停止心跳
+      this.reconnect(); // 重新连接
+    };
+    this.ws.onerror = (event) => {
+      console.error('WebSocket错误：', event);
+      this.stopHeartbeat(); // 停止心跳
+      this.reconnect(); // 重新连接
     };
   }
 
-  // 向服务器发送消息的方法
-  sendMessage(message) {
-    this.socket.send(message);
+  // 发送消息
+  send(message) {
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(message);
+    } else {
+      console.error('WebSocket未连接');
+    }
   }
 
-  // 断开与WebSocket服务器的连接
-  disconnect() {
-    if (this.socket) {
-      this.socket.close();
-    }
+  // 开始心跳
+  startHeartbeat() {
+    clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      this.send('ping'); // 发送心跳包
+    }, this.timeout);
+  }
+
+  // 停止心跳
+  stopHeartbeat() {
+    clearInterval(this.timer);
+  }
+
+  // 重新连接
+  reconnect() {
+    setTimeout(() => {
+      console.log('正在重新连接WebSocket...');
+      this.createWebSocket();
+    }, 3000); // 3秒后重新连接
   }
 }
 
-// 导出WebSocket插件
-export default {
-  // Vue插件的install方法
-  install(Vue, options) {
-    // 创建WebSocketService实例
-    const wsService = new WebSocketService(options.url);
-    // 将WebSocketService实例添加到Vue原型上，使其在所有组件中可用
-    Vue.prototype.$websocket = wsService;
-  },
-};
+// 导出单例WebSocket实例
+export const webSocket = new SingletonWebSocket('ws://localhost:8080/ws').getInstance();
+
 

@@ -10,7 +10,7 @@ import logonComponents from './components/config'
 import * as echarts from 'echarts'
 import { fn } from '@/utils/common'
 // 引入scoket.js
-import WebSocket from "@/utils/scoket"
+import { WebSocket } from "@/utils/scoket"
 
 Vue.config.productionTip = false
 
@@ -19,10 +19,9 @@ logonComponents(Vue)
 
 Vue.use(ElementUI)
 Vue.use(echarts)
-// 使用WebSocket插件，并传入WebSocket服务器的URL
-Vue.use(WebSocket, { url: "wss://your-websocket-url" });
 
 Vue.prototype.$fn = fn;
+Vue.prototype.$WebSocket = WebSocket
 
 new Vue({
   router,
