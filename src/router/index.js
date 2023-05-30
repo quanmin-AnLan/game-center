@@ -19,7 +19,7 @@ export default router
 
 // 全局前置路由守卫
 router.beforeEach((to, from, next) => {
-  // 路由初始化
+  // 路由初始化,to中拿到了fullPath和path
   RouteIns.run(to)
   // 进入目标路由
   next();

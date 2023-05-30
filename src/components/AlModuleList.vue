@@ -1,5 +1,5 @@
 <template>
-  <!--  -->
+  <!-- 此处为首页的菜单,全局的路由标签栏是否可见 -->
   <section class="al-module-list" v-if="$store.state.routeTabVisible">
     <div class="shadow" @click="close" v-if="$route.path !== '/'"></div>
     <ul class="module-list">
@@ -118,6 +118,7 @@ export default {
   computed: {
     washModuleList() {
       const result = [];
+      // 进入页面就对首页显示几个模块用计算属性控制，经过用户等级和路由设置的等级进行判断，大于才可以显示，最后拿用户可以访问的权限返回，在页面上渲染，如果不想显示某个页面，直接在moduleListArr数组某个对象里加auth。
       for (const item of this.moduleListArr) {
         if (!item.auth) {
           result.push(item);

@@ -5,9 +5,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    asyncRouteReady: '',
+    asyncRouteReady: '', // 储存着用户去往哪个页面的路由信息
     loginVisible: false,
-    routeTabVisible: false,
+    routeTabVisible: false, // 全局的路由标签栏是否可见
     userInfo: {},
   },
   getters: {},
