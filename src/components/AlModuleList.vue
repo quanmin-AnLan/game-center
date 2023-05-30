@@ -1,4 +1,5 @@
 <template>
+  <!--  -->
   <section class="al-module-list" v-if="$store.state.routeTabVisible">
     <div class="shadow" @click="close" v-if="$route.path !== '/'"></div>
     <ul class="module-list">

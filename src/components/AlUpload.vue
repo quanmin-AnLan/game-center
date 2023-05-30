@@ -1,8 +1,22 @@
 <template>
-  <el-upload action="http://api.anlan.xyz/upload/img" :headers="headers" :data="data" :show-file-list="false"
-    :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" class="avatar-uploader">
-    <el-image class="avatar" v-if="resourceSrc" :src="resourceSrc" :preview-src-list="[resourceSrc]" fit="fill"
-      @click.stop></el-image>
+  <!-- headers:上传的请求头，此处为每个用户单独的uuid   data:此处data里只有一个属性，属性值为用户上传的日期  show-file-list：false，不显示已上传文件列表  on-success:文件上传成功的内置回调函数 before-upload:文件上传后会返回Promise，然后可以继续上传，否则就停止上传   -->
+  <el-upload
+    action="http://api.anlan.xyz/upload/img"
+    :headers="headers"
+    :data="data"
+    :show-file-list="false"
+    :on-success="handleAvatarSuccess"
+    :before-upload="beforeAvatarUpload"
+    class="avatar-uploader"
+  >
+    <el-image
+      class="avatar"
+      v-if="resourceSrc"
+      :src="resourceSrc"
+      :preview-src-list="[resourceSrc]"
+      fit="fill"
+      @click.stop
+    ></el-image>
     <div v-else class="upload">
       <i class="el-icon-plus avatar-uploader-icon"></i>
       <span class="tip-info">点击上传图片</span>
@@ -15,50 +29,62 @@
 
 <script>
 export default {
-  name: 'AlUpload',
+  name: "AlUpload",
   props: {
+    // 接收一个参数，值为用户上传的文件路径
     baseSrc: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
-  data () {
+  data() {
     return {
       data: {
-        key: ''
+        key: "",
       },
-      resourceSrc: '',
-      headers: {}
-    }
+      resourceSrc: "",
+      headers: {},
+    };
   },
   created() {
     this.headers = {
-      uuid: this.$store.state.userInfo.uuid
-    }
-    this.resourceSrc = this.baseSrc
+      uuid: this.$store.state.userInfo.uuid,
+    };
+    this.resourceSrc = this.baseSrc;
   },
   methods: {
+    // 此处为文件上传之前的函数，可以对文件进行定义上传需求。
     async beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isGIF = file.type === 'image/gif'
-      const isPNG = file.type === 'image/png'
+      // 限制文件上传的类型
+      const isJPG = file.type === "image/jpeg";
+      const isGIF = file.type === "image/gif";
+      const isPNG = file.type === "image/png";
       if (!isJPG && !isGIF && !isPNG) {
-        this.$message.error('上传图片必须是JPG/GIF/PNG 格式!')
+        this.$message.error("上传图片必须是JPG/GIF/PNG 格式!");
       }
-      const isLt2M = file.size / 1024 / 1024 < 2
+      // 限制文件大小2M以下
+      const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!')
+        this.$message.error("上传图片大小不能超过 2MB!");
       }
-      let key = `game-center/img/${new Date().getFullYear()}/${new Date().getMonth() + 1}/${new Date().getDate()}/${+new Date()}-${file.name}`
-      this.data.key = key
-      return (isJPG || isGIF || isPNG) && isLt2M
+      // 如果通过以上限制，就生成文件日期
+      let key = `game-center/img/${new Date().getFullYear()}/${
+        new Date().getMonth() + 1
+      }/${new Date().getDate()}/${+new Date()}-${file.name}`;
+      this.data.key = key;
+      return (isJPG || isGIF || isPNG) && isLt2M;
     },
+    // 上传成功后设置文件公共路径 + 文件路径 + 文件大小，最后通信给调用此组件的父组件
     handleAvatarSuccess(res) {
-      this.resourceSrc = this.$fn.cut('http://img.anlan.xyz/' + res.data, 160, 160)
-      this.$emit('imgSrc', this.resourceSrc)
-    }
+      this.resourceSrc = this.$fn.cut(
+        "http://img.anlan.xyz/" + res.data,
+        160,
+        160
+      );
+      this.$emit("imgSrc", this.resourceSrc);
+    },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

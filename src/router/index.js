@@ -17,6 +17,7 @@ const router = new VueRouter({
 
 export default router
 
+// 全局前置路由守卫
 router.beforeEach((to, from, next) => {
   // 路由初始化
   RouteIns.run(to)
