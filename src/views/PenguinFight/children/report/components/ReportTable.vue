@@ -44,6 +44,10 @@ export default {
       const level = this.$store.state.userInfo.level
       if (level > 4) {
         base.push({
+          prop: 'name',
+          label: '举报人'
+        })
+        base.push({
           prop: 'operate',
           label: '操作',
           specialContent: true
