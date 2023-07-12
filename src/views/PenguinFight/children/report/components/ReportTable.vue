@@ -2,8 +2,8 @@
   <section style="margin: 0 20px;">
     <al-table :headerSet="headerSet" :tableData="tableData">
       <template v-slot:special-content-operate="scope">
-        <el-button @click="audit(scope, '通过')">通过</el-button>
-        <el-button @click="audit(scope, '驳回')">驳回</el-button>
+        <el-button type="success" @click="audit(scope, '通过')">通过</el-button>
+        <el-button type="danger" @click="audit(scope, '驳回')">驳回</el-button>
       </template>
     </al-table>
   </section>
@@ -63,8 +63,7 @@ export default {
       const params = {
         region: row.region,
         userId: row.userId,
-        status: status,
-        level: 4
+        status: status
       }
       apis.auditReport(params).then(() => {
         this.getList()
