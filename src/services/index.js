@@ -47,6 +47,7 @@ request.interceptors.response.use(
             message: msg,
             type: 'warning'
           })
+          return Promise.reject(res);
         }
       }
       if (data.data) {

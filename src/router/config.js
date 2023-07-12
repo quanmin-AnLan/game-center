@@ -30,6 +30,10 @@ export const routes = [
         component: () => import('../views/PenguinFight/children/IndexHome.vue')
       },
       {
+        path: '/PenguinFight/report',
+        component: () => import('../views/PenguinFight/children/report/DefaultIndex.vue')
+      },
+      {
         path: '/PenguinFight/martial/upgrade',
         component: () => import('../views/PenguinFight/children/martial/MartialUpgrade.vue'),
       },

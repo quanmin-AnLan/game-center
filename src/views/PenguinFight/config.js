@@ -26,6 +26,12 @@ export const config = {
       ]
     },
     {
+      title: '举报',
+      icon: 'phone-outline',
+      index: '/report',
+      children: []
+    },
+    {
       title: '召唤兽',
       icon: 'chicken',
       index: '/pet',
