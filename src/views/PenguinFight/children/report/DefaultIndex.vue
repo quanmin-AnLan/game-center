@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!userInfo.level">请登录</div>
+  <div v-if="!userInfo.level">请登录，登录后刷新页面</div>
   <section v-else>
     <report-control @refresh="refresh()"></report-control>
     <report-table ref="table"></report-table>
