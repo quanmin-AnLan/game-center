@@ -9,6 +9,8 @@ export default new Vuex.Store({
     loginVisible: false,
     routeTabVisible: false,
     userInfo: {},
+    OutlinkSrc: '',
+    showOutlink: false
   },
   getters: {},
   mutations: {
@@ -23,6 +25,12 @@ export default new Vuex.Store({
     },
     SetUserInfo: (state, module) => {
       state.userInfo = module
+    },
+    SetOutlinkSrc: (state, module) => {
+      state.OutlinkSrc = module
+    },
+    SetShowOutlink: (state, module) => {
+      state.showOutlink = module
     }
   },
   actions: {},

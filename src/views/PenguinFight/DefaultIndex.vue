@@ -1,7 +1,8 @@
 <template>
   <section class="penguin-fight-main">
     <al-menu :menuData="config.menuData" menuKey="/PenguinFight"></al-menu>
-    <section class="penguin-fight-container">
+    <al-outlink v-if="$store.state.showOutlink" />
+    <section class="penguin-fight-container" v-else>
       <router-view></router-view>
     </section>
   </section>

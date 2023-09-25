@@ -53,11 +53,17 @@ const refreshUserInfo = () => {
   }
 }
 
+const intoArticle = (src) => {
+  store.commit('SetOutlinkSrc', src)
+  store.commit('SetShowOutlink', true)
+}
+
 export const fn = {
   cut,
   removeCut,
   login,
   changeRoute,
   toWebp,
-  refreshUserInfo
+  refreshUserInfo,
+  intoArticle
 }
