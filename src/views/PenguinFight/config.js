@@ -26,6 +26,12 @@ export const config = {
       ]
     },
     {
+      title: '皮肤',
+      icon: 'user',
+      index: '/skin',
+      children: []
+    },
+    {
       title: '举报',
       icon: 'phone-outline',
       index: '/report',

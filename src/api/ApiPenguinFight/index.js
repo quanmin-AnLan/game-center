@@ -7,6 +7,8 @@ const apis = {
   getUpgradeInfo: () => Http.get(`${baseApi}/getUpgradeInfo`),
   // 武器技能基础信息
   getToolInfo: () => Http.get(`${baseApi}/getToolInfo`),
+  // 皮肤数据
+  getSkinInfo: () => Http.get(`${baseApi}/getSkinInfo`),
   // 举报
   report: (params) => Http.post(`${baseApi}/report`, params),
   // 获取举报列表
