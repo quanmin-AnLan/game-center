@@ -9,7 +9,7 @@
         <el-tab-pane v-for="(item, index) in tabConfig" :key="index" :label="item.label" :name="item.value">
           <section class="select-box">
             <div class="select-name">属性筛选：</div>
-            <el-select v-model="selectActive">
+            <el-select v-model="selectActive" class="select-container">
               <el-option v-for="(item, index) in selectConfig[activeName]" :key="index" :label="item" :value="item"></el-option>
             </el-select>
           </section>
@@ -160,10 +160,7 @@ export default {
   margin: 0 8px 8px 0;
   cursor: pointer;
 }
-.select-box {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: 20px;
+.select-container {
+  margin: 10px 0 20px
 }
 </style>
