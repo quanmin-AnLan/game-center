@@ -9,6 +9,10 @@ const apis = {
   getToolInfo: () => Http.get(`${baseApi}/getToolInfo`),
   // 皮肤数据
   getSkinInfo: () => Http.get(`${baseApi}/getSkinInfo`),
+  // 皮肤数据
+  getSkin: () => Http.get(`${baseApi}/skin/get`),
+  // 皮肤数据
+  addSkin: (params) => Http.post(`${baseApi}/skin/add`, params),
   // 举报
   report: (params) => Http.post(`${baseApi}/report`, params),
   // 获取举报列表

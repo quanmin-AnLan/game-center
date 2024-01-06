@@ -1,5 +1,38 @@
 <template>
   <section class="inner-content">
+    <div>
+      <span>name</span>
+      <el-input v-model="skinName"></el-input>
+    </div>
+    <div>
+      <span>type</span>
+      <el-input v-model="skinType"></el-input>
+    </div>
+    <div>
+      <span>id</span>
+      <el-input v-model="skinId"></el-input>
+    </div>
+    <div>
+      <span>info1</span>
+      <el-input v-model="skinInfo1"></el-input>
+    </div>
+    <div>
+      <span>info2</span>
+      <el-input v-model="skinInfo2"></el-input>
+    </div>
+    <div>
+      <span>info3</span>
+      <el-input v-model="skinInfo3"></el-input>
+    </div>
+    <div>
+      <span>info4</span>
+      <el-input v-model="skinInfo4"></el-input>
+    </div>
+    <div>
+      <span>info5</span>
+      <el-input v-model="skinInfo5"></el-input>
+    </div>
+    <button @click="submit()">提交</button>
     <!-- 功能区 -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">
@@ -44,6 +77,14 @@ export default {
       skinData: {},
       row: {},
       dialogVisible: false,
+      skinName: '',
+      skinType: '',
+      skinId: '',
+      skinInfo1: '',
+      skinInfo2: '',
+      skinInfo3: '',
+      skinInfo4: '',
+      skinInfo5: ''
     }
   },
   created() {
@@ -62,6 +103,25 @@ export default {
       let result = row
       this.row = result
       this.dialogVisible = true
+    },
+    submit() {
+      if (!this.skinName || !this.skinType || !this.skinId || !this.skinInfo1 || !this.skinInfo2 || !this.skinInfo3 || !this.skinInfo4 || !this.skinInfo5) {
+        this.$message.error('滚')
+        return
+      }
+      const params = {
+        name: this.skinName,
+        type: this.skinType,
+        id: this.skinId,
+        info1: this.skinInfo1,
+        info2: this.skinInfo2,
+        info3: this.skinInfo3,
+        info4: this.skinInfo4,
+        info5: this.skinInfo5
+      }
+      apis.addSkin(params).then(res => {
+        console.log(res);
+      })
     }
   }
 }
