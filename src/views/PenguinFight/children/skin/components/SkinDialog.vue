@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="`${row.name}属性展示`" :visible="visible" @close="handleCancel" width="80%">
+  <el-dialog :title="`${row.name} - 属性展示`" :visible="visible" @close="handleCancel" width="80%">
     <section>
       <el-tabs v-model="activeName">
         <el-tab-pane v-for="(item, index) in tabConfig" :key="index" :label="item.label" :name="item.value">
