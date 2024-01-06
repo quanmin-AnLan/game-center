@@ -24,9 +24,10 @@
     <!-- 弹窗 -->
     <skin-dialog :visible.sync="dialogVisible" :row="row"></skin-dialog>
     <!-- 公告 -->
-    <el-dialog title="公告" :visible.sync="show" width="30%">
-      <div>数据由广大玩家提供，非官方数据，可能存在误差</div>
-      <div>数据不全，有数据的好心人可带图联系我</div>
+    <el-dialog title="公告" :visible.sync="show" width="80%">
+      <div>数据不全，由广大玩家提供</div>
+      <div>非官方数据，可能存在误差</div>
+      <div>有数据的好心人可带图联系我</div>
       <div>属性错误也可联系我指正</div>
       <div>最终解释权归安澜所有</div>
       <div>qq:2016751527</div>
