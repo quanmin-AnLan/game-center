@@ -29,6 +29,7 @@
       <div>非官方数据，可能存在误差</div>
       <div>有数据的好心人可带图联系我</div>
       <div>属性错误也可联系我指正</div>
+      <div>电脑比手机有更好的体验</div>
       <div>最终解释权归安澜所有</div>
       <div>qq:2016751527</div>
       <span slot="footer" class="dialog-footer">
