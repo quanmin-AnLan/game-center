@@ -42,23 +42,23 @@ export const routes = [
         component: () => import('../views/PenguinFight/children/combo/IndexHome.vue')
       },
       {
-        path: '/PenguiinFight/prestige', // 经脉
+        path: '/PenguinFight/prestige', // 经脉
         component: () => import('../views/PenguinFight/children/prestige/IndexHome.vue')
       },
       {
-        path: '/PenguiinFight/divineWeapon', // 神兵
+        path: '/PenguinFight/divineWeapon', // 神兵
         component: () => import('../views/PenguinFight/children/divineWeapon/IndexHome.vue')
       },
       {
-        path: '/PenguiinFight/marry', // 游历
+        path: '/PenguinFight/marry', // 游历
         component: () => import('../views/PenguinFight/children/marry/IndexHome.vue')
       },
       {
-        path: '/PenguiinFight/entourage', // 随从
+        path: '/PenguinFight/entourage', // 随从
         component: () => import('../views/PenguinFight/children/entourage/IndexHome.vue')
       },
       {
-        path: '/PenguiinFight/book', // 异闻录
+        path: '/PenguinFight/book', // 异闻录
         component: () => import('../views/PenguinFight/children/book/IndexHome.vue')
       },
       {

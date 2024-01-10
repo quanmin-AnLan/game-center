@@ -15,7 +15,7 @@ export default {
   name: 'PenguinFightBook',
   data() {
     return {
-      imgSrc: 'http://img.anlan.xyz/ledou/linli/book.png'
+      imgSrc: 'http://img.anlan.xyz/ledou/linli/yiwenlu.png'
     }
   }
 }
