@@ -15,7 +15,7 @@ export default {
   name: 'PenguinFightCombo',
   data() {
     return {
-      imgSrc: 'http://img.anlan.xyz/ledou/linli/suicong.png'
+      imgSrc: 'http://img.anlan.xyz/ledou/linli/suicong.jpg'
     }
   }
 }
