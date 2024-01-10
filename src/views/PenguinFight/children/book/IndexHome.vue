@@ -12,10 +12,10 @@
 
 <script>
 export default {
-  name: 'PenguinFightBorderIntroductionRune',
+  name: 'PenguinFightBook',
   data() {
     return {
-      imgSrc: 'http://img.anlan.xyz/ledou/linli/fuwen.png'
+      imgSrc: 'http://img.anlan.xyz/ledou/linli/book.png'
     }
   }
 }

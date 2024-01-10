@@ -32,6 +32,18 @@ export const config = {
       children: []
     },
     {
+      title: '异闻录',
+      icon: 'picture-outline',
+      index: '/book',
+      children: []
+    },
+    {
+      title: '神兵',
+      icon: 'aim',
+      index: '/divineWeapon',
+      children: []
+    },
+    {
       title: '举报',
       icon: 'phone-outline',
       index: '/report',
@@ -93,6 +105,36 @@ export const config = {
           children: []
         }
       ]
-    }
+    },
+    {
+      title: '随从',
+      icon: 'place',
+      index: '/entourage',
+      children: []
+    },
+    {
+      title: '经脉',
+      icon: 'picture-outline-round',
+      index: '/prestige',
+      children: []
+    },
+    {
+      title: '密卷',
+      icon: 'document-copy',
+      index: '/combo',
+      children: []
+    },
+    {
+      title: '游历',
+      icon: 'bicycle',
+      index: '/marry',
+      children: []
+    },
+    {
+      title: '帮派',
+      icon: 'chat-round',
+      index: '/team',
+      children: []
+    },
   ]
 }

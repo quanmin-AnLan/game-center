@@ -26,39 +26,67 @@ export const routes = [
     redirect: '/PenguinFight/home',
     children: [
       {
-        path: '/PenguinFight/home',
+        path: '/PenguinFight/home', // 首页
         component: () => import('../views/PenguinFight/children/IndexHome.vue')
       },
       {
-        path: '/PenguinFight/skin',
+        path: '/PenguinFight/skin', // 皮肤
         component: () => import('../views/PenguinFight/children/skin/IndexHome.vue')
       },
       {
-        path: '/PenguinFight/report',
+        path: '/PenguinFight/team', // 帮派
+        component: () => import('../views/PenguinFight/children/team/IndexHome.vue')
+      },
+      {
+        path: '/PenguinFight/combo', // 密卷
+        component: () => import('../views/PenguinFight/children/combo/IndexHome.vue')
+      },
+      {
+        path: '/PenguiinFight/prestige', // 经脉
+        component: () => import('../views/PenguinFight/children/prestige/IndexHome.vue')
+      },
+      {
+        path: '/PenguiinFight/divineWeapon', // 神兵
+        component: () => import('../views/PenguinFight/children/divineWeapon/IndexHome.vue')
+      },
+      {
+        path: '/PenguiinFight/marry', // 游历
+        component: () => import('../views/PenguinFight/children/marry/IndexHome.vue')
+      },
+      {
+        path: '/PenguiinFight/entourage', // 随从
+        component: () => import('../views/PenguinFight/children/entourage/IndexHome.vue')
+      },
+      {
+        path: '/PenguiinFight/book', // 异闻录
+        component: () => import('../views/PenguinFight/children/book/IndexHome.vue')
+      },
+      {
+        path: '/PenguinFight/report', // 举报
         component: () => import('../views/PenguinFight/children/report/DefaultIndex.vue')
       },
       {
-        path: '/PenguinFight/martial/upgrade',
+        path: '/PenguinFight/martial/upgrade', // 强化
         component: () => import('../views/PenguinFight/children/martial/MartialUpgrade.vue'),
       },
       {
-        path: '/PenguinFight/martial/refine',
+        path: '/PenguinFight/martial/refine', // 精炼
         component: () => import('../views/PenguinFight/children/martial/MartialRefine.vue'),
       },
       {
-        path: '/PenguinFight/pet/introduction',
+        path: '/PenguinFight/pet/introduction', // 召唤兽简介
         component: () => import('../views/PenguinFight/children/pet/PetIntroduction.vue'),
       },
       {
-        path: '/PenguinFight/pet/stunt',
+        path: '/PenguinFight/pet/stunt', // 召唤兽特技
         component: () => import('../views/PenguinFight/children/pet/PetStunt.vue'),
       },
       {
-        path: '/PenguinFight/pet/fourImages',
+        path: '/PenguinFight/pet/fourImages', // 四象
         component: () => import('../views/PenguinFight/children/pet/PetFourImages.vue'),
       },
       {
-        path: '/PenguinFight/border/front',
+        path: '/PenguinFight/border/front', // 法阵
         component: () => import('../views/PenguinFight/children/border/BorderFront.vue'),
       },
       {
@@ -67,11 +95,11 @@ export const routes = [
         redirect: '/PenguinFight/border/introduction/stunt',
         children: [
           {
-            path: '/PenguinFight/border/introduction/stunt',
+            path: '/PenguinFight/border/introduction/stunt', // 结界特技
             component: () => import('../views/PenguinFight/children/border/introduction/BorderIntroductionStunt.vue'),
           },
           {
-            path: '/PenguinFight/border/introduction/rune',
+            path: '/PenguinFight/border/introduction/rune', // 结界符文
             component: () => import('../views/PenguinFight/children/border/introduction/BorderIntroductionRune.vue'),
           },
         ]

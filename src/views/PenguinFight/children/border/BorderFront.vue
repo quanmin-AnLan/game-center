@@ -1,15 +1,29 @@
 <template>
   <section>
-    结界法阵
+    <!-- 静态图片 -->
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>数据展示</span>
+      </div>
+      <el-image :src="$fn.toWebp(imgSrc)" :preview-src-list="[$fn.toWebp(imgSrc)]" lazy fit="fill"></el-image>
+    </el-card>
   </section>
 </template>
 
 <script>
 export default {
-  name: 'PenguinFightBorderFront'
+  name: 'PenguinFightBorderFront',
+  data() {
+    return {
+      imgSrc: 'http://img.anlan.xyz/ledou/linli/fazhen.png'
+    }
+  }
 }
 </script>
 
 <style lang="less" scoped>
-
+.box-card {
+  text-align: left;
+  margin-bottom: 24px;
+}
 </style>
