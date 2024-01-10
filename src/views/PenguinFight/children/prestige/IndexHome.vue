@@ -15,7 +15,7 @@ export default {
   name: 'PenguinFightCombo',
   data() {
     return {
-      imgSrc: 'http://img.anlan.xyz/ledou/linli/jingmai.png'
+      imgSrc: 'http://img.anlan.xyz/ledou/linli/jingmai.jpg'
     }
   }
 }
