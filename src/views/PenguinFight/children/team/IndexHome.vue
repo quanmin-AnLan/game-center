@@ -1,32 +1,11 @@
 <template>
   <section>
     <!-- 静态图片 -->
-    <el-card class="box-card">
+    <el-card class="box-card" v-for="(item, index) in imgList" :key="index">
       <div slot="header" class="clearfix">
-        <span>升级</span>
+        <span>{{ item.title }}</span>
       </div>
-      <el-image :src="$fn.toWebp(imgSrc1)" :preview-src-list="[$fn.toWebp(imgSrc1)]" lazy fit="fill"></el-image>
-    </el-card>
-
-    <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <span>修炼馆</span>
-      </div>
-      <el-image :src="$fn.toWebp(imgSrc2)" :preview-src-list="[$fn.toWebp(imgSrc2)]" lazy fit="fill"></el-image>
-    </el-card>
-
-    <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <span>遗迹</span>
-      </div>
-      <el-image :src="$fn.toWebp(imgSrc3)" :preview-src-list="[$fn.toWebp(imgSrc3)]" lazy fit="fill"></el-image>
-    </el-card>
-
-    <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <span>押镖</span>
-      </div>
-      <el-image :src="$fn.toWebp(imgSrc4)" :preview-src-list="[$fn.toWebp(imgSrc4)]" lazy fit="fill"></el-image>
+      <el-image :src="$fn.toWebp(item.src)" :preview-src-list="[$fn.toWebp(item.src)]" lazy fit="fill"></el-image>
     </el-card>
   </section>
 </template>
@@ -36,10 +15,24 @@ export default {
   name: 'PenguinFightCombo',
   data() {
     return {
-      imgSrc1: 'http://img.anlan.xyz/ledou/linli/bangpai.png',
-      imgSrc2: 'http://img.anlan.xyz/ledou/linli/xiu.png',
-      imgSrc3: 'http://img.anlan.xyz/ledou/linli/yiji.png',
-      imgSrc4: 'http://img.anlan.xyz/ledou/linli/yabiao.png',
+      imgList: [
+        {
+          title: '升级',
+          src: 'http://img.anlan.xyz/ledou/linli/bangpai.png'
+        },
+        {
+          title: '修炼馆',
+          src: 'http://img.anlan.xyz/ledou/linli/xiu.png'
+        },
+        {
+          title: '遗迹',
+          src: 'http://img.anlan.xyz/ledou/linli/yiji.png'
+        },
+        {
+          title: '押镖',
+          src: 'http://img.anlan.xyz/ledou/linli/yabiao.png'
+        }
+      ]
     }
   }
 }
