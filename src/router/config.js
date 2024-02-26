@@ -113,7 +113,7 @@ export const routes = [
     children: [
       {
         path: '/QQFight/home', // 首页
-        component: () => import('../views/PenguinFight/children/IndexHome.vue')
+        component: () => import('../views/QQFight/children/IndexHome.vue')
       },
     ]
   },
