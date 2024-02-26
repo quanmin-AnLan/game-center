@@ -107,6 +107,17 @@ export const routes = [
     ]
   },
   {
+    path: '/QQFight',
+    component: () => import('../views/QQFight/DefaultIndex.vue'),
+    redirect: '/QQFight/home',
+    children: [
+      {
+        path: '/QQFight/home', // 首页
+        component: () => import('../views/PenguinFight/children/IndexHome.vue')
+      },
+    ]
+  },
+  {
     path: '/Auth',
     component: () => import('../views/Auth/DefaultIndex.vue')
   },

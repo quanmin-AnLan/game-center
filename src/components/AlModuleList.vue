@@ -53,6 +53,11 @@ export default {
           'route': 'PenguinFight'
         },
         {
+          'name': 'Q宠大乐斗',
+          'logo': 'http://img.anlan.xyz/game/qqFight.jpeg',
+          'route': 'QQFight'
+        },
+        {
           'name': '权限',
           'logo': 'http://img.anlan.xyz/game/auth.jpg',
           'route': 'Auth',
