@@ -1,6 +1,6 @@
 <template>
   <section class="qq-fight-main">
-    <al-menu :menuData="config.menuData" menuKey="/QQFight"></al-menu>
+    <!-- <al-menu :menuData="config.menuData" menuKey="/QQFight"></al-menu> -->
     <section class="qq-fight-container">
       <router-view></router-view>
     </section>
