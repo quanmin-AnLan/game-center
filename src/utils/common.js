@@ -58,6 +58,15 @@ const intoArticle = (src) => {
   store.commit('SetShowOutlink', true)
 }
 
+const addJs = (url, cb) => {
+  const body = document.getElementsByTagName('body')[0]
+  const js = document.createElement('script')
+  js.setAttribute('type', 'text/javascript')
+  js.setAttribute('src', url)
+  js.onload = cb
+  body.appendChild(js)
+}
+
 export const fn = {
   cut,
   removeCut,
@@ -65,5 +74,6 @@ export const fn = {
   changeRoute,
   toWebp,
   refreshUserInfo,
-  intoArticle
+  intoArticle,
+  addJs
 }

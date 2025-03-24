@@ -137,6 +137,16 @@ export const routes = [
     ]
   },
   {
+    path: '/Tools',
+    component: () => import('../views/Tools/DefaultIndex.vue'),
+    children: [
+      {
+        path: '/Tools/lol',
+        component: () => import('../views/Tools/children/LOLTools.vue')
+      }
+    ]
+  },
+  {
     path: '/CxkGame',
     component: () => import('../views/CxkGame.vue'),
   },
