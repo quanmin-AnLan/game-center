@@ -6,6 +6,7 @@
         <span>数据展示</span>
       </div>
       <el-image :src="$fn.toWebp(imgSrc)" :preview-src-list="[$fn.toWebp(imgSrc)]" lazy fit="fill"></el-image>
+      <el-image :src="$fn.toWebp(imgSrc2)" :preview-src-list="[$fn.toWebp(imgSrc2)]" lazy fit="fill"></el-image>
     </el-card>
   </section>
 </template>
@@ -15,7 +16,8 @@ export default {
   name: 'PenguinFightBorderFront',
   data() {
     return {
-      imgSrc: 'http://img.anlan.xyz/ledou/linli/fazhen.png'
+      imgSrc: 'http://img.anlan.xyz/ledou/linli/fazhen.png',
+      imgSrc2: 'http://img.anlan.xyz/ledou/yym/fazhen.JPG'
     }
   }
 }
