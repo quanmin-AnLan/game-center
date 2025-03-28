@@ -104,7 +104,11 @@ export const routes = [
             component: () => import('../views/PenguinFight/children/border/introduction/BorderIntroductionRune.vue'),
           },
         ]
-      }
+      },
+      {
+        path: '/PenguinFight/mine', // 法阵
+        component: () => import('../views/PenguinFight/children/mine/index.vue'),
+      },
     ]
   },
   {

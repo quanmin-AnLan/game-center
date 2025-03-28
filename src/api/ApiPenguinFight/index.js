@@ -16,7 +16,9 @@ const apis = {
   // 审核举报
   auditReport: (params) => Http.post(`${baseApi}/auditReport`, params),
   // 清空举报
-  clearReport: () => Http.get(`${baseApi}/clearReport`)
+  clearReport: () => Http.get(`${baseApi}/clearReport`),
+  // 获取矿山数据
+  getMineList: (params) => Http.get(`/ledou/getMineList`, params)
 }
 
 export default apis

@@ -136,5 +136,11 @@ export const config = {
       index: '/team',
       children: []
     },
+    {
+      title: '矿山',
+      icon: 'aim',
+      index: '/mine',
+      children: []
+    },
   ]
 }
