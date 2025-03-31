@@ -1,6 +1,25 @@
 <template>
   <div class="mine-container">
     <div class="mine-operate">
+      <div class="mine-operate-item">
+        <div class="mine-operate-item-text">筛选类型</div>
+        <el-select v-model="searchKey">
+          <el-option v-for="(item, index) in selectOptions" :key="index" :label="item.label"
+            :value="item.value"></el-option>
+        </el-select>
+      </div>
+      <div class="mine-operate-item">
+        <div class="mine-operate-item-text">筛选内容</div>
+        <el-input v-model="searchValue" placeholder="请输入筛选内容"></el-input>
+      </div>
+      <div class="mine-operate-item">
+        <el-button @click="getSearchTableData" :disabled="loading">查询</el-button>
+      </div>
+      <div class="mine-operate-item">
+        <el-button @click="clear" :disabled="loading">清空</el-button>
+      </div>
+    </div>
+    <div class="mine-operate" v-if="tableType !== 'search'">
       <el-pagination layout="prev, pager, next, jumper" :total="1000" @current-change="handleCurrentChange">
       </el-pagination>
     </div>
@@ -20,6 +39,10 @@ export default {
     return {
       tableData: [],
       headerSet: [
+        {
+          prop: 'page',
+          label: '页码'
+        },
         {
           prop: 'level',
           label: '矿位等级'
@@ -47,7 +70,20 @@ export default {
         }
       ],
       page: 1,
-      loading: false
+      loading: false,
+      selectOptions: [
+        {
+          label: '帮派',
+          value: 'fac_name'
+        },
+        {
+          label: '昵称',
+          value: 'role_name'
+        }
+      ],
+      searchKey: '',
+      searchValue: '',
+      tableType: ''
     }
   },
   mounted() {
@@ -58,16 +94,57 @@ export default {
       this.page = val
       this.getTableData()
     },
-    getTableData() {
+    clear() {
+      this.searchKey = ''
+      this.searchValue = ''
+      this.tableType = ''
+      this.page = 1
+      this.getTableData()
+    },
+    async getTableData () {
       this.loading = true
       const params = {
         page: this.page
       }
-      apis.getMineList(params).then(data => {
+      try {
+        const data = await apis.getMineList(params)
         this.tableData = data
-      }).finally(() => {
         this.loading = false
-      })
+      } catch (err) {
+        this.loading = false
+        this.tableData = []
+        console.error(err)
+      }
+    },
+    async getSearchTableData() {
+      if (!this.searchKey || !this.searchValue) {
+        this.$message.error('请先选择筛选类型和筛选内容')
+        return
+      }
+      this.tableType = 'search'
+      const arr = [20, 40, 60, 80, 100]
+      const result = []
+      this.loading = true
+      for (let i = 0; i < 5; i++) {
+        const params = {
+          page: this.page,
+          searchKey: this.searchKey,
+          searchValue: this.searchValue,
+          searchRange: arr[i]
+        }
+        if (this.searchKey === 'role_name') {
+          params.searchValue = encodeURIComponent(this.searchValue)
+        }
+        this.$message.info(`正在获取${arr[i] - 19}-${arr[i]}页数据`)
+        try {
+          const data = await apis.getMineList(params)
+          result.push(...data)
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      this.tableData = result
+      this.loading = false
     }
   }
 }
@@ -76,5 +153,17 @@ export default {
 <style lang="less" scoped>
 .mine-operate {
   margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .mine-operate-item {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+    .mine-operate-item-text {
+      width: 100px;
+      margin-right: 8px;
+    }
+  }
 }
 </style>
