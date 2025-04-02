@@ -147,6 +147,10 @@ export const routes = [
       {
         path: '/Tools/lol',
         component: () => import('../views/Tools/children/LOLTools.vue')
+      },
+      {
+        path: '/Tools/tft',
+        component: () => import('../views/Tools/children/TFTTools.vue')
       }
     ]
   },

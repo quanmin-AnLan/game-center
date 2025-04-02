@@ -18,6 +18,12 @@ export default {
           click: () => {
             this.$router.push('/Tools/lol')
           }
+        },
+        {
+          text: '云顶之弈',
+          click: () => {
+            this.$router.push('/Tools/tft')
+          }
         }
       ]
     }
