@@ -51,7 +51,8 @@
     <div class="job-show">
       <div class="job-item" v-for="(item, index) in chooseRaceJobData" :key="index">
         <div class="job-item-text" :class="{'job-item-text-active': item.active}">
-          {{ item.name }}{{ item.active ? `(${item.active})` : '' }}：</div>
+          {{ item.name }}{{ item.active ? `(${item.active})` : '' }}：
+        </div>
         <div class="job-item-num">{{ item.num + '/' + item.level }}</div>
       </div>
     </div>
@@ -66,7 +67,8 @@
     <div class="common-title">推演队伍{{ aiChampionData.length ? `(生成了${aiChampionData.length}个队伍)` : '' }}</div>
     <div style="width: 1200px; margin: 0 auto;">
       <div v-for="(data, i) in aiChampionData" :key="i">
-        <div style="width: 100%; display: flex; flex-wrap: wrap;">
+        <el-divider>第{{ Number(i) + 1 }}个结果</el-divider>
+        <div style="width: 100%; display: flex; flex-wrap: wrap; margin-top: 4px;">
           <div v-for="(item, index) in data" :key="index" class="champion-item">
             <el-tooltip :content="tooltipShow(item)" placement="top">
               <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
@@ -76,7 +78,8 @@
         <div style="width: 100%; display: flex; flex-wrap: wrap;">
           <div class="job-item" v-for="(item, index) in aiChampionJobData[i]" :key="index">
             <div class="job-item-text" :class="{ 'job-item-text-active': item.active }">
-              {{ item.name }}{{ item.active ? `(${item.active})` : '' }}：</div>
+              {{ item.name }}{{ item.active ? `(${item.active})` : '' }}：
+            </div>
             <div class="job-item-num">{{ item.num + '/' + item.level }}</div>
           </div>
         </div>
@@ -313,7 +316,7 @@ export default {
         }
         return null;
       };
-
+      this.loadingText = '正在加载数据中，请耐心等待'
       this.aiChampionData = result.data.reduce((acc, subArr) => {
         const id = getIdentifier(subArr);
         if (id) acc.push(subArr);
