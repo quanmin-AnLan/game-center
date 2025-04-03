@@ -34,7 +34,7 @@
     <div class="champion-show">
       <div v-for="(item, index) in washChampionData" :key="index" class="champion-item click"
         @click="addChampion(item)">
-        <el-tooltip :content="item.displayName" placement="top">
+        <el-tooltip :content="tooltipShow(item)" placement="top">
           <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
         </el-tooltip>
       </div>
@@ -42,7 +42,7 @@
     <div class="common-title">当前队伍</div>
     <div class="champion-show">
       <div v-for="(item, index) in chooseData" :key="index" class="champion-item click" @click="addChampion(item)">
-        <el-tooltip :content="item.displayName" placement="top">
+        <el-tooltip :content="tooltipShow(item)" placement="top">
           <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
         </el-tooltip>
       </div>
@@ -50,7 +50,8 @@
     <div class="common-title">当前羁绊</div>
     <div class="job-show">
       <div class="job-item" v-for="(item, index) in chooseRaceJobData" :key="index">
-        <div class="job-item-text">{{ item.name }}{{ item.active ? `(${item.active})` : '' }}：</div>
+        <div class="job-item-text" :class="{'job-item-text-active': item.active}">
+          {{ item.name }}{{ item.active ? `(${item.active})` : '' }}：</div>
         <div class="job-item-num">{{ item.num + '/' + item.level }}</div>
       </div>
     </div>
@@ -67,14 +68,15 @@
       <div v-for="(data, i) in aiChampionData" :key="i">
         <div style="width: 100%; display: flex; flex-wrap: wrap;">
           <div v-for="(item, index) in data" :key="index" class="champion-item">
-            <el-tooltip :content="item.displayName" placement="top">
+            <el-tooltip :content="tooltipShow(item)" placement="top">
               <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
             </el-tooltip>
           </div>
         </div>
         <div style="width: 100%; display: flex; flex-wrap: wrap;">
           <div class="job-item" v-for="(item, index) in aiChampionJobData[i]" :key="index">
-            <div class="job-item-text">{{ item.name }}{{ item.active ? `(${item.active})` : '' }}：</div>
+            <div class="job-item-text" :class="{ 'job-item-text-active': item.active }">
+              {{ item.name }}{{ item.active ? `(${item.active})` : '' }}：</div>
             <div class="job-item-num">{{ item.num + '/' + item.level }}</div>
           </div>
         </div>
@@ -288,7 +290,7 @@ export default {
           const { data, job } = await this.loop(obj)
           oneResult.data.push(...data)
           oneResult.job.push(...job)
-          await this.sleep(100)
+          await this.sleep(1)
         }
         result = oneResult
       }
@@ -372,6 +374,9 @@ export default {
         }
       }
       return { data: newData, job: newJobs }
+    },
+    tooltipShow(item) {
+      return `${item.displayName},¥${item.price},${item.jobs},${item.races}`
     }
   }
 }
@@ -424,6 +429,9 @@ export default {
     display: flex;
     margin-right: 8px;
     margin-bottom: 8px;
+    .job-item-text-active {
+      color: blue;
+    }
   }
 .ai-show {
   width: 1200px;
