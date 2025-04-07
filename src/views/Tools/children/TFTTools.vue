@@ -3,28 +3,28 @@
     <div class="common-title">筛选区</div>
     <section class="search">
       <div class="search-item">
-        <div class="search-item-title">英雄种族：</div>
+        <div class="search-item-title">英雄种族:</div>
         <div class="operate-item">
           <el-select v-model="raceKey" placeholder="请选择英雄种族">
             <el-option v-for="(item, index) in raceSelectOptions" :key="index" :label="item.label"
               :value="item.value"></el-option>
           </el-select>
         </div>
-        <div class="search-item-title">英雄职业：</div>
+        <div class="search-item-title">英雄职业:</div>
         <div class="operate-item">
           <el-select v-model="jobKey" placeholder="请选择英雄职业">
             <el-option v-for="(item, index) in jobSelectOptions" :key="index" :label="item.label"
               :value="item.value"></el-option>
           </el-select>
         </div>
-        <div class="search-item-title">英雄费用：</div>
+        <div class="search-item-title">英雄费用:</div>
         <div class="operate-item">
           <el-select v-model="priceKey" placeholder="请选择英雄费用">
             <el-option v-for="(item, index) in priceSelectOptions" :key="index" :label="item.label"
               :value="item.value"></el-option>
           </el-select>
         </div>
-        <div class="search-item-title">英雄名称：</div>
+        <div class="search-item-title">英雄名称:</div>
         <div class="operate-item">
           <el-input v-model="nameKey" placeholder="请输入英雄名称"></el-input>
         </div>
@@ -68,7 +68,7 @@
     <div style="width: 1200px; margin: 0 auto;">
       <div v-for="(data, i) in aiChampionData" :key="i">
         <el-divider>第{{ Number(i) + 1 }}个结果</el-divider>
-        <div style="width: 100%; display: flex; flex-wrap: wrap; margin-top: 4px;">
+        <div style="width: 100%; display: flex; flex-wrap: wrap; margin-top: 8px;">
           <div v-for="(item, index) in data" :key="index" class="champion-item">
             <el-tooltip :content="tooltipShow(item)" placement="top">
               <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
@@ -282,18 +282,23 @@ export default {
         job: [oldJobs]
       }
       for (let i = 0; i < num; i++) {
-        const oneResult = {data: [], job: []}
+        const oneResult = { data: [], job: [] }
         for (const index in result.data) {
           const obj = {
             data: result.data[index],
             job: result.job[index],
             idx: Number(index),
-            total: result.data.length
+            total: result.data.length,
+            price: 5
           }
-          const { data, job } = await this.loop(obj)
+          const { data, job } = await this.loop(obj, oldJobs, oneResult.data)
           oneResult.data.push(...data)
           oneResult.job.push(...job)
           await this.sleep(1)
+        }
+        if (oneResult.data.length === 0) {
+          this.$message.error('当前队伍没有可推演的阵容')
+          break
         }
         result = oneResult
       }
@@ -325,8 +330,9 @@ export default {
       this.loading = false
       this.aiText = '开始推演'
     },
-    async loop(tempData) {
-      const data = this.championData.filter((v) => tempData.data.every((val) => val.name != v.name))
+    async loop(tempData, oldJobs, allData) {
+      const initData = this.championData.filter((v) => tempData.data.every((val) => val.name != v.name))
+      const data = initData.filter(item => tempData.price >= Number(item.price))
       const newData = []
       const newJobs = []
       let index = 1
@@ -337,46 +343,121 @@ export default {
         const arr = jobArr.concat(raceArr)
         const findData = this.jobData.concat(this.raceData)
         let tempResult = false
-        const tempJobs = JSON.parse(JSON.stringify(tempData.job))
+        let tempJobs = []
+        const tempDataJob = JSON.parse(JSON.stringify(tempData.job))
+        let jobCheckNoMax = true
+        for (const job of oldJobs) {
+          const searchItem = tempDataJob.find(dataItem => dataItem.name === job.name)
+          const findItem = findData.find(dataItem => dataItem.name === job.name)
+          const len = findItem.level.length
+          const maxNum = findItem.level[len - 1]
+          if (searchItem.num < maxNum) {
+            jobCheckNoMax = false
+          }
+          if (searchItem.num <= maxNum) {
+            tempJobs.push({
+              name: job.name,
+              num: Number(searchItem.num),
+              level: Number(searchItem.level),
+              active: Number(searchItem.active)
+            })
+          }
+        }
+        if (jobCheckNoMax) {
+          tempJobs = JSON.parse(JSON.stringify(tempData.job))
+        }
         for (const i of arr) {
           const findItem = findData.find(item => item.name === i)
           const resultJobItem = tempJobs.find(item => item.name === i)
+          const searchJobItem = tempDataJob.find(item => item.name === i)
           if (resultJobItem) {
-            resultJobItem.num++
+            searchJobItem.num++
             for (const j in findItem.level) {
-              if (resultJobItem.num >= Number(findItem.level[Number(j)])) {
+              if (jobCheckNoMax) {
+                if (searchJobItem.num === Number(findItem.level[Number(j)])) {
+                  if (findItem.level[Number(j) + 1]) {
+                    // 晋级1个羁绊
+                    if (Number(findItem.level[Number(j) + 1]) >= searchJobItem.level && (Number(findItem.level[findItem.level.length - 1])) >= searchJobItem.num && searchJobItem.name !== '圣灵使者') {
+                      tempResult = true
+                    }
+                    searchJobItem.level = Number(findItem.level[Number(j) + 1])
+                  }
+                  searchJobItem.active = Number(findItem.level[Number(j)])
+                  await this.sleep(1)
+                }
+              } else {
                 if (findItem.level[Number(j) + 1]) {
                   // 晋级1个羁绊
-                  if (findItem.level[Number(j) + 1] > resultJobItem.level) {
+                  if (Number(findItem.level[Number(j) + 1]) >= searchJobItem.level && (Number(findItem.level[findItem.level.length - 1])) >= searchJobItem.num && searchJobItem.name !== '圣灵使者') {
                     tempResult = true
                   }
-                  resultJobItem.level = findItem.level[Number(j) + 1]
+                  if (searchJobItem.num >= Number(findItem.level[Number(j)])) {
+                    searchJobItem.level = Number(findItem.level[Number(j) + 1])
+                    searchJobItem.active = Number(findItem.level[Number(j)])
+                  }
+                  if (searchJobItem.num < Number(findItem.level[0])) {
+                    searchJobItem.level = Number(findItem.level[0])
+                    searchJobItem.active = 0
+                  }
                 }
-                resultJobItem.active = findItem.level[Number(j)]
                 await this.sleep(1)
               }
             }
           } else {
-            if (findItem.level[0] === '1' && findItem.level[1]) {
-              tempResult = true
+            // if (findItem.level[0] === '1' && findItem.level[1]) {
+            //   tempResult = true
+            // }
+            if (searchJobItem) {
+              searchJobItem.num++
+              for (const j in findItem.level) {
+                if (searchJobItem.num === Number(findItem.level[Number(j)])) {
+                  if (findItem.level[Number(j) + 1]) {
+                    searchJobItem.level = Number(findItem.level[Number(j) + 1])
+                  }
+                  searchJobItem.active = Number(findItem.level[Number(j)])
+                  await this.sleep(1)
+                }
+              }
+            } else {
+              tempDataJob.push({
+                name: i,
+                num: 1,
+                level: findItem.level[0] !== '1' ? Number(findItem.level[0]) : (findItem.level[1] ? Number(findItem.level[1]) : 1),
+                active: findItem.level[0] !== '1' ? 0 : 1
+              })
             }
-            tempJobs.push({
-              name: i,
-              num: 1,
-              level: findItem.level[0] !== '1' ? findItem.level[0] : (findItem.level[1] ? findItem.level[1] : 1),
-              active: findItem.level[0] !== '1' ? 0 : 1
-            })
           }
         }
         if (tempResult) {
           const baseData = JSON.parse(JSON.stringify(tempData.data))
           baseData.push(item)
-          newData.push(baseData)
-          newJobs.push(tempJobs)
-          index++
+          const result = allData.some(subArray => this.arraysContainSameObjects(subArray, baseData));
+          if (!result) {
+            newData.push(baseData)
+            newJobs.push(tempDataJob)
+            index++
+          }
         }
       }
       return { data: newData, job: newJobs }
+    },
+    // 判断两个对象是否相等
+    areObjectsEqual(obj1, obj2) {
+      const keys1 = Object.keys(obj1);
+      const keys2 = Object.keys(obj2);
+      if (keys1.length !== keys2.length) return false;
+      return keys1.every(key => Object.hasOwnProperty.call(obj2, key) && obj1[key] === obj2[key]);
+    },
+    // 判断两个数组是否包含相同的对象（顺序无关）
+    arraysContainSameObjects(arr1, arr2) {
+        if (arr1.length !== arr2.length) return false;
+        const arr2Copy = [...arr2];
+        for (const obj1 of arr1) {
+            const index = arr2Copy.findIndex(obj2 => this.areObjectsEqual(obj1, obj2));
+            if (index === -1) return false;
+            arr2Copy.splice(index, 1); // 移除已匹配项，避免重复
+        }
+        return true;
     },
     tooltipShow(item) {
       return `${item.displayName},¥${item.price},${item.jobs},${item.races}`
