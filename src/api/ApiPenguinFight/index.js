@@ -18,7 +18,11 @@ const apis = {
   // 清空举报
   clearReport: () => Http.get(`${baseApi}/clearReport`),
   // 获取矿山数据
-  getMineList: (params) => Http.get(`/ledou/getMineList`, params)
-}
+  getMineList: (params) => Http.get(`/ledou/getMineList`, params),
+  // 壶中关卡
+  attackGuanqia: (params) => Http.post(`/ledou/hu/guanqia`, params),
+  // 壶中boss
+  attackBoss: (params) => Http.post(`/ledou/hu/boss`, params)
+};
 
 export default apis

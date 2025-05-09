@@ -3,13 +3,13 @@
     :text-color="colorConfig.textColor" :active-text-color="colorConfig.activeColor" class="menu-section"
     :collapse="isCollapse" :collapse-transition="false">
     <template v-for="(items, index) in menuData">
-      <el-submenu v-if="items.children.length > 0" :key="index" :index="items.index">
+      <el-submenu v-if="items.children.length > 0 && (!items.auth || (items.auth && level && items.auth < level))" :key="index" :index="items.index">
         <template slot="title">
           <i :class="`el-icon-${items.icon}`"></i>
           <span>{{ items.title }}</span>
         </template>
         <template v-for="(item, i) in items.children">
-          <el-submenu v-if="item.children.length > 0" :key="i" :index="item.index">
+          <el-submenu v-if="item.children.length > 0 && (!item.auth || (items.auth && level && item.auth < level))" :key="i" :index="item.index">
             <template slot="title">
               <i :class="`el-icon-${item.icon}`"></i>
               <span>{{ item.title }}</span>
@@ -19,13 +19,13 @@
               <span>{{ ite.title }}</span>
             </el-menu-item>
           </el-submenu>
-          <el-menu-item v-else :key="item.index" :index="item.index">
+          <el-menu-item v-else-if="!item.auth || (items.auth && level && item.auth < level)" :key="item.index" :index="item.index">
             <i :class="`el-icon-${item.icon}`"></i>
             <span>{{ item.title }}</span>
           </el-menu-item>
         </template>
       </el-submenu>
-      <el-menu-item v-else :key="items.index" :index="items.index">
+      <el-menu-item v-else-if=" !items.auth || (items.auth && level && items.auth < level)" :key="items.index" :index="items.index">
         <i :class="`el-icon-${items.icon}`"></i>
         <span>{{ items.title }}</span>
       </el-menu-item>
@@ -63,6 +63,12 @@ export default {
     return {
       isCollapse: false,
       defaultActive: '/home'
+    }
+  },
+  computed: {
+    level () {
+      const result = this.$store.state.userInfo.level || 0
+      return result
     }
   },
   created() {

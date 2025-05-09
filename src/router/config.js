@@ -106,8 +106,15 @@ export const routes = [
         ]
       },
       {
-        path: '/PenguinFight/mine', // 法阵
+        path: '/PenguinFight/mine', // 矿山
         component: () => import('../views/PenguinFight/children/mine/index.vue'),
+      },
+      {
+        path: '/PenguinFight/hu', // 壶中
+        component: () => import('../views/PenguinFight/children/hu/index.vue'),
+        meta: {
+          auth: 2
+        }
       },
     ]
   },
@@ -124,7 +131,10 @@ export const routes = [
   },
   {
     path: '/Auth',
-    component: () => import('../views/Auth/DefaultIndex.vue')
+    component: () => import('../views/Auth/DefaultIndex.vue'),
+    meta: {
+      auth: 6
+    }
   },
   {
     path: '/UserCenter',

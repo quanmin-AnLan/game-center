@@ -6,21 +6,33 @@ class RouteInit {
   constructor() {
     this.path = '/'
     this.fullPath = '/'
+    this.meta = {}
   }
 
   run(to) {
-    const { path, fullPath } = to
+    const { path, fullPath, meta } = to
     this.path = path
     this.fullPath = fullPath
+    this.meta = meta
     this.handler()
   }
 
   handler() {
+    this.checkAuth()
+
     this.spmReport()
 
     this.initTitle()
 
     this.updateRouteStore()
+  }
+
+  checkAuth() {
+    const { auth } = this.meta
+    const level = store.state.userInfo.level
+    if (auth && (auth > level || !level)) {
+      window.open('/', '_self')
+    }
   }
 
   // pv上报

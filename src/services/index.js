@@ -37,10 +37,12 @@ request.interceptors.response.use(
       const { msg, code } = data
       if (msg) {
         if (code === 200) {
-          Message({
-            message: msg,
-            type: 'success'
-          })
+          if (msg) {
+            Message({
+              message: msg,
+              type: 'success'
+            })
+          }
         } else {
           Message({
             message: msg,

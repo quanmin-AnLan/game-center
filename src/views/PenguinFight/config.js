@@ -142,5 +142,12 @@ export const config = {
       index: '/mine',
       children: []
     },
+    {
+      title: '壶中天地',
+      icon: 'aim',
+      index: '/hu',
+      children: [],
+      auth: 2
+    },
   ]
 }
