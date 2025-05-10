@@ -7,7 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 // 引入全局样式
 import './less/main.less'
 import logonComponents from './components/config'
-import * as echarts from 'echarts'
+// import * as echarts from 'echarts'
 import { fn } from '@/utils/common'
 
 Vue.config.productionTip = false
@@ -16,7 +16,7 @@ Vue.config.productionTip = false
 logonComponents(Vue)
 
 Vue.use(ElementUI)
-Vue.use(echarts)
+// Vue.use(echarts)
 
 Vue.prototype.$fn = fn
 

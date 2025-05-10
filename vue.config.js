@@ -37,11 +37,11 @@ module.exports = defineConfig({
             test: /[\\/]node_modules[\\/]element-ui[\\/]/,
             priority: 20 // 权重要大于 libs
           },
-          echarts: { // echarts 单独拆包
-            name: "chunk-echarts",
-            test: /[\\/]node_modules[\\/]echarts[\\/]/,
-            priority: 20 // 权重要大于 libs
-          },
+          // echarts: { // echarts 单独拆包
+          //   name: "chunk-echarts",
+          //   test: /[\\/]node_modules[\\/]echarts[\\/]/,
+          //   priority: 20 // 权重要大于 libs
+          // },
           commons: { // 公共模块包
             name: `chunk-commons`,
             minChunks: 2,
