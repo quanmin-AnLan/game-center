@@ -32,7 +32,7 @@ class RouteInit {
   checkAuth() {
     const { auth } = this.meta
     const userInfo = localStorage.getItem('user_info')
-    const level = userInfo.level
+    const level = userInfo && JSON.parse(userInfo)?.level
     if (auth && (auth > level || !level)) {
       Message({
         message:'权限不足或未登录',
