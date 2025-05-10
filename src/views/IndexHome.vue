@@ -16,6 +16,7 @@ export default {
   margin-top: -48px;
   min-height: 100vh;
   background: url('http://img.anlan.xyz/anlan/bg2.jpeg');
-  background-size: 100%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 </style>
