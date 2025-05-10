@@ -1,6 +1,8 @@
 import apis from '@/api'
 import { routeMap } from './config'
 import store from '../store/index'
+import { Message } from 'element-ui'
+import router from './index'
 
 class RouteInit {
   constructor() {
@@ -31,7 +33,11 @@ class RouteInit {
     const { auth } = this.meta
     const level = store.state.userInfo.level
     if (auth && (auth > level || !level)) {
-      window.open('/', '_self')
+      Message({
+        message:'权限不足或未登录',
+        type: 'error'
+      })
+      router.push('/')
     }
   }
 

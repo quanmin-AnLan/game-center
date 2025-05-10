@@ -43,12 +43,36 @@
       <al-table :tableData="tableData" :headerSet="headerSet"></al-table>
     </section>
     <el-dialog :visible="dialogShow" @close="dialogShow = false" title="提示">
-      <div v-if="dialogType === 'success'">
-        <p>挑战成功，请自行上号替换或分解</p>
-        <p>掉落物品：</p>
-        <ul>
-          <li v-for="(item, index) in dialogDropped" :key="index">{{ item }}</li>
-        </ul>
+      <div v-if="dialogType === 'success'" class="dialog-success">
+        <div class="success-title">挑战成功，请自行上号替换或分解</div>
+        <div class="success-info-title">当前属性：</div>
+        <div class="success-info">{{ washDropped.attrs }}</div>
+        <div class="success-box">
+          <div class="box-item">
+            <div class="box-title">当前物品：</div>
+            <div class="box-info">
+              <div>
+                <p>{{ washDropped.oldVal.name }}</p>
+                <p>等级：{{ washDropped.oldVal.level }}</p>
+                <p>战力：{{ washDropped.oldVal.point }}</p>
+                <p>主属性：{{ washDropped.oldVal.primary_attrs }}</p>
+                <p>副属性：{{ washDropped.oldVal.sub_attrs }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="box-item">
+            <div class="box-title">掉落物品：</div>
+            <div class="box-info">
+              <div>
+                <p>{{ washDropped.newVal.name }}</p>
+                <p>等级：{{ washDropped.newVal.level }}</p>
+                <p>战力：{{ washDropped.newVal.point }}</p>
+                <p>主属性：{{ washDropped.newVal.primary_attrs }}</p>
+                <p>副属性：{{ washDropped.newVal.sub_attrs }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div v-else>
         <p>{{ dialogErrorInfo }}</p>
@@ -106,6 +130,15 @@ export default {
       localStorage.setItem('h5token', val)
     }
   },
+  computed: {
+    washDropped () {
+      const base = this.dialogDropped
+      const newVal = base.dropped && base.dropped[0] || {}
+      const oldVal = (base.equipments && base.equipments.find(item => item.type === newVal.type)) || {}
+      const attrs = base.attrs || ''
+      return { newVal, oldVal, attrs }
+    }
+  },
   mounted() {
     this.uid = localStorage.getItem('uid') || ''
     this.h5openid = localStorage.getItem('h5openid') || ''
@@ -145,7 +178,7 @@ export default {
             times: this.times
           })
           this.dialogType = 'success'
-          this.dialogDropped = dropped
+          this.dialogDropped = data
           this.dialogShow = true
           this.disabled = false
         } else {
@@ -191,7 +224,7 @@ export default {
             times: this.times
           })
           this.dialogType = 'success'
-          this.dialogDropped = dropped
+          this.dialogDropped = data
           this.dialogShow = true
         } else {
           this.tableData.push({
@@ -246,5 +279,34 @@ export default {
 .table {
   width: 1200px;
   margin: 0 auto;
+}
+.dialog-success {
+  .success-title {
+    font-size: 18px;
+    color: green;
+    margin-bottom: 20px;
+  }
+  .success-info-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  .success-info {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  .success-box {
+    display: flex;
+    justify-content: space-between;
+    .box-item {
+      width: 50%;
+      border: 1px solid black;
+      .box-title {
+        font-size: 16px;
+        font-weight: bold;
+      }
+    }
+  }
 }
 </style>

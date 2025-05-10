@@ -140,11 +140,12 @@ export const config = {
       title: '矿山',
       icon: 'aim',
       index: '/mine',
-      children: []
+      children: [],
+      auth: 2
     },
     {
       title: '壶中天地',
-      icon: 'aim',
+      icon: 'key',
       index: '/hu',
       children: [],
       auth: 2
