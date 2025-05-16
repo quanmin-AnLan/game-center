@@ -3,6 +3,13 @@
     <div class="common-title">填写区</div>
     <section class="search">
       <div class="search-item">
+        <div class="search-item-title">区服：</div>
+        <div class="operate-item">
+          <el-select v-model="region" placeholder="请选择区服" :disabled="disabled">
+            <el-option v-for="(item, index) in regionOptions" :key="index" :label="item.label"
+              :value="item.value"></el-option>
+          </el-select>
+        </div>
         <div class="search-item-title">uid：</div>
         <div class="operate-item">
           <el-input v-model="uid" placeholder="请输入uid"></el-input>
@@ -94,6 +101,7 @@ export default {
       h5openid: '',
       h5token: '',
       type: 'guanqia',
+      region: '',
       typeOptions: [
         { label: '关卡', value: 'guanqia' },
         { label: '首领', value: 'boss' }
@@ -102,6 +110,10 @@ export default {
         guanqia: '关卡',
         boss: '首领'
       },
+      regionOptions: [
+        { label: '空间1区', value: '301' },
+        { label: '微信1区', value: '4' }
+      ],
       level: 1,
       tableData: [],
       headerSet: [
@@ -150,45 +162,37 @@ export default {
         uid: this.uid,
         h5openid: this.h5openid,
         h5token: this.h5token,
-        level_id: this.level
+        level_id: this.level,
+        region: this.region
       }
       this.disabled = true
       const data = await apis.attackGuanqia(params)
       const { result, dropped, msg } = data
       this.times++
+      const obj = {
+        time: new Date().toLocaleString() + ':' + new Date().getMilliseconds(),
+        type: this.typeMap[this.type],
+        level: this.level,
+        times: this.times
+      }
       if (result !== 0) {
-        this.tableData.push({
-          time: new Date().toLocaleString() + ':' + new Date().getMilliseconds(),
-          type: this.typeMap[this.type],
-          level: this.level,
-          result: '异常',
-          times: this.times
-        })
+        obj.result = '异常'
+        this.tableData.push(obj)
         this.dialogType = 'error'
         this.dialogErrorInfo = msg
         this.dialogShow = true
         this.disabled = false
       } else {
         if (dropped && dropped.length > 0) {
-          this.tableData.push({
-            time: new Date().toLocaleString() + ':' + new Date().getMilliseconds(),
-            type: this.typeMap[this.type],
-            level: this.level,
-            result: '成功',
-            times: this.times
-          })
+          obj.result = '成功'
+          this.tableData.push(obj)
           this.dialogType = 'success'
           this.dialogDropped = data
           this.dialogShow = true
           this.disabled = false
         } else {
-          this.tableData.push({
-            time: new Date().toLocaleString() + ':' + new Date().getMilliseconds(),
-            type: this.typeMap[this.type],
-            level: this.level,
-            result: '失败',
-            times: this.times
-          })
+          obj.result = '失败'
+          this.tableData.push(obj)
           this.attackGuanqia()
         }
       }
@@ -198,7 +202,8 @@ export default {
         uid: this.uid,
         h5openid: this.h5openid,
         h5token: this.h5token,
-        boss_id: this.level
+        boss_id: this.level,
+        region: this.region
       }
       const data = await apis.attackBoss(params)
       const { result, dropped, msg } = data
