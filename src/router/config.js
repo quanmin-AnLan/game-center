@@ -165,6 +165,16 @@ export const routes = [
     ]
   },
   {
+    path: '/Monitor',
+    component: () => import('../views/Monitor/index.vue'),
+    children: [
+      {
+        path: '/Monitor/tool',
+        component: () => import('../views/Monitor/children/tool.vue')
+      }
+    ]
+  },
+  {
     path: '/CxkGame',
     component: () => import('../views/CxkGame.vue'),
   },
