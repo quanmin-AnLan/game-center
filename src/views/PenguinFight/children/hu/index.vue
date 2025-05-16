@@ -12,15 +12,15 @@
         </div>
         <div class="search-item-title">uid：</div>
         <div class="operate-item">
-          <el-input v-model="uid" placeholder="请输入uid"></el-input>
+          <el-input v-model.trim="uid" placeholder="请输入uid"></el-input>
         </div>
         <div class="search-item-title">h5openid：</div>
         <div class="operate-item">
-          <el-input v-model="h5openid" placeholder="请输入h5openid"></el-input>
+          <el-input v-model.trim="h5openid" placeholder="请输入h5openid"></el-input>
         </div>
         <div class="search-item-title">h5token：</div>
         <div class="operate-item">
-          <el-input v-model="h5token" placeholder="请输入h5token"></el-input>
+          <el-input v-model.trim="h5token" placeholder="请输入h5token"></el-input>
         </div>
       </div>
       <div class="search-item custom-box">
