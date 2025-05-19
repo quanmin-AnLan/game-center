@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-tabs v-model="activeSeason" @tab-click="tabClick" class="tab-container">
-      <el-tab-pane v-for="(item, index) in tabList" :key="index" :label="item.label" :name="item.name">
+      <el-tab-pane v-for="(item, index) in tabList" :key="index" :label="item" :name="item">
       </el-tab-pane>
     </el-tabs>
     <div v-loading="loading" :element-loading-text="loadingText">
@@ -117,41 +117,88 @@ export default {
       aiChampionData: [],
       aiText: '开始推演',
       loadingText: '拼命加载中',
-      activeSeason: '14',
-      tabList: [
-        {
-          label: 'S14',
-          name: '14'
-        },
-        {
-          label: 'S13',
-          name: '13'
-        },
-        {
-          label: 'S10',
-          name: '10'
-        },
-        {
-          label: 'S4.5',
-          name: '4.5'
-        }
-      ],
+      activeSeason: 'S14',
+      tabList: ['S14', 'S13', 'S12', 'S11', 'S10', 'S9.5', 'S9', 'S8.5', 'S8', 'S7.5', 'S7', 'S6.5', 'S6', 'S5.5', 'S5', 'S4.5', 'S4', 'S3.5', 'S3', 'S2'],
       seasonMap: {
-        14: {
+        S14: {
           season: '15.7-2025.S14',
           version: ''
         },
-        13: {
-          season: '15.2-2025.S13',
+        S13: {
+          season: '15.6-2025.S13',
           version: ''
         },
-        10: {
-          season: '15.10-2025.S14-6110',
-          version: '-6110'
+        S12: {
+          season: '14.22-2024.S12',
+          version: ''
         },
-        4.5: {
-          season: '15.2-2025.S13-6100',
-          version: '-6100'
+        S11: {
+          season: '14.14-2024.S11',
+          version: ''
+        },
+        S10: {
+          season: '14.5-2024.S10',
+          version: ''
+        },
+        'S9.5': {
+          season: '13.22-2023.S9',
+          version: ''
+        },
+        S9: {
+          season: '13.17-2023.S9',
+          version: ''
+        },
+        'S8.5': {
+          season: '13.11-2023.S8',
+          version: ''
+        },
+        S8: {
+          season: '13.5-2023.S8',
+          version: ''
+        },
+        'S7.5': {
+          season: '12.22-2022.S7',
+          version: ''
+        },
+        S7: {
+          season: '12.16-2022.S7',
+          version: ''
+        },
+        'S6.5': {
+          season: '12.10-2022.S6',
+          version: ''
+        },
+        S6: {
+          season: '12.2-2022.S6',
+          version: ''
+        },
+        'S5.5': {
+          season: '11.21-2021.S5',
+          version: ''
+        },
+        S5: {
+          season: '11.14-2021.S5',
+          version: ''
+        },
+        'S4.5': {
+          season: '11.8-2021.S4',
+          version: ''
+        },
+        S4: {
+          season: '11.1-2021.S4',
+          version: ''
+        },
+        'S3.5': {
+          season: '10.18-2020.S3',
+          version: ''
+        },
+        S3: {
+          season: '10.12-2020.S3',
+          version: ''
+        },
+        S2: {
+          season: '10.5-2020.S2',
+          version: ''
         }
       }
     }
