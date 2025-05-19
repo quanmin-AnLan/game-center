@@ -21,7 +21,7 @@
               </div>
             </div>
             <div class="operate-box">
-              <el-button class="edit-button" v-if="Number($route.params.id) === $store.state.userInfo.id" @click="$router.push({ path: '/UserCenter/edit' })">编辑个人资料</el-button>
+              <el-button class="edit-button" v-if="Number($route.params.id) === $store.state.app.userInfo.id" @click="$router.push({ path: '/UserCenter/edit' })">编辑个人资料</el-button>
             </div>
           </div>
           <div class="user-card-item">

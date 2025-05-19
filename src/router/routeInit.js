@@ -31,8 +31,8 @@ class RouteInit {
 
   checkAuth() {
     const { auth } = this.meta
-    const userInfo = localStorage.getItem('user_info')
-    const level = userInfo && JSON.parse(userInfo)?.level
+    const userInfo = store.state.app.userInfo
+    const level = userInfo.level
     if (auth && (auth > level || !level)) {
       Message({
         message:'权限不足或未登录',
@@ -86,7 +86,7 @@ class RouteInit {
   // 获取即将进入的路由信息存入vuex
   updateRouteStore() {
     let moduleType = this.fullPath.split('/')[1]
-    store.commit('SetAsyncRouteReady', moduleType)
+    store.dispatch('app/UpdateAsyncRouteReady', moduleType)
   }
 }
 

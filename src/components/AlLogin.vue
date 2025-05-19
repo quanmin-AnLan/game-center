@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible="$store.state.loginVisible" @close="handleCancel" :title="typeMap[type]">
+  <el-dialog :visible="$store.state.app.loginVisible" @close="handleCancel" :title="typeMap[type]">
     <li v-for="(item, index) in config" :key="index">
       <template v-if="item.scene.indexOf(type) > -1">
         <div class="common-input-box">
@@ -104,8 +104,7 @@ export default {
         if (res.uuid) {
           const baseData = res
           baseData.level = Number(baseData.level)
-          this.$store.commit('SetUserInfo', baseData)
-          localStorage.setItem('user_info', JSON.stringify(baseData))
+          this.$store.dispatch('app/UpdateUserInfo', baseData)
           this.handleCancel()
         }
       })
@@ -113,7 +112,7 @@ export default {
     // 取消事件
     handleCancel() {
       Object.assign(this.$data, this.$options.data.call(this));
-      this.$store.commit('SetLoginVisible', false)
+      this.$store.dispatch('app/UpdateLoginVisible', false)
     },
     // 动态去除红色高亮样式
     removeWrongCls(prop, value) {

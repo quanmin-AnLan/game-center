@@ -33,7 +33,7 @@ export default {
   },
   created() {
     this.headers = {
-      uuid: this.$store.state.userInfo.uuid
+      uuid: this.$store.state.app.userInfo.uuid
     }
     this.resourceSrc = this.baseSrc
   },

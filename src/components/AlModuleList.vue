@@ -1,5 +1,5 @@
 <template>
-  <section class="al-module-list" v-if="$store.state.routeTabVisible">
+  <section class="al-module-list" v-if="$store.state.app.routeTabVisible">
     <div class="shadow" @click="close" v-if="$route.path !== '/'"></div>
     <ul class="module-list">
       <li v-for="(item, index) in washModuleList" :key="item.route" @mouseover="selectStyle(index)"
@@ -21,7 +21,7 @@
               'active-module-list-item-txt': index === activeIndex
             },
             {
-              'disable-module-list-item-txt': item.route === $store.state.asyncRouteReady
+              'disable-module-list-item-txt': item.route === $store.state.app.asyncRouteReady
             },
           ]">{{ item.name }}</p>
         </template>
@@ -58,9 +58,20 @@ export default {
           'route': 'QQFight'
         },
         {
+          'name': '工具',
+          'logo': 'http://img.anlan.xyz/game/auth.jpg',
+          'route': 'Tools'
+        },
+        {
           'name': '权限',
           'logo': 'http://img.anlan.xyz/game/auth.jpg',
           'route': 'Auth',
+          'auth': 6
+        },
+        {
+          'name': '监控',
+          'logo': 'http://img.anlan.xyz/game/auth.jpg',
+          'route': 'Monitor',
           'auth': 6
         },
         {
@@ -80,9 +91,9 @@ export default {
     },
     goTo(route) {
       // 如果不在当前模块，才允许跳转
-      if (!this.$store.state.asyncRouteReady || this.$store.state.asyncRouteReady !== route) {
+      if (!this.$store.state.app.asyncRouteReady || this.$store.state.app.asyncRouteReady !== route) {
         this.outStyle()
-        this.$store.commit('SetRouteTabVisible', false)
+        this.$store.dispatch('app/UpdateRouteTabVisible', false)
         this.$router.push({path: `/${route}`})
       }
     },
@@ -93,7 +104,7 @@ export default {
         return
       }
       // 通知父组件关闭遮罩事件
-      this.$store.commit('SetRouteTabVisible', false)
+      this.$store.dispatch('app/UpdateRouteTabVisible', false)
     }
   },
   computed: {
@@ -103,7 +114,7 @@ export default {
         if (!item.auth) {
           result.push(item)
         } else {
-          if (this.$store.state.userInfo.level >= item.auth) {
+          if (this.$store.state.app.userInfo.level >= item.auth) {
             result.push(item)
           }
         }

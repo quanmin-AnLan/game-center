@@ -30,32 +30,31 @@ const toWebp = (url) => {
 }
 
 const login = () => {
-  store.commit('SetLoginVisible', true)
+  store.dispatch('app/UpdateLoginVisible', true)
 }
 
 const changeRoute = () => {
-  store.commit('SetRouteTabVisible', true)
+  store.dispatch('app/UpdateRouteTabVisible', true)
 }
 
 const refreshUserInfo = () => {
-  const userInfo = localStorage.getItem('user_info')
-  if (userInfo) {
+  const userInfo = store.state.app.userInfo
+  if (userInfo.uuid) {
     const params = {
-      id: JSON.parse(userInfo)?.uuid,
+      id: userInfo.uuid,
       type: 'uuid'
     }
     apis.getUserInfo(params).then(res => {
       if (res.uuid) {
-        store.commit('SetUserInfo', res)
-        localStorage.setItem('user_info', JSON.stringify(res))
+        store.dispatch('app/UpdateUserInfo', res)
       }
     })
   }
 }
 
 const intoArticle = (src) => {
-  store.commit('SetOutlinkSrc', src)
-  store.commit('SetShowOutlink', true)
+  store.dispatch('app/UpdateOutlinkSrc', src)
+  store.dispatch('app/UpdateShowOutlink', true)
 }
 
 const addJs = (url, cb) => {

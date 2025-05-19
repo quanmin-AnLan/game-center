@@ -67,7 +67,7 @@ export default {
   },
   computed: {
     level () {
-      const result = this.$store.state.userInfo.level || 0
+      const result = this.$store.state.app.userInfo.level || 0
       return result
     }
   },

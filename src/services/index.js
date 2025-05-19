@@ -15,8 +15,8 @@ const request = axios.create({
 // 请求拦截器
 request.interceptors.request.use(
   config => {
-    if (store?.state?.userInfo?.uuid) {
-      config.headers.uuid = store.state.userInfo.uuid
+    if (store?.state?.app?.userInfo?.uuid) {
+      config.headers.uuid = store.state.app.userInfo.uuid
     }
     return config
   },

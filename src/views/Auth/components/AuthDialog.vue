@@ -49,7 +49,7 @@ export default {
           value: Number(item)
         })
       }
-      return arr.slice(0, this.$store.state.userInfo.level)
+      return arr.slice(0, this.$store.state.app.userInfo.level)
     },
     washRow() {
       return this.row

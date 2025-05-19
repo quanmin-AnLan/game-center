@@ -47,7 +47,7 @@ export default {
     }
   },
   created() {
-    this.baseUserInfo = JSON.parse(JSON.stringify(this.$store.state.userInfo))
+    this.baseUserInfo = JSON.parse(JSON.stringify(this.$store.state.app.userInfo))
   },
   methods: {
     submit() {
@@ -58,7 +58,7 @@ export default {
     },
     handleCancel() {
       this.$router.push({
-        path: `/UserCenter/show/${this.$store.state.userInfo.id}`
+        path: `/UserCenter/show/${this.$store.state.app.userInfo.id}`
       })
     },
     getImgSrc(src) {

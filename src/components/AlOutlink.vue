@@ -1,7 +1,7 @@
 <template>
   <section class="iframe-container">
-    <div @click="$store.commit('SetShowOutlink', false)">我是返回</div>
-    <iframe class="iframe-main" :src="$store.state.OutlinkSrc"></iframe>
+    <div @click="$store.dispatch('app/UpdateShowOutlink', false)">我是返回</div>
+    <iframe class="iframe-main" :src="$store.state.app.OutlinkSrc"></iframe>
   </section>
 </template>
 

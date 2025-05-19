@@ -7,7 +7,7 @@ Vue.use(VueRouter)
 
 import store from '../store/index'
 
-store.commit('SetAsyncRouteReady', '') //  初始化动态路由挂载状态
+store.dispatch('app/UpdateAsyncRouteReady', '') //  初始化动态路由挂载状态
 
 const router = new VueRouter({
   mode: 'history',

@@ -41,7 +41,7 @@ export default {
           label: '状态',
         },
       ]
-      const level = this.$store.state.userInfo.level
+      const level = this.$store.state.app.userInfo.level
       if (level > 4) {
         base.push({
           prop: 'name',

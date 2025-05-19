@@ -1,86 +1,92 @@
 <template>
-  <div v-loading="loading" :element-loading-text="loadingText">
-    <div class="common-title">筛选区</div>
-    <section class="search">
-      <div class="search-item">
-        <div class="search-item-title">英雄种族:</div>
-        <div class="operate-item">
-          <el-select v-model="raceKey" placeholder="请选择英雄种族">
-            <el-option v-for="(item, index) in raceSelectOptions" :key="index" :label="item.label"
-              :value="item.value"></el-option>
-          </el-select>
-        </div>
-        <div class="search-item-title">英雄职业:</div>
-        <div class="operate-item">
-          <el-select v-model="jobKey" placeholder="请选择英雄职业">
-            <el-option v-for="(item, index) in jobSelectOptions" :key="index" :label="item.label"
-              :value="item.value"></el-option>
-          </el-select>
-        </div>
-        <div class="search-item-title">英雄费用:</div>
-        <div class="operate-item">
-          <el-select v-model="priceKey" placeholder="请选择英雄费用">
-            <el-option v-for="(item, index) in priceSelectOptions" :key="index" :label="item.label"
-              :value="item.value"></el-option>
-          </el-select>
-        </div>
-        <div class="search-item-title">英雄名称:</div>
-        <div class="operate-item">
-          <el-input v-model="nameKey" placeholder="请输入英雄名称"></el-input>
-        </div>
-      </div>
-    </section>
-    <div class="common-title">点击英雄头像以在队伍中添加/删除该英雄</div>
-    <div class="champion-show">
-      <div v-for="(item, index) in washChampionData" :key="index" class="champion-item click"
-        @click="addChampion(item)">
-        <el-tooltip :content="tooltipShow(item)" placement="top">
-          <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
-        </el-tooltip>
-      </div>
-    </div>
-    <div class="common-title">当前队伍</div>
-    <div class="champion-show">
-      <div v-for="(item, index) in chooseData" :key="index" class="champion-item click" @click="addChampion(item)">
-        <el-tooltip :content="tooltipShow(item)" placement="top">
-          <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
-        </el-tooltip>
-      </div>
-    </div>
-    <div class="common-title">当前羁绊</div>
-    <div class="job-show">
-      <div class="job-item" v-for="(item, index) in chooseRaceJobData" :key="index">
-        <div class="job-item-text" :class="{'job-item-text-active': item.active}">
-          {{ item.name }}{{ item.active ? `(${item.active})` : '' }}：
-        </div>
-        <div class="job-item-num">{{ item.num + '/' + item.level }}</div>
-      </div>
-    </div>
-    <div class="common-title">基于当前队伍智能生成阵容</div>
-    <div class="ai-show">
-      <div class="ai-operate">
-        <div class="ai-operate-item">目标队伍人数：</div>
-        <el-input-number v-model="aiNum" :max="10" :min="1" class="ai-operate-item"></el-input-number>
-        <el-button @click="aiTeam()" :disabled="loading">{{ aiText }}</el-button>
-      </div>
-    </div>
-    <div class="common-title">推演队伍{{ aiChampionData.length ? `(生成了${aiChampionData.length}个队伍)` : '' }}</div>
-    <div style="width: 1200px; margin: 0 auto;">
-      <div v-for="(data, i) in aiChampionData" :key="i">
-        <el-divider>第{{ Number(i) + 1 }}个结果</el-divider>
-        <div style="width: 100%; display: flex; flex-wrap: wrap; margin-top: 8px;">
-          <div v-for="(item, index) in data" :key="index" class="champion-item">
-            <el-tooltip :content="tooltipShow(item)" placement="top">
-              <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
-            </el-tooltip>
+  <div>
+    <el-tabs v-model="activeSeason" @tab-click="tabClick" class="tab-container">
+      <el-tab-pane v-for="(item, index) in tabList" :key="index" :label="item.label" :name="item.name">
+      </el-tab-pane>
+    </el-tabs>
+    <div v-loading="loading" :element-loading-text="loadingText">
+      <div class="common-title">筛选区</div>
+      <section class="search">
+        <div class="search-item">
+          <div class="search-item-title">英雄种族:</div>
+          <div class="operate-item">
+            <el-select v-model="raceKey" placeholder="请选择英雄种族">
+              <el-option v-for="(item, index) in raceSelectOptions" :key="index" :label="item.label"
+                :value="item.value"></el-option>
+            </el-select>
+          </div>
+          <div class="search-item-title">英雄职业:</div>
+          <div class="operate-item">
+            <el-select v-model="jobKey" placeholder="请选择英雄职业">
+              <el-option v-for="(item, index) in jobSelectOptions" :key="index" :label="item.label"
+                :value="item.value"></el-option>
+            </el-select>
+          </div>
+          <div class="search-item-title">英雄费用:</div>
+          <div class="operate-item">
+            <el-select v-model="priceKey" placeholder="请选择英雄费用">
+              <el-option v-for="(item, index) in priceSelectOptions" :key="index" :label="item.label"
+                :value="item.value"></el-option>
+            </el-select>
+          </div>
+          <div class="search-item-title">英雄名称:</div>
+          <div class="operate-item">
+            <el-input v-model="nameKey" placeholder="请输入英雄名称"></el-input>
           </div>
         </div>
-        <div style="width: 100%; display: flex; flex-wrap: wrap;">
-          <div class="job-item" v-for="(item, index) in aiChampionJobData[i]" :key="index">
-            <div class="job-item-text" :class="{ 'job-item-text-active': item.active }">
-              {{ item.name }}{{ item.active ? `(${item.active})` : '' }}：
+      </section>
+      <div class="common-title">点击英雄头像以在队伍中添加/删除该英雄</div>
+      <div class="champion-show">
+        <div v-for="(item, index) in washChampionData" :key="index" class="champion-item click"
+          @click="addChampion(item)">
+          <el-tooltip :content="tooltipShow(item)" placement="top">
+            <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
+          </el-tooltip>
+        </div>
+      </div>
+      <div class="common-title">当前队伍</div>
+      <div class="champion-show">
+        <div v-for="(item, index) in chooseData" :key="index" class="champion-item click" @click="addChampion(item)">
+          <el-tooltip :content="tooltipShow(item)" placement="top">
+            <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
+          </el-tooltip>
+        </div>
+      </div>
+      <div class="common-title">当前羁绊</div>
+      <div class="job-show">
+        <div class="job-item" v-for="(item, index) in chooseRaceJobData" :key="index">
+          <div class="job-item-text" :class="{'job-item-text-active': item.active}">
+            {{ item.name }}{{ item.active ? `(${item.active})` : '' }}：
+          </div>
+          <div class="job-item-num">{{ item.num + '/' + item.level }}</div>
+        </div>
+      </div>
+      <div class="common-title">基于当前队伍智能生成阵容</div>
+      <div class="ai-show">
+        <div class="ai-operate">
+          <div class="ai-operate-item">目标队伍人数：</div>
+          <el-input-number v-model="aiNum" :max="10" :min="1" class="ai-operate-item"></el-input-number>
+          <el-button @click="aiTeam()" :disabled="loading">{{ aiText }}</el-button>
+        </div>
+      </div>
+      <div class="common-title">推演队伍{{ aiChampionData.length ? `(生成了${aiChampionData.length}个队伍)` : '' }}</div>
+      <div style="width: 1200px; margin: 0 auto;">
+        <div v-for="(data, i) in aiChampionData" :key="i">
+          <el-divider>第{{ Number(i) + 1 }}个结果</el-divider>
+          <div style="width: 100%; display: flex; flex-wrap: wrap; margin-top: 8px;">
+            <div v-for="(item, index) in data" :key="index" class="champion-item">
+              <el-tooltip :content="tooltipShow(item)" placement="top">
+                <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
+              </el-tooltip>
             </div>
-            <div class="job-item-num">{{ item.num + '/' + item.level }}</div>
+          </div>
+          <div style="width: 100%; display: flex; flex-wrap: wrap;">
+            <div class="job-item" v-for="(item, index) in aiChampionJobData[i]" :key="index">
+              <div class="job-item-text" :class="{ 'job-item-text-active': item.active }">
+                {{ item.name }}{{ item.active ? `(${item.active})` : '' }}：
+              </div>
+              <div class="job-item-num">{{ item.num + '/' + item.level }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -110,7 +116,44 @@ export default {
       aiNum: 10,
       aiChampionData: [],
       aiText: '开始推演',
-      loadingText: '拼命加载中'
+      loadingText: '拼命加载中',
+      activeSeason: '14',
+      tabList: [
+        {
+          label: 'S14',
+          name: '14'
+        },
+        {
+          label: 'S13',
+          name: '13'
+        },
+        {
+          label: 'S10',
+          name: '10'
+        },
+        {
+          label: 'S4.5',
+          name: '4.5'
+        }
+      ],
+      seasonMap: {
+        14: {
+          season: '15.7-2025.S14',
+          version: ''
+        },
+        13: {
+          season: '15.2-2025.S13',
+          version: ''
+        },
+        10: {
+          season: '15.10-2025.S14-6110',
+          version: '-6110'
+        },
+        4.5: {
+          season: '15.2-2025.S13-6100',
+          version: '-6100'
+        }
+      }
     }
   },
   computed: {
@@ -204,10 +247,18 @@ export default {
     this.init()
   },
   methods: {
+    tabClick (tab) {
+      Object.assign(this.$data, this.$options.data.call(this))
+      this.activeSeason = tab.name
+      this.loading = true
+      this.init()
+    },
     async init() {
       try {
-        const championData = await apis.getTFTChampionData()
-        const filterChampionData = championData.filter(item => item.jobs !== '召唤物')
+        const season = this.seasonMap[this.activeSeason].season
+        const version = this.seasonMap[this.activeSeason].version
+        const championData = await apis.getTFTChampionData(season, version)
+        const filterChampionData = championData.filter(item => item.jobs !== '召唤物' && (item.jobs || item.races))
         this.championData = filterChampionData.map(item => {
           return {
             name: item.name,
@@ -217,7 +268,7 @@ export default {
             price: item.price
           }
         })
-        const raceData = await apis.getTFTRaceData()
+        const raceData = await apis.getTFTRaceData(season, version)
         this.raceData = raceData.map(item => {
           return {
             name: item.name,
@@ -230,7 +281,7 @@ export default {
             label: item.name
           })
         }
-        const jobData = await apis.getTFTJobData()
+        const jobData = await apis.getTFTJobData(season, version)
         this.jobData = jobData.map(item => {
           return {
             name: item.name,
@@ -467,6 +518,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.tab-container {
+  width: 1200px;
+  margin: 0 auto;
+}
 .common-title {
   font-size: 18px;
   margin: 36px 0;
