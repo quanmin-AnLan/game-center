@@ -76,7 +76,7 @@ export default {
     },
     headers() {
       return {
-        uuid: this.$store.state.userInfo.uuid
+        uuid: this.$store.state.app.userInfo.uuid
       }
     }
   },

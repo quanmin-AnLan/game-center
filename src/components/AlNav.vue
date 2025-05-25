@@ -5,10 +5,10 @@
         <span class="nav-title">{{ title }}</span>
       </section>
       <section class="user-info">
-        <el-avatar :src="$fn.cut($store.state.userInfo.imgSrc, 80, 80)" v-if="$store.state.userInfo.imgSrc" class="nav-img"></el-avatar>
-        <el-dropdown v-if="$store.state.userInfo.uuid" placement="bottom" @command="dropDownClick" class="common-icon dropdown-box">
+        <el-avatar :src="$fn.cut($store.state.app.userInfo.imgSrc, 80, 80)" v-if="$store.state.app.userInfo.imgSrc" class="nav-img"></el-avatar>
+        <el-dropdown v-if="$store.state.app.userInfo.uuid" placement="bottom" @command="dropDownClick" class="common-icon dropdown-box">
           <span class="dropdown-text">
-            {{ $store.state.userInfo.user }}
+            {{ $store.state.app.userInfo.user }}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
@@ -54,14 +54,13 @@ export default {
     },
     routerPush(router) {
       if (router.indexOf(/show/) > -1) {
-        router += this.$store.state.userInfo.id
+        router += this.$store.state.app.userInfo.id
       }
-      this.$store.commit('SetRouteTabVisible', false)
+      this.$store.dispatch('app/UpdateRouteTabVisible', false)
       this.$router.push({path: router})
     },
     logout() {
-      localStorage.removeItem('user_info')
-      this.$store.commit('SetUserInfo', {})
+      this.$store.dispatch('app/UpdateUserInfo', {})
       this.$message.success('登出成功')
       if (window.location.pathname !== '/') {
         this.routerPush('/')

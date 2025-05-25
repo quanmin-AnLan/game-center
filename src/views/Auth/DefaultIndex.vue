@@ -2,7 +2,7 @@
   <section class="auth-main">
     <al-table :tableData="tableData" :headerSet="headerSet">
       <template v-slot:special-content-operate="{ scope }">
-        <el-button @click="operate('edit', scope.row)" :disabled="scope.row.level >= $store.state.userInfo.level">
+        <el-button @click="operate('edit', scope.row)" :disabled="scope.row.level >= $store.state.app.userInfo.level">
           <i class="el-icon-edit-outline common-icon"></i>
         </el-button>
       </template>
