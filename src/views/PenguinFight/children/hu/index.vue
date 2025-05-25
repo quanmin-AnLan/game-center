@@ -111,8 +111,21 @@ export default {
         boss: '首领'
       },
       regionOptions: [
+        { label: '手q区', value: '1' },
         { label: '空间1区', value: '301' },
-        { label: '微信1区', value: '4' }
+        { label: '空间2区', value: '14' },
+        { label: '空间3区', value: '15' },
+        { label: '空间6区', value: '26' },
+        { label: '空间7区', value: '28' },
+        { label: '空间8区', value: '30' },
+        { label: '空间9区', value: '32' },
+        { label: '微信1区', value: '4' },
+        { label: '微信2区', value: '5' },
+        { label: '微信6区', value: '12' },
+        { label: '微信12区', value: '23' },
+        { label: '微信15区', value: '29' },
+        { label: '微信16区', value: '31' },
+        { label: '微信H5区', value: '2' }
       ],
       level: 1,
       tableData: [],
