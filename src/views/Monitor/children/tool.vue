@@ -40,7 +40,8 @@ export default {
       headerSet: [
         {
           prop: 'date',
-          label: '日期'
+          label: '日期',
+          sortable: true
         },
         {
           prop: 'name',

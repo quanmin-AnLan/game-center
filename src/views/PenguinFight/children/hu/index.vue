@@ -12,15 +12,15 @@
         </div>
         <div class="search-item-title">uid：</div>
         <div class="operate-item">
-          <el-input v-model.trim="uid" placeholder="请输入uid"></el-input>
+          <el-input v-model.trim="uid" placeholder="请输入uid" :disabled="disabled"></el-input>
         </div>
         <div class="search-item-title">h5openid：</div>
         <div class="operate-item">
-          <el-input v-model.trim="h5openid" placeholder="请输入h5openid"></el-input>
+          <el-input v-model.trim="h5openid" placeholder="请输入h5openid" :disabled="disabled"></el-input>
         </div>
         <div class="search-item-title">h5token：</div>
         <div class="operate-item">
-          <el-input v-model.trim="h5token" placeholder="请输入h5token"></el-input>
+          <el-input v-model.trim="h5token" placeholder="请输入h5token" :disabled="disabled"></el-input>
         </div>
       </div>
       <div class="search-item custom-box">
@@ -42,13 +42,24 @@
         </div>
       </div>
       <div class="search-item operate-box">
+        <el-button @click="getHuInfo">查看属性</el-button>
         <el-button @click="attack">开始挑战</el-button>
       </div>
     </section>
     <div class="common-title">展示区</div>
     <section class="table">
-      <al-table :tableData="tableData" :headerSet="headerSet"></al-table>
+      <al-table :tableData="pageTableData" :headerSet="headerSet"></al-table>
+      <el-pagination class="pagination" layout="total, sizes, prev, pager, next, jumper" :page-sizes="[10, 20, 30, 40]"
+        :page-size.sync="pageSize" :total="tableData.length" :current-page.sync="page">
+      </el-pagination>
     </section>
+    <el-drawer :visible.sync="drawerShow" direction="rtl" :size="1300">
+      <div class="drawer-text-title">总属性</div>
+      <div class="drawer-text">{{ washDropped.attrs }}</div>
+      <section class="table">
+        <al-table :tableData="attrData" :headerSet="attrHeader"></al-table>
+      </section>
+    </el-drawer>
     <el-dialog :visible="dialogShow" @close="dialogShow = false" title="提示">
       <div v-if="dialogType === 'success'" class="dialog-success">
         <div class="success-title">挑战成功，请自行上号替换或分解</div>
@@ -111,21 +122,21 @@ export default {
         boss: '首领'
       },
       regionOptions: [
-        { label: '手q区', value: '1' },
+        // { label: '手q区', value: '1' },
         { label: '空间1区', value: '301' },
-        { label: '空间2区', value: '14' },
-        { label: '空间3区', value: '15' },
-        { label: '空间6区', value: '26' },
+        // { label: '空间2区', value: '14' },
+        // { label: '空间3区', value: '15' },
+        // { label: '空间6区', value: '26' },
         { label: '空间7区', value: '28' },
-        { label: '空间8区', value: '30' },
-        { label: '空间9区', value: '32' },
+        // { label: '空间8区', value: '30' },
+        // { label: '空间9区', value: '32' },
         { label: '微信1区', value: '4' },
-        { label: '微信2区', value: '5' },
-        { label: '微信6区', value: '12' },
-        { label: '微信12区', value: '23' },
-        { label: '微信15区', value: '29' },
-        { label: '微信16区', value: '31' },
-        { label: '微信H5区', value: '2' }
+        // { label: '微信2区', value: '5' },
+        // { label: '微信6区', value: '12' },
+        // { label: '微信12区', value: '23' },
+        // { label: '微信15区', value: '29' },
+        // { label: '微信16区', value: '31' },
+        // { label: '微信H5区', value: '2' }
       ],
       level: 1,
       tableData: [],
@@ -136,6 +147,18 @@ export default {
         { label: '关数', prop: 'level' },
         { label: '结果', prop: 'result' }
       ],
+      attrData: [],
+      attrHeader: [
+        { label: '名称', prop: 'name', width: 150 },
+        { label: '装备等级', prop: 'level', width: 100 },
+        { label: '战力', prop: 'point', width: 100 },
+        { label: '强化等级', prop: 'upgrade_level', width: 100 },
+        { label: '主属性', prop: 'primary_attrs', width: 250 },
+        { label: '副属性', prop: 'sub_attrs' }
+      ],
+      page: 1,
+      pageSize: 10,
+      drawerShow: false,
       dialogType: 'success',
       dialogShow: false,
       dialogErrorInfo: '',
@@ -162,6 +185,9 @@ export default {
       const oldVal = (base.equipments && base.equipments.find(item => item.type === newVal.type)) || {}
       const attrs = base.attrs || ''
       return { newVal, oldVal, attrs }
+    },
+    pageTableData () {
+      return this.tableData.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
     }
   },
   mounted() {
@@ -180,6 +206,49 @@ export default {
       }
       this.disabled = true
       const data = await apis.attackGuanqia(params)
+      const isContinue = await this.attackCommonCallback(data)
+      if (isContinue) {
+        this.attackGuanqia()
+      }
+    },
+    async getHuInfo() {
+      const params = {
+        uid: this.uid,
+        h5openid: this.h5openid,
+        h5token: this.h5token,
+      }
+      const data = await apis.getHuInfo(params)
+      const { equipments, divines, skins, slots } = data
+      this.dialogDropped = data
+      const arr = equipments.concat(divines).concat(skins)
+      for (let i = 0; i < arr.length; i++) {
+        arr[i].upgrade_level = slots[i].level
+      }
+      this.attrData = arr.map(item => {
+        return {
+          name: item.name,
+          level: item.level,
+          upgrade_level: item.upgrade_level,
+          point: item.point,
+          primary_attrs: item.primary_attrs,
+          sub_attrs: item.sub_attrs
+        }
+      })
+      this.drawerShow = true
+    },
+    async attackBoss() {
+      const params = {
+        uid: this.uid,
+        h5openid: this.h5openid,
+        h5token: this.h5token,
+        boss_id: this.level,
+        region: this.region
+      }
+      this.disabled = true
+      const data = await apis.attackBoss(params)
+      this.attackCommonCallback(data)
+    },
+    attackCommonCallback (data) {
       const { result, dropped, msg } = data
       this.times++
       const obj = {
@@ -206,52 +275,7 @@ export default {
         } else {
           obj.result = '失败'
           this.tableData.push(obj)
-          this.attackGuanqia()
-        }
-      }
-    },
-    async attackBoss() {
-      const params = {
-        uid: this.uid,
-        h5openid: this.h5openid,
-        h5token: this.h5token,
-        boss_id: this.level,
-        region: this.region
-      }
-      const data = await apis.attackBoss(params)
-      const { result, dropped, msg } = data
-      this.times++
-      if (result !== 0) {
-        this.tableData.push({
-          time: new Date().toLocaleString() + ':' + new Date().getMilliseconds(),
-          type: this.typeMap[this.type],
-          level: this.level,
-          result: '异常',
-          times: this.times
-        })
-        this.dialogType = 'error'
-        this.dialogErrorInfo = msg
-        this.dialogShow = true
-      } else {
-        if (dropped && dropped.length > 0) {
-          this.tableData.push({
-            time: new Date().toLocaleString() + ':' + new Date().getMilliseconds(),
-            type: this.typeMap[this.type],
-            level: this.level,
-            result: '成功',
-            times: this.times
-          })
-          this.dialogType = 'success'
-          this.dialogDropped = data
-          this.dialogShow = true
-        } else {
-          this.tableData.push({
-            time: new Date().toLocaleString() + ':' + new Date().getMilliseconds(),
-            type: this.typeMap[this.type],
-            level: this.level,
-            result: '失败',
-            times: this.times
-          })
+          return true
         }
       }
     },
@@ -297,6 +321,10 @@ export default {
 .table {
   width: 1200px;
   margin: 0 auto;
+  .pagination {
+    margin-top: 20px;
+    text-align: center;
+  }
 }
 .dialog-success {
   .success-title {
@@ -325,6 +353,18 @@ export default {
         font-weight: bold;
       }
     }
+  }
+}
+.el-drawer__wrapper {
+  margin-top: 48px;
+  .drawer-text-title {
+    font-size: 16px;
+  }
+  .drawer-text {
+    font-size: 14px;
+    text-align: left;
+    width: 1200px;
+    margin: 20px auto;
   }
 }
 </style>

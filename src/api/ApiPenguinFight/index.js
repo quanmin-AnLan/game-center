@@ -22,7 +22,9 @@ const apis = {
   // 壶中关卡
   attackGuanqia: (params) => Http.post(`/ledou/hu/guanqia`, params),
   // 壶中boss
-  attackBoss: (params) => Http.post(`/ledou/hu/boss`, params)
+  attackBoss: (params) => Http.post(`/ledou/hu/boss`, params),
+  // 获取壶中信息
+  getHuInfo: (params) => Http.post(`/ledou/hu/info`, params),
 };
 
 export default apis
