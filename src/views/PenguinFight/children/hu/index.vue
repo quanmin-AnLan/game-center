@@ -216,6 +216,7 @@ export default {
         uid: this.uid,
         h5openid: this.h5openid,
         h5token: this.h5token,
+        region: this.region
       }
       const data = await apis.getHuInfo(params)
       const { equipments, divines, skins, slots } = data
