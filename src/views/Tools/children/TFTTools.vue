@@ -199,6 +199,10 @@ export default {
         S2: {
           season: '10.5-2020.S2',
           version: ''
+        },
+        S1: {
+          season: '9.21-2019.S1',
+          version: ''
         }
       }
     }
