@@ -118,7 +118,7 @@ export default {
       aiText: '开始推演',
       loadingText: '拼命加载中',
       activeSeason: 'S14',
-      tabList: ['S14', 'S13', 'S12', 'S11', 'S10', 'S9.5', 'S9', 'S8.5', 'S8', 'S7.5', 'S7', 'S6.5', 'S6', 'S5.5', 'S5', 'S4.5', 'S4', 'S3.5', 'S3', 'S2'],
+      tabList: ['S14', 'S13', 'S12', 'S11', 'S10', 'S9.5', 'S9', 'S8.5', 'S8', 'S7.5', 'S7', 'S6.5', 'S6', 'S5.5', 'S5', 'S4.5', 'S4', 'S3.5', 'S3', 'S2', 'S1'],
       seasonMap: {
         S14: {
           season: '15.7-2025.S14',
@@ -334,6 +334,13 @@ export default {
         }
         const jobData = await apis.getTFTJobData(season, version)
         this.jobData = jobData.map(item => {
+          if (item.name === '剑士' && this.activeSeason === 'S1') {
+            item.level = {
+              3: '',
+              6: '',
+              9: ''
+            }
+          }
           return {
             name: item.name,
             level: Object.keys(item.level)
@@ -354,6 +361,7 @@ export default {
         this.loading = false
       } catch (err) {
         this.loading = false
+        console.log(err)
         this.$message.error('获取官方数据失败，请联系安澜')
       }
     },
