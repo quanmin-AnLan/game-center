@@ -245,6 +245,16 @@ export default {
         boss_id: this.level,
         region: this.region
       }
+      if ([21, 22, 23, 24, 25].includes(this.level)) {
+        const bossLevelMap = {
+          21: 35,
+          22: 36,
+          23: 37,
+          24: 38,
+          25: 39
+        }
+        params.boss_id = bossLevelMap[this.level]
+      }
       this.disabled = true
       const data = await apis.attackBoss(params)
       this.attackCommonCallback(data)
