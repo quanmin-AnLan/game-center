@@ -38,7 +38,7 @@
         </div>
         <div class="search-item-title">关数：</div>
         <div class="operate-item">
-          <el-input-number :min="1" :max="20" v-model="level" :disabled="disabled"></el-input-number>
+          <el-input-number :min="1" :max="25" v-model="level" :disabled="disabled"></el-input-number>
         </div>
       </div>
       <div class="search-item operate-box">
