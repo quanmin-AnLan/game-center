@@ -52,6 +52,26 @@ export default {
         {
           label: '5星',
           value: '5'
+        },
+        {
+          label: '6星',
+          value: '6'
+        },
+        {
+          label: '7星',
+          value: '7'
+        },
+        {
+          label: '8星',
+          value: '8'
+        },
+        {
+          label: '9星',
+          value: '9'
+        },
+        {
+          label: '10星',
+          value: '10'
         }
       ],
       activeName: '1'

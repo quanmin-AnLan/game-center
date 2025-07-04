@@ -38,7 +38,7 @@
         </div>
         <div class="search-item-title">关数：</div>
         <div class="operate-item">
-          <el-input-number :min="1" :max="25" v-model="level" :disabled="disabled"></el-input-number>
+          <el-input-number :min="1" :max="maxNumber" v-model="level" :disabled="disabled"></el-input-number>
         </div>
       </div>
       <div class="search-item operate-box">
@@ -112,7 +112,7 @@ export default {
       h5openid: '',
       h5token: '',
       type: 'guanqia',
-      region: '',
+      region: '301',
       typeOptions: [
         { label: '关卡', value: 'guanqia' },
         { label: '首领', value: 'boss' }
@@ -168,6 +168,9 @@ export default {
     }
   },
   watch: {
+    region (val) {
+      localStorage.setItem('region', val)
+    },
     uid (val) {
       localStorage.setItem('uid', val)
     },
@@ -188,9 +191,18 @@ export default {
     },
     pageTableData () {
       return this.tableData.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
+    },
+    maxNumber () {
+      if (this.type === 'guanqia') {
+        return 20
+      } else if (this.type === 'boss') {
+        return 25
+      }
+      return 1
     }
   },
   mounted() {
+    this.region = localStorage.getItem('region') || '301'
     this.uid = localStorage.getItem('uid') || ''
     this.h5openid = localStorage.getItem('h5openid') || ''
     this.h5token = localStorage.getItem('h5token') || ''
