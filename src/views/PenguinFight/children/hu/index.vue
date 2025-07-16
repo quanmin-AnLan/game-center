@@ -126,7 +126,7 @@ export default {
         { label: '空间1区', value: '301' },
         // { label: '空间2区', value: '14' },
         // { label: '空间3区', value: '15' },
-        // { label: '空间6区', value: '26' },
+        { label: '空间6区', value: '26' },
         { label: '空间7区', value: '28' },
         // { label: '空间8区', value: '30' },
         // { label: '空间9区', value: '32' },
@@ -233,9 +233,14 @@ export default {
       const data = await apis.getHuInfo(params)
       const { equipments, divines, skins, slots } = data
       this.dialogDropped = data
-      const arr = equipments.concat(divines).concat(skins)
+      const arr = equipments.concat(divines.filter(item => item.left_time !== 0)).concat(skins.filter(item => item.left_time !== 0))
       for (let i = 0; i < arr.length; i++) {
-        arr[i].upgrade_level = slots[i].level
+        const slot = slots.find(item => item.equipment_id === arr[i].equipment_id)
+        if (slot) {
+          arr[i].upgrade_level = slot.level
+        } else {
+          arr[i].upgrade_level = '未装备'
+        }
       }
       this.attrData = arr.map(item => {
         return {
