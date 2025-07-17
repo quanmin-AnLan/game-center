@@ -25,6 +25,8 @@ const apis = {
   attackBoss: (params) => Http.post(`/ledou/hu/boss`, params),
   // 获取壶中信息
   getHuInfo: (params) => Http.post(`/ledou/hu/info`, params),
+  // 获取鹅鹅快跑
+  getEEKP: (params) => Http.post(`/ledou/eekp`, params),
 };
 
 export default apis

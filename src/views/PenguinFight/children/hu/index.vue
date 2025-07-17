@@ -44,6 +44,7 @@
       <div class="search-item operate-box">
         <el-button @click="getHuInfo">查看属性</el-button>
         <el-button @click="attack">开始挑战</el-button>
+        <el-button @click="eekp">获取鹅鹅快跑</el-button>
       </div>
     </section>
     <div class="common-title">展示区</div>
@@ -317,6 +318,27 @@ export default {
         }
       }
       obj[this.type]()
+    },
+    async eekp () {
+      try {
+        const params = {
+          uid: this.uid,
+          h5openid: this.h5openid,
+          h5token: this.h5token,
+          region: this.region
+        }
+        const data = await apis.getEEKP(params)
+        const { res1, res2 } = data
+        const { winnerid } = res1
+        const { runner_list } = res2
+        const item = runner_list.find(item => item.id == winnerid)
+        const { bet_odds } = item
+        this.$alert(`押${winnerid+1}，倍数为${bet_odds}`, '鹅鹅快跑', {
+          confirmButtonText: '确定'
+        });
+      } catch (err) {
+        this.$message.error(`获取失败,${err}`)
+      }
     }
   }
 }
