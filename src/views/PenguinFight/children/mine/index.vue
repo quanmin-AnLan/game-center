@@ -1,5 +1,26 @@
 <template>
   <div class="mine-container">
+    <div class="search-item">
+      <div class="search-item-title">区服：</div>
+      <div class="operate-item">
+        <el-select v-model="region" placeholder="请选择区服">
+          <el-option v-for="(item, index) in regionOptions" :key="index" :label="item.label"
+            :value="item.value"></el-option>
+        </el-select>
+      </div>
+      <div class="search-item-title">uid：</div>
+      <div class="operate-item">
+        <el-input v-model.trim="uid" placeholder="请输入uid"></el-input>
+      </div>
+      <div class="search-item-title">h5openid：</div>
+      <div class="operate-item">
+        <el-input v-model.trim="h5openid" placeholder="请输入h5openid"></el-input>
+      </div>
+      <div class="search-item-title">h5token：</div>
+      <div class="operate-item">
+        <el-input v-model.trim="h5token" placeholder="请输入h5token"></el-input>
+      </div>
+    </div>
     <div class="mine-operate">
       <div class="mine-operate-item">
         <div class="mine-operate-item-text">筛选类型</div>
@@ -69,6 +90,27 @@ export default {
           label: '当前总收益'
         }
       ],
+      uid: '',
+      h5openid: '',
+      h5token: '',
+      region: '301',
+      regionOptions: [
+        // { label: '手q区', value: '1' },
+        { label: '空间1区', value: '301' },
+        // { label: '空间2区', value: '14' },
+        // { label: '空间3区', value: '15' },
+        { label: '空间6区', value: '26' },
+        { label: '空间7区', value: '28' },
+        // { label: '空间8区', value: '30' },
+        // { label: '空间9区', value: '32' },
+        { label: '微信1区', value: '4' },
+        // { label: '微信2区', value: '5' },
+        // { label: '微信6区', value: '12' },
+        // { label: '微信12区', value: '23' },
+        // { label: '微信15区', value: '29' },
+        // { label: '微信16区', value: '31' },
+        // { label: '微信H5区', value: '2' }
+      ],
       page: 1,
       loading: false,
       selectOptions: [
@@ -86,7 +128,11 @@ export default {
       tableType: ''
     }
   },
-  mounted() {
+  mounted () {
+    this.region = localStorage.getItem('region') || '301'
+    this.uid = localStorage.getItem('uid') || ''
+    this.h5openid = localStorage.getItem('h5openid') || ''
+    this.h5token = localStorage.getItem('h5token') || ''
     this.getTableData()
   },
   methods: {
@@ -104,7 +150,11 @@ export default {
     async getTableData () {
       this.loading = true
       const params = {
-        page: this.page
+        page: this.page,
+        uid: this.uid,
+        h5openid: this.h5openid,
+        h5token: this.h5token,
+        region: this.region
       }
       try {
         const data = await apis.getMineList(params)
@@ -130,7 +180,11 @@ export default {
           page: this.page,
           searchKey: this.searchKey,
           searchValue: this.searchValue,
-          searchRange: arr[i]
+          searchRange: arr[i],
+          uid: this.uid,
+          h5openid: this.h5openid,
+          h5token: this.h5token,
+          region: this.region
         }
         if (this.searchKey === 'role_name') {
           params.searchValue = encodeURIComponent(this.searchValue)
@@ -151,6 +205,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.search-item {
+  display: flex;
+  align-items: center;
+  margin: 20px auto;
+  width: 100%;
+  justify-content: center;
+  .operate-item {
+    margin-right: 8px;
+  }
+}
 .mine-operate {
   margin: 20px auto;
   display: flex;
