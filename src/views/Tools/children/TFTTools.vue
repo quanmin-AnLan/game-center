@@ -117,7 +117,7 @@ export default {
       aiChampionData: [],
       aiText: '开始推演',
       loadingText: '拼命加载中',
-      activeSeason: 'S14',
+      activeSeason: 'S15',
       tabList: ['S15', 'S14', 'S13', 'S12', 'S11', 'S10', 'S9.5', 'S9', 'S8.5', 'S8', 'S7.5', 'S7', 'S6.5', 'S6', 'S5.5', 'S5', 'S4.5', 'S4', 'S3.5', 'S3', 'S2', 'S1'],
       seasonMap: {
         S15: {
