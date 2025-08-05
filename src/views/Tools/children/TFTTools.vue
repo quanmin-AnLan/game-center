@@ -38,7 +38,7 @@
       <div class="common-title">点击英雄头像以在队伍中添加/删除该英雄</div>
       <div class="champion-show">
         <div v-for="(item, index) in washChampionData" :key="index" class="champion-item click"
-          @click="addChampion(item)">
+          @click="addChampion(item)" :style="`border: 3px solid ${colorMap[item.price]}`">
           <el-tooltip :content="tooltipShow(item)" placement="top">
             <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
           </el-tooltip>
@@ -46,7 +46,8 @@
       </div>
       <div class="common-title">当前队伍</div>
       <div class="champion-show">
-        <div v-for="(item, index) in chooseData" :key="index" class="champion-item click" @click="addChampion(item)">
+        <div v-for="(item, index) in chooseData" :key="index" class="champion-item click" @click="addChampion(item)"
+          :style="`border: 3px solid ${colorMap[item.price]}`">
           <el-tooltip :content="tooltipShow(item)" placement="top">
             <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
           </el-tooltip>
@@ -74,7 +75,8 @@
         <div v-for="(data, i) in aiChampionData" :key="i">
           <el-divider>第{{ Number(i) + 1 }}个结果</el-divider>
           <div style="width: 100%; display: flex; flex-wrap: wrap; margin-top: 8px;">
-            <div v-for="(item, index) in data" :key="index" class="champion-item">
+            <div v-for="(item, index) in data" :key="index" class="champion-item"
+              :style="`border: 3px solid ${colorMap[item.price]}`">
               <el-tooltip :content="tooltipShow(item)" placement="top">
                 <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
               </el-tooltip>
@@ -208,6 +210,18 @@ export default {
           season: '9.21-2019.S1',
           version: ''
         }
+      },
+      colorMap: {
+        1: 'lightgrey',
+        2: 'lightgreen',
+        3: 'lightblue',
+        4: 'purple',
+        5: 'gold',
+        6: 'gold',
+        7: 'gold',
+        8: 'gold',
+        9: 'gold',
+        10: 'gold'
       }
     }
   },
@@ -617,6 +631,7 @@ export default {
     margin-right: 10px;
     margin-bottom: 10px;
     font-size: 0;
+    box-sizing: border-box;
     &.click {
       cursor: pointer;
     }
