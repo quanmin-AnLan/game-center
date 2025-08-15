@@ -134,7 +134,7 @@ export default {
         { label: '微信1区', value: '4' },
         // { label: '微信2区', value: '5' },
         // { label: '微信6区', value: '12' },
-        // { label: '微信12区', value: '23' },
+        { label: '微信12区', value: '23' },
         // { label: '微信15区', value: '29' },
         // { label: '微信16区', value: '31' },
         // { label: '微信H5区', value: '2' }
