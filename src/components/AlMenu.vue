@@ -101,9 +101,11 @@ export default {
 
 <style lang="less" scoped>
 .menu-section {
-  height: calc(100vh - 48px);
+  min-height: calc(100vh - 48px);
   text-align: left;
   position: relative;
+  padding-bottom: 50px;
+  box-sizing: border-box;
 }
 .collapse-button {
   position: absolute;

@@ -82,19 +82,10 @@ export default {
           const info = item.info
           for (const i in info) {
             const infoItem = info[i]
-            const str = infoItem.join(',')
-            if (str.includes(this.selectActive) && !data.includes(item)) {
-              if (this.selectActive === '暴击' && (str.includes('抗暴击') || str.includes('暴击伤害'))) {
-                // console.log('属性不对');
-              } else if (this.selectActive === '伤害减免' && str.includes('最终伤害减免')) {
-                // console.log('属性不对');
-              } else if (this.selectActive === '眩晕几率' && str.includes('抗眩晕几率')) {
-                // console.log('属性不对');
-              } else if (this.selectActive === '抵挡' && (str.includes('抵挡穿透') || str.includes('抵挡减伤'))){
-                // console.log('属性不对');
-              } else if (this.selectActive === '穿透' && str.includes('抵挡穿透')) {
-                // console.log('属性不对');
-              } else {
+            for (const j in infoItem) {
+              const jItem = infoItem[j]
+              const key = jItem.split('+')[0]
+              if (key === this.selectActive && !data.includes(item)) {
                 data.push(item)
               }
             }
