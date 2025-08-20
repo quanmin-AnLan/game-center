@@ -73,6 +73,7 @@
               <div>
                 <p>{{ washDropped.oldVal.name }}</p>
                 <p>等级：{{ washDropped.oldVal.level }}</p>
+                <p :style="('color:' + qualityMap[washDropped.oldVal.quality].color || '')">品质：{{ qualityMap[washDropped.oldVal.quality].text }}</p>
                 <p>战力：{{ washDropped.oldVal.point }}</p>
                 <p>主属性：{{ washDropped.oldVal.primary_attrs }}</p>
                 <p>副属性：{{ washDropped.oldVal.sub_attrs }}</p>
@@ -85,6 +86,7 @@
               <div>
                 <p>{{ washDropped.newVal.name }}</p>
                 <p>等级：{{ washDropped.newVal.level }}</p>
+                <p :style="('color:' + qualityMap[washDropped.newVal.quality].color || '')">品质：{{ qualityMap[washDropped.newVal.quality].text }}</p>
                 <p>战力：{{ washDropped.newVal.point }}</p>
                 <p>主属性：{{ washDropped.newVal.primary_attrs }}</p>
                 <p>副属性：{{ washDropped.newVal.sub_attrs }}</p>
@@ -152,6 +154,7 @@ export default {
       attrHeader: [
         { label: '名称', prop: 'name', width: 150 },
         { label: '装备等级', prop: 'level', width: 100 },
+        { label: '装备品质', prop: 'quality', width: 100 },
         { label: '战力', prop: 'point', width: 100 },
         { label: '强化等级', prop: 'upgrade_level', width: 100 },
         { label: '主属性', prop: 'primary_attrs', width: 250 },
@@ -165,7 +168,29 @@ export default {
       dialogErrorInfo: '',
       dialogDropped: [],
       times: 0,
-      disabled: false
+      disabled: false,
+      qualityMap: {
+        1: {
+          text: '普通',
+          color: '#999'
+        },
+        2: {
+          text: '稀有',
+          color: '#297acc'
+        },
+        3: {
+          text: '史诗',
+          color: '#cc29cc'
+        },
+        4: {
+          text: '传说',
+          color: 'gold'
+        },
+        5: {
+          text: '神话',
+          color: 'red'
+        }
+      }
     }
   },
   watch: {
@@ -250,7 +275,9 @@ export default {
           upgrade_level: item.upgrade_level,
           point: item.point,
           primary_attrs: item.primary_attrs,
-          sub_attrs: item.sub_attrs
+          sub_attrs: item.sub_attrs,
+          quality: this.qualityMap[item.quality].text,
+          colorquality: this.qualityMap[item.quality].color
         }
       })
       this.drawerShow = true
