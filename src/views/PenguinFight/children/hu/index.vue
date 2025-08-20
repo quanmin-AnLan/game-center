@@ -73,7 +73,7 @@
               <div>
                 <p>{{ washDropped.oldVal.name }}</p>
                 <p>等级：{{ washDropped.oldVal.level }}</p>
-                <p :style="('color:' + qualityMap[washDropped.oldVal.quality].color || '')">品质：{{ qualityMap[washDropped.oldVal.quality].text }}</p>
+                <p :style="'color:' + ((qualityMap[washDropped.oldVal.quality] && qualityMap[washDropped.oldVal.quality].color) || '')">品质：{{ qualityMap[washDropped.oldVal.quality] && qualityMap[washDropped.oldVal.quality].text }}</p>
                 <p>战力：{{ washDropped.oldVal.point }}</p>
                 <p>主属性：{{ washDropped.oldVal.primary_attrs }}</p>
                 <p>副属性：{{ washDropped.oldVal.sub_attrs }}</p>
@@ -86,7 +86,7 @@
               <div>
                 <p>{{ washDropped.newVal.name }}</p>
                 <p>等级：{{ washDropped.newVal.level }}</p>
-                <p :style="('color:' + qualityMap[washDropped.newVal.quality].color || '')">品质：{{ qualityMap[washDropped.newVal.quality].text }}</p>
+                <p :style="'color:' + ((qualityMap[washDropped.newVal.quality] && qualityMap[washDropped.newVal.quality].color) || '')">品质：{{ qualityMap[washDropped.newVal.quality] && qualityMap[washDropped.newVal.quality].text }}</p>
                 <p>战力：{{ washDropped.newVal.point }}</p>
                 <p>主属性：{{ washDropped.newVal.primary_attrs }}</p>
                 <p>副属性：{{ washDropped.newVal.sub_attrs }}</p>
