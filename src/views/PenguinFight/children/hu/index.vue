@@ -153,10 +153,10 @@ export default {
       attrData: [],
       attrHeader: [
         { label: '名称', prop: 'name', width: 150 },
-        { label: '装备等级', prop: 'level', width: 100 },
-        { label: '装备品质', prop: 'quality', width: 100 },
-        { label: '战力', prop: 'point', width: 100 },
-        { label: '强化等级', prop: 'upgrade_level', width: 100 },
+        { label: '装备等级', prop: 'level', width: 90 },
+        { label: '装备品质', prop: 'quality', width: 90 },
+        { label: '战力', prop: 'point', width: 80 },
+        { label: '强化等级', prop: 'upgrade_level', width: 90 },
         { label: '主属性', prop: 'primary_attrs', width: 250 },
         { label: '副属性', prop: 'sub_attrs' }
       ],
