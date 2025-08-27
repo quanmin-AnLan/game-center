@@ -101,7 +101,7 @@ export default {
         // { label: '空间3区', value: '15' },
         { label: '空间6区', value: '26' },
         { label: '空间7区', value: '28' },
-        // { label: '空间8区', value: '30' },
+        { label: '空间8区', value: '30' },
         // { label: '空间9区', value: '32' },
         { label: '微信1区', value: '4' },
         // { label: '微信2区', value: '5' },

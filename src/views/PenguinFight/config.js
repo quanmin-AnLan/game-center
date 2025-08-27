@@ -43,12 +43,12 @@ export const config = {
       index: '/divineWeapon',
       children: []
     },
-    {
-      title: '举报',
-      icon: 'phone-outline',
-      index: '/report',
-      children: []
-    },
+    // {
+    //   title: '举报',
+    //   icon: 'phone-outline',
+    //   index: '/report',
+    //   children: []
+    // },
     {
       title: '召唤兽',
       icon: 'chicken',
