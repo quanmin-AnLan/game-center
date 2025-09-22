@@ -45,7 +45,8 @@ export default {
         },
         {
           prop: 'name',
-          label: '昵称'
+          label: '昵称',
+          sortable: true
         },
         {
           prop: 'region',
@@ -54,7 +55,8 @@ export default {
         },
         {
           prop: 'uid',
-          label: 'id'
+          label: 'id',
+          sortable: true
         },
         {
           prop: 'type',
