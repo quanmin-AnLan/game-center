@@ -21,6 +21,15 @@ const apis = {
     Http.get(
       `https://game.gtimg.cn/images/lol/act/img/tft/js/${season}/job${version}.js`
     ),
+  // 获取货币战争英雄数据
+  getHBZZChampionData: (season) =>
+    Http.get(`http://static.wnw.icu/bt/hbzz/${season}/chess.json`),
+  // 获取货币战争种族数据
+  getHBZZRaceData: (season) =>
+    Http.get(`http://static.wnw.icu/bt/hbzz/${season}/race.json`),
+  // 获取货币战争职业数据
+  getHBZZJobData: (season) =>
+    Http.get(`http://static.wnw.icu/bt/hbzz/${season}/job.json`),
 };
 
 export default apis

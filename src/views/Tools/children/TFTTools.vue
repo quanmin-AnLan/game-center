@@ -38,7 +38,7 @@
       <div class="common-title">点击英雄头像以在队伍中添加/删除该英雄</div>
       <div class="champion-show">
         <div v-for="(item, index) in washChampionData" :key="index" class="champion-item click"
-          @click="addChampion(item)" :style="`border: 3px solid ${colorMap[item.price]}`">
+          @click="addChampion(item)" :style="`border: 3px solid ${colorMap[item.price]}; background-color: ${colorMap[item.price]}`">
           <el-tooltip :content="tooltipShow(item)" placement="top">
             <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
           </el-tooltip>
@@ -47,7 +47,7 @@
       <div class="common-title">当前队伍</div>
       <div class="champion-show">
         <div v-for="(item, index) in chooseData" :key="index" class="champion-item click" @click="addChampion(item)"
-          :style="`border: 3px solid ${colorMap[item.price]}`">
+          :style="`border: 3px solid ${colorMap[item.price]}; background-color: ${colorMap[item.price]}`">
           <el-tooltip :content="tooltipShow(item)" placement="top">
             <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
           </el-tooltip>
@@ -76,7 +76,7 @@
           <el-divider>第{{ Number(i) + 1 }}个结果</el-divider>
           <div style="width: 100%; display: flex; flex-wrap: wrap; margin-top: 8px;">
             <div v-for="(item, index) in data" :key="index" class="champion-item"
-              :style="`border: 3px solid ${colorMap[item.price]}`">
+              :style="`border: 3px solid ${colorMap[item.price]}; background-color: ${colorMap[item.price]}`">
               <el-tooltip :content="tooltipShow(item)" placement="top">
                 <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
               </el-tooltip>
@@ -119,9 +119,13 @@ export default {
       aiChampionData: [],
       aiText: '开始推演',
       loadingText: '拼命加载中',
-      activeSeason: 'S15',
-      tabList: ['S15', 'S14', 'S13', 'S12', 'S11', 'S10', 'S9.5', 'S9', 'S8.5', 'S8', 'S7.5', 'S7', 'S6.5', 'S6', 'S5.5', 'S5', 'S4.5', 'S4', 'S3.5', 'S3', 'S2', 'S1'],
+      activeSeason: 'HB1',
+      tabList: ['HB1', 'S15', 'S14', 'S13', 'S12', 'S11', 'S10', 'S9.5', 'S9', 'S8.5', 'S8', 'S7.5', 'S7', 'S6.5', 'S6', 'S5.5', 'S5', 'S4.5', 'S4', 'S3.5', 'S3', 'S2', 'S1'],
       seasonMap: {
+        HB1: {
+          season: 's1',
+          version: ''
+        },
         S15: {
           season: '15.15-2025.S15',
           version: ''
@@ -324,9 +328,27 @@ export default {
     },
     async init() {
       try {
+        const apiMap = {
+          HB: {
+            champion: apis.getHBZZChampionData,
+            race: apis.getHBZZRaceData,
+            job: apis.getHBZZJobData
+          },
+          S: {
+            champion: apis.getTFTChampionData,
+            race: apis.getTFTRaceData,
+            job: apis.getTFTJobData
+          }
+        }
+        const type = this.activeSeason.includes('HB') ? 'HB' : 'S'
+        if (type === 'HB') {
+          this.imgStr = 'https://act-webstatic.mihoyo.com/darkmatter/hkrpg/prod_gf_cn/item_icon_u069sd'
+        } else {
+          this.imgStr = 'https://game.gtimg.cn/images/lol/act/img/tft/champions/'
+        }
         const season = this.seasonMap[this.activeSeason].season
         const version = this.seasonMap[this.activeSeason].version
-        const championData = await apis.getTFTChampionData(season, version)
+        const championData = await apiMap[type].champion(season, version)
         const filterChampionData = championData.filter(item => item.jobs !== '召唤物' && (item.jobs || item.races))
         this.championData = filterChampionData.map(item => {
           return {
@@ -337,7 +359,7 @@ export default {
             price: item.price
           }
         })
-        const raceData = await apis.getTFTRaceData(season, version)
+        const raceData = await apiMap[type].race(season, version)
         this.raceData = raceData.map(item => {
           return {
             name: item.name,
@@ -350,7 +372,7 @@ export default {
             label: item.name
           })
         }
-        const jobData = await apis.getTFTJobData(season, version)
+        const jobData = await apiMap[type].job(season, version)
         this.jobData = jobData.map(item => {
           if (item.name === '剑士' && this.activeSeason === 'S1') {
             item.level = {
@@ -627,7 +649,7 @@ export default {
 }
   .champion-item {
     width: 50px;
-    height: 50px;
+    // height: 50px;
     margin-right: 10px;
     margin-bottom: 10px;
     font-size: 0;
