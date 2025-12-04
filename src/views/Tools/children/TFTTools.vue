@@ -119,9 +119,13 @@ export default {
       aiChampionData: [],
       aiText: '开始推演',
       loadingText: '拼命加载中',
-      activeSeason: 'HB1',
-      tabList: ['HB1', 'S15', 'S14', 'S13', 'S12', 'S11', 'S10', 'S9.5', 'S9', 'S8.5', 'S8', 'S7.5', 'S7', 'S6.5', 'S6', 'S5.5', 'S5', 'S4.5', 'S4', 'S3.5', 'S3', 'S2', 'S1'],
+      activeSeason: 'S16',
+      tabList: ['S16', 'HB1', 'S15', 'S14', 'S13', 'S12', 'S11', 'S10', 'S9.5', 'S9', 'S8.5', 'S8', 'S7.5', 'S7', 'S6.5', 'S6', 'S5.5', 'S5', 'S4.5', 'S4', 'S3.5', 'S3', 'S2', 'S1'],
       seasonMap: {
+        S16: {
+          season: '15.24-2025.S16',
+          version: ''
+        },
         HB1: {
           season: 's1',
           version: ''
