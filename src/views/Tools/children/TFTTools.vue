@@ -396,7 +396,7 @@ export default {
             label: item.name
           })
         }
-        for (let i = 1; i < 6; i++) {
+        for (let i = 1; i < 11; i++) {
           this.priceSelectOptions.push({
             value: i,
             label: i
@@ -437,6 +437,8 @@ export default {
       }
       for (let i = 0; i < num; i++) {
         const oneResult = { data: [], job: [] }
+        const existingTeamsSet = new Set()
+        
         for (const index in result.data) {
           const obj = {
             data: result.data[index],
@@ -446,8 +448,17 @@ export default {
             price: 5
           }
           const { data, job } = await this.loop(obj, oldJobs, oneResult.data)
-          oneResult.data.push(...data)
-          oneResult.job.push(...job)
+          
+          // 在添加到结果前进行去重
+          for (let j = 0; j < data.length; j++) {
+            const teamKey = data[j].map(c => c.name).sort().join(',')
+            if (!existingTeamsSet.has(teamKey)) {
+              existingTeamsSet.add(teamKey)
+              oneResult.data.push(data[j])
+              oneResult.job.push(job[j])
+            }
+          }
+          // 每处理完一个队伍组合后，让浏览器有时间响应
           await this.sleep(1)
         }
         if (oneResult.data.length === 0) {
@@ -456,139 +467,199 @@ export default {
         }
         result = oneResult
       }
-      // 使用缓存优化性能
-      const cache = new Map();
-
-      const getIdentifier = (subArr) => {
-        const key = subArr.map(obj =>
-          JSON.stringify(
-            Object.keys(obj).sort().reduce((acc, key) => {
-              acc[key] = obj[key];
-              return acc;
-            }, {})
-          )
-        ).sort().join('|');
-
-        if (!cache.has(key)) {
-          cache.set(key, true);
-          return key;
-        }
-        return null;
-      };
+      
+      // 最终去重（使用更高效的 Set 方法）
       this.loadingText = '正在加载数据中，请耐心等待'
-      this.aiChampionData = result.data.reduce((acc, subArr) => {
-        const id = getIdentifier(subArr);
-        if (id) acc.push(subArr);
-        return acc;
-      }, []);
+      const finalSet = new Set()
+      const finalData = []
+      const finalJobData = []
+      
+      for (let i = 0; i < result.data.length; i++) {
+        const key = result.data[i].map(c => c.name).sort().join(',')
+        if (!finalSet.has(key)) {
+          finalSet.add(key)
+          finalData.push(result.data[i])
+          finalJobData.push(result.job[i])
+        }
+      }
+      
+      this.aiChampionData = finalData
+      // 注意：job 数据会在 computed 属性 aiChampionJobData 中重新计算，这里不需要保存
       this.loading = false
       this.aiText = '开始推演'
     },
     async loop(tempData, oldJobs, allData) {
-      const initData = this.championData.filter((v) => tempData.data.every((val) => val.name != v.name))
-      const data = initData.filter(item => tempData.price >= Number(item.price))
+      // 预处理：创建快速查找的 Map 结构
+      const findDataMap = new Map()
+      const allFindData = this.jobData.concat(this.raceData)
+      for (const item of allFindData) {
+        findDataMap.set(item.name, item)
+      }
+
+      // 预处理：创建已选英雄的 Set，用于快速判断
+      const selectedChampionNames = new Set(tempData.data.map(v => v.name))
+      
+      // 预处理：创建已存在队伍的快速查找 Set（使用字符串 key）
+      const existingTeamsSet = new Set()
+      for (const team of allData) {
+        const teamKey = team.map(c => c.name).sort().join(',')
+        existingTeamsSet.add(teamKey)
+      }
+
+      // 过滤可用的英雄
+      const data = []
+      for (const v of this.championData) {
+        if (!selectedChampionNames.has(v.name) && tempData.price >= Number(v.price)) {
+          data.push(v)
+        }
+      }
+
       const newData = []
       const newJobs = []
       let index = 1
+
       for (const item of data) {
         this.loadingText = `${tempData.data.length}人口有${tempData.total}队，正在推演基于第${tempData.idx + 1}队的${tempData.data.length + 1}人口的第${index}种可能性`
-        const jobArr = item.jobs && item.jobs.split(',') || []
-        const raceArr = item.races && item.races.split(',') || []
+
+        // 预处理英雄的羁绊数组
+        const jobArr = item.jobs ? item.jobs.split(',') : []
+        const raceArr = item.races ? item.races.split(',') : []
         const arr = jobArr.concat(raceArr)
-        const findData = this.jobData.concat(this.raceData)
+
         let tempResult = false
-        let tempJobs = []
-        const tempDataJob = JSON.parse(JSON.stringify(tempData.job))
+        let tempJobsMap = new Map()
+        const tempDataJob = []
+        
+        // 使用 Map 快速创建 tempDataJob 的副本
+        const tempDataJobMap = new Map()
+        for (const job of tempData.job) {
+          const jobCopy = {
+            name: job.name,
+            num: Number(job.num),
+            level: Number(job.level),
+            active: Number(job.active)
+          }
+          tempDataJobMap.set(job.name, jobCopy)
+          tempDataJob.push(jobCopy)
+        }
+
+        // 检查是否有未达到最大值的羁绊
         let jobCheckNoMax = true
         for (const job of oldJobs) {
-          const searchItem = tempDataJob.find(dataItem => dataItem.name === job.name)
-          const findItem = findData.find(dataItem => dataItem.name === job.name)
+          const searchItem = tempDataJobMap.get(job.name)
+          if (!searchItem) continue
+
+          const findItem = findDataMap.get(job.name)
+          if (!findItem) continue
+
           const len = findItem.level.length
           const maxNum = findItem.level[len - 1]
           if (searchItem.num < maxNum) {
             jobCheckNoMax = false
           }
           if (searchItem.num <= maxNum) {
-            tempJobs.push({
+            tempJobsMap.set(job.name, {
               name: job.name,
-              num: Number(searchItem.num),
-              level: Number(searchItem.level),
-              active: Number(searchItem.active)
+              num: searchItem.num,
+              level: searchItem.level,
+              active: searchItem.active
             })
           }
         }
         if (jobCheckNoMax) {
-          tempJobs = JSON.parse(JSON.stringify(tempData.job))
+          tempJobsMap = new Map()
+          for (const job of tempDataJob) {
+            tempJobsMap.set(job.name, {
+              name: job.name,
+              num: job.num,
+              level: job.level,
+              active: job.active
+            })
+          }
         }
+
+        // 处理新英雄的羁绊
         for (const i of arr) {
-          const findItem = findData.find(item => item.name === i)
-          const resultJobItem = tempJobs.find(item => item.name === i)
-          const searchJobItem = tempDataJob.find(item => item.name === i)
-          if (resultJobItem) {
+          const findItem = findDataMap.get(i)
+          if (!findItem) continue
+          
+          const resultJobItem = tempJobsMap.get(i)
+          const searchJobItem = tempDataJobMap.get(i)
+          
+          if (resultJobItem && searchJobItem) {
             searchJobItem.num++
-            for (const j in findItem.level) {
-              if (jobCheckNoMax) {
-                if (searchJobItem.num === Number(findItem.level[Number(j)])) {
-                  if (findItem.level[Number(j) + 1]) {
+            const levelArray = findItem.level
+            
+            if (jobCheckNoMax) {
+              for (let j = 0; j < levelArray.length; j++) {
+                if (searchJobItem.num === Number(levelArray[j])) {
+                  if (levelArray[j + 1]) {
+                    const nextLevel = Number(levelArray[j + 1])
+                    const maxLevel = Number(levelArray[levelArray.length - 1])
                     // 晋级1个羁绊
-                    if (Number(findItem.level[Number(j) + 1]) >= searchJobItem.level && (Number(findItem.level[findItem.level.length - 1])) >= searchJobItem.num && searchJobItem.name !== '圣灵使者') {
+                    if (nextLevel >= searchJobItem.level && maxLevel >= searchJobItem.num && searchJobItem.name !== '圣灵使者') {
                       tempResult = true
                     }
-                    searchJobItem.level = Number(findItem.level[Number(j) + 1])
+                    searchJobItem.level = nextLevel
                   }
-                  searchJobItem.active = Number(findItem.level[Number(j)])
-                  await this.sleep(1)
-                }
-              } else {
-                if (findItem.level[Number(j) + 1]) {
-                  // 晋级1个羁绊
-                  if (Number(findItem.level[Number(j) + 1]) >= searchJobItem.level && (Number(findItem.level[findItem.level.length - 1])) >= searchJobItem.num && searchJobItem.name !== '圣灵使者') {
-                    tempResult = true
-                  }
-                  if (searchJobItem.num >= Number(findItem.level[Number(j)])) {
-                    searchJobItem.level = Number(findItem.level[Number(j) + 1])
-                    searchJobItem.active = Number(findItem.level[Number(j)])
-                  }
-                  if (searchJobItem.num < Number(findItem.level[0])) {
-                    searchJobItem.level = Number(findItem.level[0])
-                    searchJobItem.active = 0
-                  }
-                }
-                await this.sleep(1)
-              }
-            }
-          } else {
-            // if (findItem.level[0] === '1' && findItem.level[1]) {
-            //   tempResult = true
-            // }
-            if (searchJobItem) {
-              searchJobItem.num++
-              for (const j in findItem.level) {
-                if (searchJobItem.num === Number(findItem.level[Number(j)])) {
-                  if (findItem.level[Number(j) + 1]) {
-                    searchJobItem.level = Number(findItem.level[Number(j) + 1])
-                  }
-                  searchJobItem.active = Number(findItem.level[Number(j)])
-                  await this.sleep(1)
+                  searchJobItem.active = Number(levelArray[j])
+                  break
                 }
               }
             } else {
-              tempDataJob.push({
+              for (let j = 0; j < levelArray.length - 1; j++) {
+                const nextLevel = Number(levelArray[j + 1])
+                const currentLevel = Number(levelArray[j])
+                const maxLevel = Number(levelArray[levelArray.length - 1])
+                // 晋级1个羁绊
+                if (nextLevel >= searchJobItem.level && maxLevel >= searchJobItem.num && searchJobItem.name !== '圣灵使者') {
+                  tempResult = true
+                }
+                if (searchJobItem.num >= currentLevel) {
+                  searchJobItem.level = nextLevel
+                  searchJobItem.active = currentLevel
+                }
+                if (searchJobItem.num < Number(levelArray[0])) {
+                  searchJobItem.level = Number(levelArray[0])
+                  searchJobItem.active = 0
+                }
+              }
+            }
+          } else {
+            if (searchJobItem) {
+              searchJobItem.num++
+              const levelArray = findItem.level
+              for (let j = 0; j < levelArray.length; j++) {
+                if (searchJobItem.num === Number(levelArray[j])) {
+                  if (levelArray[j + 1]) {
+                    searchJobItem.level = Number(levelArray[j + 1])
+                  }
+                  searchJobItem.active = Number(levelArray[j])
+                  break
+                }
+              }
+            } else {
+              const newJob = {
                 name: i,
                 num: 1,
                 level: findItem.level[0] !== '1' ? Number(findItem.level[0]) : (findItem.level[1] ? Number(findItem.level[1]) : 1),
                 active: findItem.level[0] !== '1' ? 0 : 1
-              })
+              }
+              tempDataJobMap.set(i, newJob)
+              tempDataJob.push(newJob)
             }
           }
         }
+        
         if (tempResult) {
-          const baseData = JSON.parse(JSON.stringify(tempData.data))
-          baseData.push(item)
-          const result = allData.some(subArray => this.arraysContainSameObjects(subArray, baseData));
-          if (!result) {
+          const baseData = [...tempData.data, item]
+          // 使用 Set 进行快速去重检查
+          const teamKey = baseData.map(c => c.name).sort().join(',')
+          if (!existingTeamsSet.has(teamKey)) {
+            existingTeamsSet.add(teamKey)
             newData.push(baseData)
-            newJobs.push(tempDataJob)
+            // 将 Map 转换为数组
+            newJobs.push(Array.from(tempDataJobMap.values()))
             index++
           }
         }
