@@ -207,6 +207,16 @@ export const routes = [
     component: () => import("../views/CxkGame.vue"),
   },
   {
+    path: "/Special",
+    component: () => import("../views/Special/index.vue"),
+    children: [
+      {
+        path: "/Special/eekp",
+        component: () => import("../views/Special/children/eekp.vue"),
+      },
+    ],
+  },
+  {
     path: "/DefaultError",
     component: () => import("../views/DefaultError.vue"),
   },

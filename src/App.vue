@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <al-nav></al-nav>
+    <al-nav v-if="isShowNav"></al-nav>
     <al-module-list></al-module-list>
     <section class="app-container">
       <router-view />
@@ -14,6 +14,14 @@
 export default {
   mounted() {
     this.$fn.refreshUserInfo()
+  },
+  watch: {
+    '$route.path': {
+      handler (newVal) {
+        this.isShowNav = newVal !== '/Special/eekp'
+      },
+      immediate: true
+    }
   }
 }
 </script>

@@ -81,13 +81,14 @@ class Http {
     })
   }
 
-  static post(url, params, contentType = 'json') {
+  static post(url, params, contentType = 'json', headers = {}) {
     if (contentType === 'urlencoded') {
       return request.post(url, qs.stringify(params))
     } else {
       return request.post(url, params, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...headers
         }
       })
     }

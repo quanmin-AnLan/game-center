@@ -26,7 +26,7 @@ const apis = {
   // 获取壶中信息
   getHuInfo: (params) => Http.post(`/ledou/hu/info`, params),
   // 获取鹅鹅快跑
-  getEEKP: (params) => Http.post(`/ledou/eekp`, params),
+  getEEKP: (params, headers) => Http.post(`/ledou/eekp`, params, 'json', headers),
 };
 
 export default apis

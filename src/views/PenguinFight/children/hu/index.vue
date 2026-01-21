@@ -356,12 +356,32 @@ export default {
         }
         const data = await apis.getEEKP(params)
         const { res1, res2 } = data
-        const { winnerid } = res1
+        const { winnerid, location } = res1
         const { runner_list } = res2
-        const item = runner_list.find(item => item.id == winnerid)
-        const { bet_odds } = item
-        this.$alert(`押${winnerid+1}，倍数为${bet_odds}`, '鹅鹅快跑', {
-          confirmButtonText: '确定'
+        const winnerItem = runner_list.find(item => item.id == winnerid)
+
+        // 计算排名：根据距离降序排序，距离越大排名越靠前
+        const rankMap = {}
+        location
+          .map((distance, index) => ({ index, distance }))
+          .sort((a, b) => b.distance - a.distance)
+          .forEach((item, sortedIndex, sortedArray) => {
+            // 如果距离小于前一个，排名为 sortedIndex + 1，否则与前一个排名相同
+            const prevItem = sortedArray[sortedIndex - 1]
+            const rank = prevItem && item.distance < prevItem.distance
+              ? sortedIndex + 1
+              : (prevItem ? rankMap[prevItem.index] : 1)
+            rankMap[item.index] = rank
+          })
+
+        // 生成显示文本
+        let domText = `<div>押${winnerid + 1}，倍数为${winnerItem.bet_odds}</div><br />`
+        runner_list.forEach((item, i) => {
+          domText += `第${i + 1}人${item.bet_odds}倍${item.quality}${item.state}跑了${location[i]}米,排名第${rankMap[i]}<br />`
+        })
+        this.$alert(domText, '鹅鹅快跑', {
+          confirmButtonText: '确定',
+          dangerouslyUseHTMLString: true
         });
       } catch (err) {
         this.$message.error(`获取失败,${err}`)
