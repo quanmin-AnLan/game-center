@@ -237,28 +237,30 @@ export default {
     washChampionData() {
       let result = this.championData
       if (this.jobKey) {
-        result = result.filter(item => item.jobs.includes(this.jobKey))
+        result = result.filter(item => item.jobs && item.jobs.includes(this.jobKey))
       }
       if (this.raceKey) {
-        result = result.filter(item => item.races.includes(this.raceKey))
+        result = result.filter(item => item.races && item.races.includes(this.raceKey))
       }
       if (this.priceKey) {
         result = result.filter(item => Number(item.price) === this.priceKey)
       }
       if (this.nameKey) {
-        result = result.filter(item => item.displayName.includes(this.nameKey))
+        result = result.filter(item => item.displayName && item.displayName.includes(this.nameKey))
       }
       return result
     },
     chooseRaceJobData() {
       const result = []
       for (const item of this.chooseData) {
-        const jobArr = item.jobs && item.jobs.split(',') || []
-        const raceArr = item.races && item.races.split(',') || []
+        const jobArr = (item.jobs && item.jobs.split(',').filter(s => s.trim())) || []
+        const raceArr = (item.races && item.races.split(',').filter(s => s.trim())) || []
         const arr = jobArr.concat(raceArr)
         const findData = this.jobData.concat(this.raceData)
         for (const i of arr) {
+          if (!i || !i.trim()) continue // 跳过空字符串
           const findItem = findData.find(item => item.name === i)
+          if (!findItem || !findItem.level) continue // 跳过未找到或无效的项
           const resultJobItem = result.find(item => item.name === i)
           if (resultJobItem) {
             resultJobItem.num++
@@ -287,12 +289,14 @@ export default {
       for (const data of this.aiChampionData) {
         const res = []
         for (const item of data) {
-          const jobArr = item.jobs && item.jobs.split(',') || []
-          const raceArr = item.races && item.races.split(',') || []
+          const jobArr = (item.jobs && item.jobs.split(',').filter(s => s.trim())) || []
+          const raceArr = (item.races && item.races.split(',').filter(s => s.trim())) || []
           const arr = jobArr.concat(raceArr)
           const findData = this.jobData.concat(this.raceData)
           for (const i of arr) {
+            if (!i || !i.trim()) continue // 跳过空字符串
             const findItem = findData.find(item => item.name === i)
+            if (!findItem || !findItem.level) continue // 跳过未找到或无效的项
             const resultJobItem = res.find(item => item.name === i)
             if (resultJobItem) {
               resultJobItem.num++
@@ -522,8 +526,8 @@ export default {
         this.loadingText = `${tempData.data.length}人口有${tempData.total}队，正在推演基于第${tempData.idx + 1}队的${tempData.data.length + 1}人口的第${index}种可能性`
 
         // 预处理英雄的羁绊数组
-        const jobArr = item.jobs ? item.jobs.split(',') : []
-        const raceArr = item.races ? item.races.split(',') : []
+        const jobArr = item.jobs ? item.jobs.split(',').filter(s => s.trim()) : []
+        const raceArr = item.races ? item.races.split(',').filter(s => s.trim()) : []
         const arr = jobArr.concat(raceArr)
 
         let tempResult = false
@@ -580,8 +584,9 @@ export default {
 
         // 处理新英雄的羁绊
         for (const i of arr) {
+          if (!i || !i.trim()) continue // 跳过空字符串
           const findItem = findDataMap.get(i)
-          if (!findItem) continue
+          if (!findItem || !findItem.level) continue // 跳过未找到或无效的项
           
           const resultJobItem = tempJobsMap.get(i)
           const searchJobItem = tempDataJobMap.get(i)
