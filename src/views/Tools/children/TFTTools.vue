@@ -98,7 +98,6 @@
 
 <script>
 import apis from '@/api'
-import { version } from 'less';
 export default {
   name: 'TFTTools',
   data() {
