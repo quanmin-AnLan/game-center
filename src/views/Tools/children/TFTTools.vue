@@ -35,23 +35,41 @@
           </div>
         </div>
       </section>
-      <div class="common-title">点击英雄头像以在队伍中添加/删除该英雄</div>
-      <div class="champion-show">
-        <div v-for="(item, index) in washChampionData" :key="index" class="champion-item click"
-          @click="addChampion(item)" :style="`border: 3px solid ${colorMap[item.price]}; background-color: ${colorMap[item.price]}`">
-          <el-tooltip :content="tooltipShow(item)" placement="top">
-            <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
-          </el-tooltip>
+      <section v-if="filterTraitList.length" class="trait-info">
+        <div v-for="(trait, index) in filterTraitList" :key="index" class="trait-info-item">
+          <div class="trait-info-header">
+            <span class="trait-info-type">{{ trait.type }}</span>
+            <span class="trait-info-name">{{ trait.name }}</span>
+          </div>
+          <div v-if="trait.introduce" class="trait-info-introduce" v-html="trait.introduce"></div>
+          <div v-if="trait.levelList.length" class="trait-info-levels">
+            <div v-for="(levelItem, levelIndex) in trait.levelList" :key="levelIndex" class="trait-info-level-item" v-html="levelItem"></div>
+          </div>
         </div>
+      </section>
+      <div class="common-title">点击英雄头像以在队伍中添加/删除该英雄，悬停查看技能效果</div>
+      <div class="champion-show">
+        <champion-item
+          v-for="(item, index) in washChampionData"
+          :key="index"
+          :item="item"
+          :img-str="imgStr"
+          :color-map="colorMap"
+          clickable
+          @toggle="addChampion"
+        />
       </div>
       <div class="common-title">当前队伍</div>
       <div class="champion-show">
-        <div v-for="(item, index) in chooseData" :key="index" class="champion-item click" @click="addChampion(item)"
-          :style="`border: 3px solid ${colorMap[item.price]}; background-color: ${colorMap[item.price]}`">
-          <el-tooltip :content="tooltipShow(item)" placement="top">
-            <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
-          </el-tooltip>
-        </div>
+        <champion-item
+          v-for="(item, index) in chooseData"
+          :key="index"
+          :item="item"
+          :img-str="imgStr"
+          :color-map="colorMap"
+          clickable
+          @toggle="addChampion"
+        />
       </div>
       <div class="common-title">当前羁绊</div>
       <div class="job-show">
@@ -75,12 +93,13 @@
         <div v-for="(data, i) in aiChampionData" :key="i">
           <el-divider>第{{ Number(i) + 1 }}个结果</el-divider>
           <div style="width: 100%; display: flex; flex-wrap: wrap; margin-top: 8px;">
-            <div v-for="(item, index) in data" :key="index" class="champion-item"
-              :style="`border: 3px solid ${colorMap[item.price]}; background-color: ${colorMap[item.price]}`">
-              <el-tooltip :content="tooltipShow(item)" placement="top">
-                <el-image :src="imgStr + item.name" :alt="item.displayName" fit="fill" />
-              </el-tooltip>
-            </div>
+            <champion-item
+              v-for="(item, index) in data"
+              :key="index"
+              :item="item"
+              :img-str="imgStr"
+              :color-map="colorMap"
+            />
           </div>
           <div style="width: 100%; display: flex; flex-wrap: wrap;">
             <div class="job-item" v-for="(item, index) in aiChampionJobData[i]" :key="index">
@@ -98,8 +117,13 @@
 
 <script>
 import apis from '@/api'
+import ChampionItem from './components/ChampionItem.vue'
+
 export default {
   name: 'TFTTools',
+  components: {
+    ChampionItem
+  },
   data() {
     return {
       loading: false,
@@ -242,6 +266,22 @@ export default {
     }
   },
   computed: {
+    filterTraitList() {
+      const list = []
+      if (this.raceKey) {
+        const race = this.raceData.find(item => item.name === this.raceKey)
+        if (race) {
+          list.push(this.buildTraitInfo(race, '种族'))
+        }
+      }
+      if (this.jobKey) {
+        const job = this.jobData.find(item => item.name === this.jobKey)
+        if (job) {
+          list.push(this.buildTraitInfo(job, '职业'))
+        }
+      }
+      return list
+    },
     washChampionData() {
       let result = this.championData
       if (this.jobKey) {
@@ -372,14 +412,19 @@ export default {
             displayName: item.displayName,
             jobs: item.jobs,
             races: item.races,
-            price: item.price
+            price: item.price,
+            skillName: item.skillName || '',
+            skillIntroduce: item.skillIntroduce || '',
+            skillImage: item.skillImage || ''
           }
         })
         const raceData = await apiMap[type].race(season, version)
         this.raceData = raceData.map(item => {
           return {
             name: item.name,
-            level: Object.keys(item.level)
+            level: Object.keys(item.level),
+            introduce: item.introduce || '',
+            levelDesc: item.level || {}
           }
         })
         for (const item of this.raceData) {
@@ -399,7 +444,9 @@ export default {
           }
           return {
             name: item.name,
-            level: Object.keys(item.level)
+            level: Object.keys(item.level),
+            introduce: item.introduce || '',
+            levelDesc: item.level || {}
           }
         })
         for (const item of this.jobData) {
@@ -697,8 +744,17 @@ export default {
         }
         return true;
     },
-    tooltipShow(item) {
-      return `${item.displayName},¥${item.price},${item.jobs},${item.races}`
+    buildTraitInfo(trait, type) {
+      const levelList = Object.keys(trait.levelDesc || {})
+        .sort((a, b) => Number(a) - Number(b))
+        .map(key => trait.levelDesc[key])
+        .filter(Boolean)
+      return {
+        type,
+        name: trait.name,
+        introduce: trait.introduce,
+        levelList
+      }
     }
   }
 }
@@ -729,23 +785,55 @@ export default {
     }
   }
 }
+.trait-info {
+  width: 1200px;
+  margin: 0 auto 24px;
+  padding: 16px;
+  background: #f5f7fa;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: break-word;
+  overflow-wrap: break-word;
+
+  .trait-info-item + .trait-info-item {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #dcdfe6;
+  }
+
+  .trait-info-header {
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .trait-info-type {
+    margin-right: 8px;
+    padding: 2px 8px;
+    background: #409eff;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: normal;
+  }
+
+  .trait-info-introduce {
+    margin-bottom: 8px;
+    color: #606266;
+  }
+
+  .trait-info-level-item {
+    padding: 4px 0;
+    color: #303133;
+  }
+}
 .champion-show {
   width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
 }
-  .champion-item {
-    width: 50px;
-    // height: 50px;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    font-size: 0;
-    box-sizing: border-box;
-    &.click {
-      cursor: pointer;
-    }
-  }
 .job-show {
   width: 1200px;
   margin: 0 auto;
