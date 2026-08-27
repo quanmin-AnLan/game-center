@@ -146,6 +146,7 @@
             v-for="group in simulateCandidateGroups"
             :key="group.key"
             class="simulate-candidate-group"
+            :class="{ 'simulate-candidate-group-multi': group.type === '多开' }"
           >
             <div class="simulate-group-title" :class="'simulate-group-title-' + group.type">
               {{ group.label }}
@@ -397,7 +398,21 @@ export default {
       groups.forEach(group => {
         group.champions = this.sortSimulateCandidates(group.champions)
       })
-      return groups.sort((a, b) => this.compareCandidateGroups(a, b, team))
+      const sortedGroups = groups.sort((a, b) => this.compareCandidateGroups(a, b, team))
+      const multiUnlockChampions = candidates.filter(champion => {
+        const unlockCount = this.getCandidateTraitCategories(team, champion)
+          .filter(category => category.type === '开').length
+        return unlockCount >= 2
+      })
+      if (multiUnlockChampions.length) {
+        sortedGroups.unshift({
+          type: '多开',
+          key: 'multi-unlock',
+          label: '同时开多个羁绊',
+          champions: this.sortSimulateCandidates(multiUnlockChampions)
+        })
+      }
+      return sortedGroups
     },
     aiChampionJobData() {
       return this.aiChampionData.map(team => this.computeRaceJobData(team))
@@ -934,5 +949,14 @@ export default {
 }
 .simulate-group-title-凑 {
   color: #409eff;
+}
+.simulate-group-title-多开 {
+  color: #f56c6c;
+  font-weight: bold;
+  font-size: 15px;
+}
+.simulate-candidate-group-multi {
+  border-color: #f56c6c;
+  background: #fef0f0;
 }
 </style>
