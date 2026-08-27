@@ -83,9 +83,7 @@
       <div class="common-title">基于当前队伍智能生成阵容</div>
       <div class="ai-show">
         <div class="ai-operate">
-          <div class="ai-operate-item">目标队伍人数：</div>
-          <el-input-number v-model="aiNum" :max="10" :min="1" class="ai-operate-item"></el-input-number>
-          <el-button @click="aiTeam()" :disabled="loading">{{ aiText }}</el-button>
+          <el-button type="primary" @click="startSimulate">开始推演</el-button>
         </div>
       </div>
       <div class="common-title">推演队伍{{ aiChampionData.length ? `(生成了${aiChampionData.length}个队伍)` : '' }}</div>
@@ -112,6 +110,69 @@
         </div>
       </div>
     </div>
+
+    <el-dialog
+      title="阵容推演"
+      :visible.sync="simulateDialogVisible"
+      width="920px"
+      :close-on-click-modal="false"
+      @close="resetSimulate"
+    >
+      <div class="simulate-section">
+        <div class="simulate-subtitle">当前阵容（{{ simulateTeam.length }}人口）</div>
+        <div class="champion-show simulate-champion-show">
+          <champion-item
+            v-for="(item, index) in simulateTeam"
+            :key="'team-' + index"
+            :item="item"
+            :img-str="imgStr"
+            :color-map="colorMap"
+          />
+        </div>
+        <div class="job-show simulate-job-show">
+          <div class="job-item" v-for="(item, index) in simulateTeamRaceJobData" :key="'trait-' + index">
+            <div class="job-item-text" :class="{ 'job-item-text-active': item.active }">
+              {{ item.name }}{{ item.active ? `(${item.active})` : '' }}：
+            </div>
+            <div class="job-item-num">{{ item.num + '/' + item.level }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="simulateStep === 'pick'" class="simulate-section">
+        <div class="simulate-subtitle">请选择第 {{ simulateTeam.length + 1 }} 人口英雄（悬停查看羁绊变化）</div>
+        <div v-if="simulateCandidateGroups.length" class="simulate-candidate-groups">
+          <div
+            v-for="group in simulateCandidateGroups"
+            :key="group.key"
+            class="simulate-candidate-group"
+          >
+            <div class="simulate-group-title" :class="'simulate-group-title-' + group.type">
+              {{ group.label }}
+            </div>
+            <div class="champion-show simulate-champion-show">
+              <champion-item
+                v-for="item in group.champions"
+                :key="group.key + '-' + item.name"
+                :item="item"
+                :img-str="imgStr"
+                :color-map="colorMap"
+                clickable
+                :hover-html="getTraitPreviewHtml(item)"
+                @toggle="onPickCandidate"
+              />
+            </div>
+          </div>
+        </div>
+        <div v-else class="simulate-empty">暂无可选英雄</div>
+      </div>
+
+      <div class="simulate-actions">
+        <el-button v-if="canUndoSimulate" @click="onUndoSimulate">返回上一步</el-button>
+        <el-button v-if="simulateStep === 'pause'" @click="onContinueSimulate">继续推演</el-button>
+        <el-button type="primary" @click="onFinishSimulate">结束推演</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -140,9 +201,11 @@ export default {
       priceKey: '',
       nameKey: '',
       chooseData: [],
-      aiNum: 10,
       aiChampionData: [],
-      aiText: '开始推演',
+      simulateDialogVisible: false,
+      simulateTeam: [],
+      simulateHistory: [],
+      simulateStep: 'pick',
       loadingText: '拼命加载中',
       activeSeason: 'S18',
       tabList: ['S18', 'S17', 'S16', 'HB1', 'S15', 'S14', 'S13', 'S12', 'S11', 'S10', 'S9.5', 'S9', 'S8.5', 'S8', 'S7.5', 'S7', 'S6.5', 'S6', 'S5.5', 'S5', 'S4.5', 'S4', 'S3.5', 'S3', 'S2', 'S1'],
@@ -300,76 +363,44 @@ export default {
       return result
     },
     chooseRaceJobData() {
-      const result = []
-      for (const item of this.chooseData) {
-        const jobArr = (item.jobs && item.jobs.split(',').filter(s => s.trim())) || []
-        const raceArr = (item.races && item.races.split(',').filter(s => s.trim())) || []
-        const arr = jobArr.concat(raceArr)
-        const findData = this.jobData.concat(this.raceData)
-        for (const i of arr) {
-          if (!i || !i.trim()) continue // 跳过空字符串
-          const findItem = findData.find(item => item.name === i)
-          if (!findItem || !findItem.level) continue // 跳过未找到或无效的项
-          const resultJobItem = result.find(item => item.name === i)
-          if (resultJobItem) {
-            resultJobItem.num++
-            for (const j in findItem.level) {
-              if (resultJobItem.num >= Number(findItem.level[Number(j)])) {
-                if (findItem.level[Number(j) + 1]) {
-                  resultJobItem.level = findItem.level[Number(j) + 1]
-                }
-                resultJobItem.active = findItem.level[Number(j)]
-              }
-            }
-          } else {
-            result.push({
-              name: i,
-              num: 1,
-              level: findItem.level[0] !== '1' ? findItem.level[0] : (findItem.level[1] ? findItem.level[1] : 1),
-              active: findItem.level[0] !== '1' ? 0 : 1
+      return this.computeRaceJobData(this.chooseData)
+    },
+    simulateTeamRaceJobData() {
+      return this.computeRaceJobData(this.simulateTeam)
+    },
+    canUndoSimulate() {
+      return this.simulateHistory.length > 1
+    },
+    simulateCandidateGroups() {
+      if (!this.simulateDialogVisible || this.simulateStep !== 'pick') {
+        return []
+      }
+      const team = this.simulateTeam
+      const selected = new Set(team.map(item => item.name))
+      const candidates = this.championData.filter(item => {
+        return !selected.has(item.name) && this.candidateAffectsExistingTraits(team, item)
+      })
+      const groupMap = new Map()
+      for (const champion of candidates) {
+        const categories = this.getCandidateTraitCategories(team, champion)
+        for (const category of categories) {
+          if (!groupMap.has(category.key)) {
+            groupMap.set(category.key, {
+              ...category,
+              champions: []
             })
           }
+          groupMap.get(category.key).champions.push(champion)
         }
       }
-      return result
+      const groups = Array.from(groupMap.values())
+      groups.forEach(group => {
+        group.champions = this.sortSimulateCandidates(group.champions)
+      })
+      return groups.sort((a, b) => this.compareCandidateGroups(a, b, team))
     },
     aiChampionJobData() {
-      const result = []
-      for (const data of this.aiChampionData) {
-        const res = []
-        for (const item of data) {
-          const jobArr = (item.jobs && item.jobs.split(',').filter(s => s.trim())) || []
-          const raceArr = (item.races && item.races.split(',').filter(s => s.trim())) || []
-          const arr = jobArr.concat(raceArr)
-          const findData = this.jobData.concat(this.raceData)
-          for (const i of arr) {
-            if (!i || !i.trim()) continue // 跳过空字符串
-            const findItem = findData.find(item => item.name === i)
-            if (!findItem || !findItem.level) continue // 跳过未找到或无效的项
-            const resultJobItem = res.find(item => item.name === i)
-            if (resultJobItem) {
-              resultJobItem.num++
-              for (const j in findItem.level) {
-                if (resultJobItem.num >= Number(findItem.level[Number(j)])) {
-                  if (findItem.level[Number(j) + 1]) {
-                    resultJobItem.level = findItem.level[Number(j) + 1]
-                  }
-                  resultJobItem.active = findItem.level[Number(j)]
-                }
-              }
-            } else {
-              res.push({
-                name: i,
-                num: 1,
-                level: findItem.level[0] !== '1' ? findItem.level[0] : (findItem.level[1] ? findItem.level[1] : 1),
-                active: findItem.level[0] !== '1' ? 0 : 1
-              })
-            }
-          }
-        }
-        result.push(res)
-      }
-      return result
+      return this.aiChampionData.map(team => this.computeRaceJobData(team))
     }
   },
   mounted() {
@@ -477,273 +508,267 @@ export default {
         this.chooseData.splice(index, 1)
       }
     },
-    sleep (time) {
-      return new Promise(res => {
-        setTimeout(res, time)
-      })
-    },
-    async aiTeam() {
-      this.loading = true
-      this.aiText = '推演中'
-      if (this.aiNum < this.chooseData.length) {
-        this.$message.error('目标人数小于已选队伍人数')
-      }
-      const oldJobs = JSON.parse(JSON.stringify(this.chooseRaceJobData))
-      const oldData = JSON.parse(JSON.stringify(this.chooseData))
-      const num = this.aiNum - this.chooseData.length
-      let result = {
-        data: [oldData],
-        job: [oldJobs]
-      }
-      for (let i = 0; i < num; i++) {
-        const oneResult = { data: [], job: [] }
-        const existingTeamsSet = new Set()
-        
-        for (const index in result.data) {
-          const obj = {
-            data: result.data[index],
-            job: result.job[index],
-            idx: Number(index),
-            total: result.data.length,
-            price: 5
-          }
-          const { data, job } = await this.loop(obj, oldJobs, oneResult.data)
-          
-          // 在添加到结果前进行去重
-          for (let j = 0; j < data.length; j++) {
-            const teamKey = data[j].map(c => c.name).sort().join(',')
-            if (!existingTeamsSet.has(teamKey)) {
-              existingTeamsSet.add(teamKey)
-              oneResult.data.push(data[j])
-              oneResult.job.push(job[j])
-            }
-          }
-          // 每处理完一个队伍组合后，让浏览器有时间响应
-          await this.sleep(1)
-        }
-        if (oneResult.data.length === 0) {
-          this.$message.error('当前队伍没有可推演的阵容')
-          break
-        }
-        result = oneResult
-      }
-      
-      // 最终去重（使用更高效的 Set 方法）
-      this.loadingText = '正在加载数据中，请耐心等待'
-      const finalSet = new Set()
-      const finalData = []
-      const finalJobData = []
-      
-      for (let i = 0; i < result.data.length; i++) {
-        const key = result.data[i].map(c => c.name).sort().join(',')
-        if (!finalSet.has(key)) {
-          finalSet.add(key)
-          finalData.push(result.data[i])
-          finalJobData.push(result.job[i])
-        }
-      }
-      
-      this.aiChampionData = finalData
-      // 注意：job 数据会在 computed 属性 aiChampionJobData 中重新计算，这里不需要保存
-      this.loading = false
-      this.aiText = '开始推演'
-    },
-    async loop(tempData, oldJobs, allData) {
-      // 预处理：创建快速查找的 Map 结构
-      const findDataMap = new Map()
-      const allFindData = this.jobData.concat(this.raceData)
-      for (const item of allFindData) {
-        findDataMap.set(item.name, item)
-      }
-
-      // 预处理：创建已选英雄的 Set，用于快速判断
-      const selectedChampionNames = new Set(tempData.data.map(v => v.name))
-      
-      // 预处理：创建已存在队伍的快速查找 Set（使用字符串 key）
-      const existingTeamsSet = new Set()
-      for (const team of allData) {
-        const teamKey = team.map(c => c.name).sort().join(',')
-        existingTeamsSet.add(teamKey)
-      }
-
-      // 过滤可用的英雄
-      const data = []
-      for (const v of this.championData) {
-        if (!selectedChampionNames.has(v.name) && tempData.price >= Number(v.price)) {
-          data.push(v)
-        }
-      }
-
-      const newData = []
-      const newJobs = []
-      let index = 1
-
-      for (const item of data) {
-        this.loadingText = `${tempData.data.length}人口有${tempData.total}队，正在推演基于第${tempData.idx + 1}队的${tempData.data.length + 1}人口的第${index}种可能性`
-
-        // 预处理英雄的羁绊数组
-        const jobArr = item.jobs ? item.jobs.split(',').filter(s => s.trim()) : []
-        const raceArr = item.races ? item.races.split(',').filter(s => s.trim()) : []
+    computeRaceJobData(champions) {
+      const result = []
+      const findData = this.jobData.concat(this.raceData)
+      for (const item of champions) {
+        const jobArr = (item.jobs && item.jobs.split(',').filter(s => s.trim())) || []
+        const raceArr = (item.races && item.races.split(',').filter(s => s.trim())) || []
         const arr = jobArr.concat(raceArr)
-
-        let tempResult = false
-        let tempJobsMap = new Map()
-        const tempDataJob = []
-        
-        // 使用 Map 快速创建 tempDataJob 的副本
-        const tempDataJobMap = new Map()
-        for (const job of tempData.job) {
-          const jobCopy = {
-            name: job.name,
-            num: Number(job.num),
-            level: Number(job.level),
-            active: Number(job.active)
-          }
-          tempDataJobMap.set(job.name, jobCopy)
-          tempDataJob.push(jobCopy)
-        }
-
-        // 检查是否有未达到最大值的羁绊
-        let jobCheckNoMax = true
-        for (const job of oldJobs) {
-          const searchItem = tempDataJobMap.get(job.name)
-          if (!searchItem) continue
-
-          const findItem = findDataMap.get(job.name)
-          if (!findItem) continue
-
-          const len = findItem.level.length
-          const maxNum = findItem.level[len - 1]
-          if (searchItem.num < maxNum) {
-            jobCheckNoMax = false
-          }
-          if (searchItem.num <= maxNum) {
-            tempJobsMap.set(job.name, {
-              name: job.name,
-              num: searchItem.num,
-              level: searchItem.level,
-              active: searchItem.active
-            })
-          }
-        }
-        if (jobCheckNoMax) {
-          tempJobsMap = new Map()
-          for (const job of tempDataJob) {
-            tempJobsMap.set(job.name, {
-              name: job.name,
-              num: job.num,
-              level: job.level,
-              active: job.active
-            })
-          }
-        }
-
-        // 处理新英雄的羁绊
         for (const i of arr) {
-          if (!i || !i.trim()) continue // 跳过空字符串
-          const findItem = findDataMap.get(i)
-          if (!findItem || !findItem.level) continue // 跳过未找到或无效的项
-          
-          const resultJobItem = tempJobsMap.get(i)
-          const searchJobItem = tempDataJobMap.get(i)
-          
-          if (resultJobItem && searchJobItem) {
-            searchJobItem.num++
-            const levelArray = findItem.level
-            
-            if (jobCheckNoMax) {
-              for (let j = 0; j < levelArray.length; j++) {
-                if (searchJobItem.num === Number(levelArray[j])) {
-                  if (levelArray[j + 1]) {
-                    const nextLevel = Number(levelArray[j + 1])
-                    const maxLevel = Number(levelArray[levelArray.length - 1])
-                    // 晋级1个羁绊
-                    if (nextLevel >= searchJobItem.level && maxLevel >= searchJobItem.num && searchJobItem.name !== '圣灵使者') {
-                      tempResult = true
-                    }
-                    searchJobItem.level = nextLevel
-                  }
-                  searchJobItem.active = Number(levelArray[j])
-                  break
+          if (!i || !i.trim()) continue
+          const findItem = findData.find(trait => trait.name === i)
+          if (!findItem || !findItem.level) continue
+          const resultJobItem = result.find(trait => trait.name === i)
+          if (resultJobItem) {
+            resultJobItem.num++
+            for (const j in findItem.level) {
+              if (resultJobItem.num >= Number(findItem.level[Number(j)])) {
+                if (findItem.level[Number(j) + 1]) {
+                  resultJobItem.level = findItem.level[Number(j) + 1]
                 }
-              }
-            } else {
-              for (let j = 0; j < levelArray.length - 1; j++) {
-                const nextLevel = Number(levelArray[j + 1])
-                const currentLevel = Number(levelArray[j])
-                const maxLevel = Number(levelArray[levelArray.length - 1])
-                // 晋级1个羁绊
-                if (nextLevel >= searchJobItem.level && maxLevel >= searchJobItem.num && searchJobItem.name !== '圣灵使者') {
-                  tempResult = true
-                }
-                if (searchJobItem.num >= currentLevel) {
-                  searchJobItem.level = nextLevel
-                  searchJobItem.active = currentLevel
-                }
-                if (searchJobItem.num < Number(levelArray[0])) {
-                  searchJobItem.level = Number(levelArray[0])
-                  searchJobItem.active = 0
-                }
+                resultJobItem.active = findItem.level[Number(j)]
               }
             }
           } else {
-            if (searchJobItem) {
-              searchJobItem.num++
-              const levelArray = findItem.level
-              for (let j = 0; j < levelArray.length; j++) {
-                if (searchJobItem.num === Number(levelArray[j])) {
-                  if (levelArray[j + 1]) {
-                    searchJobItem.level = Number(levelArray[j + 1])
-                  }
-                  searchJobItem.active = Number(levelArray[j])
-                  break
-                }
-              }
-            } else {
-              const newJob = {
-                name: i,
-                num: 1,
-                level: findItem.level[0] !== '1' ? Number(findItem.level[0]) : (findItem.level[1] ? Number(findItem.level[1]) : 1),
-                active: findItem.level[0] !== '1' ? 0 : 1
-              }
-              tempDataJobMap.set(i, newJob)
-              tempDataJob.push(newJob)
-            }
-          }
-        }
-        
-        if (tempResult) {
-          const baseData = [...tempData.data, item]
-          // 使用 Set 进行快速去重检查
-          const teamKey = baseData.map(c => c.name).sort().join(',')
-          if (!existingTeamsSet.has(teamKey)) {
-            existingTeamsSet.add(teamKey)
-            newData.push(baseData)
-            // 将 Map 转换为数组
-            newJobs.push(Array.from(tempDataJobMap.values()))
-            index++
+            result.push({
+              name: i,
+              num: 1,
+              level: findItem.level[0] !== '1' ? findItem.level[0] : (findItem.level[1] ? findItem.level[1] : 1),
+              active: findItem.level[0] !== '1' ? 0 : 1
+            })
           }
         }
       }
-      return { data: newData, job: newJobs }
+      return result
     },
-    // 判断两个对象是否相等
-    areObjectsEqual(obj1, obj2) {
-      const keys1 = Object.keys(obj1);
-      const keys2 = Object.keys(obj2);
-      if (keys1.length !== keys2.length) return false;
-      return keys1.every(key => Object.hasOwnProperty.call(obj2, key) && obj1[key] === obj2[key]);
+    getChampionTraits(champion) {
+      const jobArr = (champion.jobs && champion.jobs.split(',').filter(s => s.trim())) || []
+      const raceArr = (champion.races && champion.races.split(',').filter(s => s.trim())) || []
+      return jobArr.concat(raceArr)
     },
-    // 判断两个数组是否包含相同的对象（顺序无关）
-    arraysContainSameObjects(arr1, arr2) {
-        if (arr1.length !== arr2.length) return false;
-        const arr2Copy = [...arr2];
-        for (const obj1 of arr1) {
-            const index = arr2Copy.findIndex(obj2 => this.areObjectsEqual(obj1, obj2));
-            if (index === -1) return false;
-            arr2Copy.splice(index, 1); // 移除已匹配项，避免重复
+    formatTraitState(trait) {
+      if (!trait) return '无'
+      const activeText = trait.active ? `(${trait.active})` : ''
+      return `${trait.num}/${trait.level}${activeText}`
+    },
+    getCandidateTraitCategories(team, champion) {
+      const before = this.computeRaceJobData(team)
+      const after = this.computeRaceJobData(team.concat(champion))
+      const beforeMap = new Map(before.map(item => [item.name, item]))
+      const existingNames = new Set(before.map(item => item.name))
+      const categories = []
+      for (const item of after) {
+        if (!existingNames.has(item.name)) continue
+        const prev = beforeMap.get(item.name)
+        const prevActive = Number(prev?.active || 0)
+        const nextActive = Number(item.active || 0)
+        if (nextActive > prevActive) {
+          categories.push({
+            type: '开',
+            traitName: item.name,
+            value: nextActive,
+            label: `开${nextActive}${item.name}`,
+            key: `开-${item.name}-${nextActive}`
+          })
+        } else if (item.num > (prev?.num || 0)) {
+          categories.push({
+            type: '凑',
+            traitName: item.name,
+            value: item.num,
+            label: `凑${item.num}${item.name}`,
+            key: `凑-${item.name}-${item.num}`
+          })
         }
-        return true;
+      }
+      return categories
+    },
+    compareCandidateGroups(a, b, team) {
+      if (a.type !== b.type) {
+        return a.type === '开' ? -1 : 1
+      }
+      const topTraits = new Set(this.getTopTraitNames(team))
+      const aTop = topTraits.has(a.traitName) ? 1 : 0
+      const bTop = topTraits.has(b.traitName) ? 1 : 0
+      if (bTop !== aTop) {
+        return bTop - aTop
+      }
+      if (b.value !== a.value) {
+        return b.value - a.value
+      }
+      return a.traitName.localeCompare(b.traitName, 'zh-CN')
+    },
+    getTraitChanges(team, champion) {
+      const before = this.computeRaceJobData(team)
+      const after = this.computeRaceJobData(team.concat(champion))
+      const beforeMap = new Map(before.map(item => [item.name, item]))
+      const changes = []
+      for (const item of after) {
+        const prev = beforeMap.get(item.name)
+        const beforeText = this.formatTraitState(prev)
+        const afterText = this.formatTraitState(item)
+        if (beforeText !== afterText) {
+          changes.push({
+            name: item.name,
+            beforeText,
+            afterText
+          })
+        }
+      }
+      return changes
+    },
+    candidateAffectsExistingTraits(team, champion) {
+      const existingNames = new Set(this.computeRaceJobData(team).map(item => item.name))
+      if (!existingNames.size) {
+        return true
+      }
+      return this.getTraitChanges(team, champion).some(change => existingNames.has(change.name))
+    },
+    canUnlockNextTrait(team, champion) {
+      const before = this.computeRaceJobData(team)
+      const after = this.computeRaceJobData(team.concat(champion))
+      const beforeMap = new Map(before.map(item => [item.name, item]))
+      for (const item of after) {
+        const prev = beforeMap.get(item.name)
+        if (!prev) {
+          if (Number(item.active) > 0) return true
+          continue
+        }
+        if (Number(item.active) > Number(prev.active)) {
+          return true
+        }
+      }
+      return false
+    },
+    getTopTraitNames(team) {
+      const traits = this.computeRaceJobData(team)
+      if (!traits.length) return []
+      const maxNum = Math.max(...traits.map(item => item.num))
+      if (!maxNum) return []
+      return traits.filter(item => item.num === maxNum).map(item => item.name)
+    },
+    getCandidateSortScore(team, champion) {
+      const unlock = this.canUnlockNextTrait(team, champion) ? 1 : 0
+      const topTraits = this.getTopTraitNames(team)
+      const championTraits = this.getChampionTraits(champion)
+      const sameTrait = championTraits.filter(name => topTraits.includes(name)).length
+      return { unlock, sameTrait }
+    },
+    sortSimulateCandidates(candidates) {
+      const team = this.simulateTeam
+      return candidates.slice().sort((a, b) => {
+        const scoreA = this.getCandidateSortScore(team, a)
+        const scoreB = this.getCandidateSortScore(team, b)
+        if (scoreB.unlock !== scoreA.unlock) {
+          return scoreB.unlock - scoreA.unlock
+        }
+        if (scoreB.sameTrait !== scoreA.sameTrait) {
+          return scoreB.sameTrait - scoreA.sameTrait
+        }
+        if (Number(a.price) !== Number(b.price)) {
+          return Number(a.price) - Number(b.price)
+        }
+        return (a.displayName || '').localeCompare(b.displayName || '', 'zh-CN')
+      })
+    },
+    getTraitPreviewHtml(champion) {
+      const changes = this.getTraitChanges(this.simulateTeam, champion)
+      if (!changes.length) {
+        return '<div class="trait-preview-title">羁绊变化预览</div><div class="trait-preview-empty">羁绊无变化</div>'
+      }
+      const lines = changes.map(item => (
+        `<div class="trait-preview-line">${item.name}：${item.beforeText} → ${item.afterText}</div>`
+      )).join('')
+      return `<div class="trait-preview-title">羁绊变化预览</div>${lines}`
+    },
+    async confirmAction(message, confirmButtonText = '确定') {
+      try {
+        await this.$confirm(message, '提示', {
+          type: 'warning',
+          confirmButtonText,
+          cancelButtonText: '取消'
+        })
+        return true
+      } catch (err) {
+        return false
+      }
+    },
+    startSimulate() {
+      if (!this.chooseData.length) {
+        this.$message.warning('请先在当前队伍中选择英雄')
+        return
+      }
+      this.simulateTeam = JSON.parse(JSON.stringify(this.chooseData))
+      this.simulateHistory = [JSON.parse(JSON.stringify(this.simulateTeam))]
+      this.simulateStep = 'pick'
+      this.simulateDialogVisible = true
+    },
+    resetSimulate() {
+      this.simulateTeam = []
+      this.simulateHistory = []
+      this.simulateStep = 'pick'
+    },
+    onUndoSimulate() {
+      if (!this.canUndoSimulate) {
+        this.$message.warning('已经是第一步，无法返回')
+        return
+      }
+      this.simulateHistory.pop()
+      this.simulateTeam = JSON.parse(JSON.stringify(this.simulateHistory[this.simulateHistory.length - 1]))
+      this.simulateStep = 'pick'
+    },
+    hasSimulateCandidates() {
+      const selected = new Set(this.simulateTeam.map(item => item.name))
+      return this.championData.some(item => {
+        return !selected.has(item.name) && this.candidateAffectsExistingTraits(this.simulateTeam, item)
+      })
+    },
+    advanceSimulatePick() {
+      if (!this.hasSimulateCandidates()) {
+        this.$message.warning('没有可选英雄了')
+        this.simulateStep = 'pause'
+        return false
+      }
+      this.simulateStep = 'pick'
+      return true
+    },
+    async onPickCandidate(champion) {
+      if (this.simulateStep !== 'pick') return
+      const currentSize = this.simulateTeam.length + 1
+      const price = Number(champion.price)
+      const needLowPopulationConfirm = (currentSize <= 4 && price >= 4) || (currentSize <= 7 && price >= 5)
+      if (needLowPopulationConfirm) {
+        const confirmed = await this.confirmAction(`当前才${currentSize}人口，我觉得你D不到，是否仍要添加该英雄？`, '仍要添加')
+        if (!confirmed) return
+      }
+      this.simulateTeam.push(champion)
+      this.simulateHistory.push(JSON.parse(JSON.stringify(this.simulateTeam)))
+      if (this.simulateTeam.length >= 10) {
+        this.simulateStep = 'pause'
+        return
+      }
+      this.advanceSimulatePick()
+    },
+    async onContinueSimulate() {
+      if (this.simulateTeam.length >= 10) {
+        const confirmed = await this.confirmAction(
+          `当前人口已达${this.simulateTeam.length}人口，是否仍要继续推演？`,
+          '仍要继续'
+        )
+        if (!confirmed) return
+      }
+      this.advanceSimulatePick()
+    },
+    onFinishSimulate() {
+      const teamKey = this.simulateTeam.map(item => item.name).sort().join(',')
+      const exists = this.aiChampionData.some(team => team.map(item => item.name).sort().join(',') === teamKey)
+      if (!exists) {
+        this.aiChampionData.push(JSON.parse(JSON.stringify(this.simulateTeam)))
+      } else {
+        this.$message.info('该阵容已在推演列表中')
+      }
+      this.simulateDialogVisible = false
+      this.resetSimulate()
     },
     buildTraitInfo(trait, type) {
       const levelList = Object.keys(trait.levelDesc || {})
@@ -859,9 +884,55 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    .ai-operate-item {
-      margin-right: 24px;
-    }
   }
+}
+.simulate-section {
+  margin-bottom: 20px;
+}
+.simulate-subtitle {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #303133;
+}
+.simulate-champion-show {
+  width: 100%;
+}
+.simulate-job-show {
+  width: 100%;
+  margin-top: 12px;
+}
+.simulate-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+.simulate-empty {
+  color: #909399;
+  font-size: 14px;
+}
+.simulate-candidate-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.simulate-candidate-group {
+  padding: 12px;
+  border: 1px solid #ebeef5;
+  border-radius: 6px;
+  background: #fafafa;
+}
+.simulate-group-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #303133;
+}
+.simulate-group-title-开 {
+  color: #e6a23c;
+}
+.simulate-group-title-凑 {
+  color: #409eff;
 }
 </style>

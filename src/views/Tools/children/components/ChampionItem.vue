@@ -3,10 +3,11 @@
     placement="right"
     trigger="hover"
     :open-delay="250"
-    width="400"
-    popper-class="tft-skill-popover"
+    :width="popoverWidth"
+    :popper-class="popoverClass"
   >
-    <div class="skill-popover">
+    <div v-if="hoverHtml" class="trait-preview-popover" v-html="hoverHtml"></div>
+    <div v-else class="skill-popover">
       <div class="skill-popover-header">
         <el-image
           v-if="item.skillImage"
@@ -48,9 +49,16 @@ export default {
     item: { type: Object, required: true },
     imgStr: { type: String, required: true },
     colorMap: { type: Object, required: true },
-    clickable: { type: Boolean, default: false }
+    clickable: { type: Boolean, default: false },
+    hoverHtml: { type: String, default: '' }
   },
   computed: {
+    popoverWidth() {
+      return this.hoverHtml ? 320 : 400
+    },
+    popoverClass() {
+      return this.hoverHtml ? 'tft-trait-preview-popover' : 'tft-skill-popover'
+    },
     borderStyle() {
       const color = this.colorMap[this.item.price] || 'lightgrey'
       return {
@@ -170,6 +178,28 @@ export default {
 
   .skill-empty {
     color: #c0c4cc;
+  }
+}
+
+.tft-trait-preview-popover {
+  line-height: 1.6;
+  font-size: 13px;
+  color: #303133;
+  word-break: break-word;
+  overflow-wrap: break-word;
+
+  .trait-preview-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #409eff;
+  }
+
+  .trait-preview-line {
+    margin-bottom: 4px;
+  }
+
+  .trait-preview-empty {
+    color: #909399;
   }
 }
 </style>
