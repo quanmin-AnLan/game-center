@@ -25,7 +25,7 @@
           <div v-if="item.skillName" class="skill-popover-skill-name">{{ item.skillName }}</div>
         </div>
       </div>
-      <div class="skill-popover-content" v-html="formatSkillIntroduce(item.skillIntroduce)"></div>
+      <div class="skill-popover-content" v-html="skillIntroduceHtml"></div>
     </div>
     <div
       slot="reference"
@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import { formatDescription } from '../utils/formatDescription'
+
 export default {
   name: 'ChampionItem',
   props: {
@@ -55,6 +57,12 @@ export default {
         border: `3px solid ${color}`,
         backgroundColor: color
       }
+    },
+    skillIntroduceHtml() {
+      if (!this.item.skillIntroduce) {
+        return '<span class="skill-empty">暂无技能描述</span>'
+      }
+      return formatDescription(this.item.skillIntroduce)
     }
   },
   methods: {
@@ -62,12 +70,6 @@ export default {
       if (this.clickable) {
         this.$emit('toggle', this.item)
       }
-    },
-    formatSkillIntroduce(text) {
-      if (!text) return '<span class="skill-empty">暂无技能描述</span>'
-      return text
-        .replace(/\\r\\n/g, '<br>')
-        .replace(/\r\n/g, '<br>')
     }
   }
 }

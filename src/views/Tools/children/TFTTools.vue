@@ -41,9 +41,9 @@
             <span class="trait-info-type">{{ trait.type }}</span>
             <span class="trait-info-name">{{ trait.name }}</span>
           </div>
-          <div v-if="trait.introduce" class="trait-info-introduce" v-html="trait.introduce"></div>
+          <div v-if="trait.introduce" class="trait-info-introduce" v-html="formatDescription(trait.introduce)"></div>
           <div v-if="trait.levelList.length" class="trait-info-levels">
-            <div v-for="(levelItem, levelIndex) in trait.levelList" :key="levelIndex" class="trait-info-level-item" v-html="levelItem"></div>
+            <div v-for="(levelItem, levelIndex) in trait.levelList" :key="levelIndex" class="trait-info-level-item" v-html="formatDescription(levelItem)"></div>
           </div>
         </div>
       </section>
@@ -118,6 +118,7 @@
 <script>
 import apis from '@/api'
 import ChampionItem from './components/ChampionItem.vue'
+import { formatDescription } from './utils/formatDescription'
 
 export default {
   name: 'TFTTools',
@@ -755,7 +756,8 @@ export default {
         introduce: trait.introduce,
         levelList
       }
-    }
+    },
+    formatDescription
   }
 }
 </script>
